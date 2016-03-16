@@ -6,18 +6,50 @@ using System.Collections;
 public class CharacterControls : MonoBehaviour
 {
     public Transform player;
+    public float sensitivity;
+    Transform torso, upperLeftLeg,upperRightLeg, lowerLeftLeg, lowerRightLeg;
+    Transform leftThigh, rightThigh, leftKnee, rightKnee, leftFoot, rightFoot;
 
+    float legLength;
 	// Use this for initialization
 	void Start ()
     {
-	
-	}
+        if (player == null)
+            player = transform;
+
+        torso = player.GetChild(0);
+        leftThigh = torso.GetChild(2);
+        rightThigh = torso.GetChild(3);
+        upperLeftLeg = leftThigh.GetChild(0);
+        upperRightLeg = rightThigh.GetChild(0);
+        leftKnee = upperLeftLeg.GetChild(0);
+        legLength = Vector2.Distance(leftThigh.position.XY(), leftKnee.position.XY()); //2.7f;
+        Debug.Log(legLength);
+        rightKnee = upperRightLeg.GetChild(0);
+        lowerLeftLeg = leftKnee.GetChild(0);
+        lowerRightLeg = rightKnee.GetChild(0);
+        leftFoot = lowerLeftLeg.GetChild(0);
+        rightFoot = lowerRightLeg.GetChild(0);
+
+
+    }
 	
 	// Update is called once per frame
 	void Update ()
     {
-	
-	}
+        Vector2 LeftFootMovement = new Vector2(Input.GetAxis("LeftStickX"), -Input.GetAxis("LeftStickY"));
+        Vector2 RightFootMovement = new Vector2(Input.GetAxis("RightStickX"), -Input.GetAxis("RightStickY"));
+
+        LeftFootMovement *= Time.deltaTime;
+        RightFootMovement *= Time.deltaTime;
+
+        leftThigh.localEulerAngles += new Vector3(0, 0, LeftFootMovement.y * -sensitivity);
+        leftKnee.localEulerAngles += new Vector3(0, 0, LeftFootMovement.x * sensitivity);
+
+        rightThigh.localEulerAngles += new Vector3(0, 0, RightFootMovement.y * sensitivity);
+        rightKnee.localEulerAngles += new Vector3(0, 0, RightFootMovement.x * sensitivity);
+
+    }
 
     // calculates the middle point in a triangle where you know the the two side points and the length of two of the sides, 
     // also has the current 3rd point so the triangle doesnt flip
@@ -47,6 +79,6 @@ public class CharacterControls : MonoBehaviour
         Vector2 dir = (pt1 - pt2).normalized;
 
         piece.position = midPt.XYZ(piece.position.z);
-        piece.up = dir;
+        piece.right = dir;
     }
 }
