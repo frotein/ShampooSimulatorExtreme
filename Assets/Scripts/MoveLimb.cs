@@ -12,13 +12,13 @@ public class MoveLimb : MonoBehaviour {
 	public Transform lowerLeg;
 	public float middleFix = 0.45f;
     public bool arms;
-
     bool moving;
     bool startsLeft;
-    
+    Vector2 movement;
 	Vector3 storedLocalPosition;
 	public float length = 1.1f;
 	GameObject testPoint;
+    public PushAway push;
 	// Use this for initialization
 	void Start () 
 	{
@@ -26,6 +26,7 @@ public class MoveLimb : MonoBehaviour {
         //Debug.Log(upperLeg.lossyScale.y);
         startsLeft = isLeft(thigh.position.XY(), transform.position.XY(), knee.position.XY());
         moving = arms;
+       
 	}
 	
 	// Update is called once per frame
@@ -35,25 +36,27 @@ public class MoveLimb : MonoBehaviour {
 
         if (left)
         {
-            if (Input.GetButtonDown("UseLeftLeg") || Input.GetButtonUp("UseLeftLeg"))
-            {
-                moving = !moving;
-            }
+            if (Input.GetButton("UseLeftLeg"))
+                moving = !arms;
+            else
+                moving = arms;
         }
         else
         {
-            if (Input.GetButtonDown("UseRightLeg") || Input.GetButtonUp("UseRightLeg"))
-            {
-                moving = !moving;
-            }
+            if (Input.GetButton("UseRightLeg"))
+                moving = !arms;
+            else
+                moving = arms;
         }
 
         if (moving)
         {
             if (left)
-                transform.position += new Vector3(Input.GetAxis("LeftStickX") * dTime, Input.GetAxis("LeftStickY") * dTime, 0);
+                movement = new Vector2(Input.GetAxis("LeftStickX") * dTime, Input.GetAxis("LeftStickY") * dTime);
             else
-                transform.position += new Vector3(Input.GetAxis("RightStickX") * dTime, Input.GetAxis("RightStickY") * dTime, 0);
+                movement = new Vector2(Input.GetAxis("RightStickX") * dTime, Input.GetAxis("RightStickY") * dTime);
+
+            transform.position += movement.XYZ(0); 
         }
 		float dist = Vector2.Distance(thigh.position.XY(), transform.position.XY());
 		if(dist > length + length)
@@ -67,8 +70,9 @@ public class MoveLimb : MonoBehaviour {
 		SetToMiddleAndAngled(upperLeg,thigh.position.XY(),knee.position.XY());
         SetToMiddleAndAngled(lowerLeg, knee.position.XY(), transform.position.XY(), middleFix);
 		transform.up = lowerLeg.up;
-		
 
+        if (push != null)
+            push.movement = -movement;
         
 
 	}
@@ -82,7 +86,7 @@ public class MoveLimb : MonoBehaviour {
 		//transform.localPosition = storedLocalPosition;
 	}
 
-
+    
 	// calculates the middle point in a triangle where you know the the two side points and the length of two of the sides, 
 	// also has the current 3rd point so the triangle doesnt flip
 	Vector2 Calculate3rdPoint(float length, Vector2 p1, Vector2 p2, Vector2 currentP3)
