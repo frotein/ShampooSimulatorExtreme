@@ -6,6 +6,8 @@ public class HandCloser : MonoBehaviour {
     // the sprites for a open, grabbing and closed hand
     public Sprite open, holding, closed;
 
+    // the gameobjects for the finger sprites that will go over objects
+    public GameObject grabFingers, closedFingers; 
     // the new local positions for grabbing and closing hand so it looks natural
     public Vector3 grabbingPosition, closedPosition;
     Vector3 openPosition;
@@ -101,6 +103,8 @@ public class HandCloser : MonoBehaviour {
         {
             rend.sprite = open;
             openingThisFrame = true;
+            grabFingers.SetActive(false);
+            closedFingers.SetActive(false);
             transform.localPosition = openPosition;
         }
         
@@ -110,6 +114,8 @@ public class HandCloser : MonoBehaviour {
             {
                 rend.sprite = holding;
                 transform.localPosition = grabbingPosition;
+                grabFingers.SetActive(true);
+                closedFingers.SetActive(false);
                 grabbingThisFrame = true;
             }
             else
@@ -119,6 +125,8 @@ public class HandCloser : MonoBehaviour {
                     rend.sprite = closed;
                     transform.localPosition = closedPosition;
                     closingThisFrame = true;
+                    grabFingers.SetActive(false);
+                    closedFingers.SetActive(true);
                 }
             }
                 
