@@ -5,7 +5,6 @@ public class MoveLimb : MonoBehaviour {
 
 	// determines which thumbstick is used
 	public bool left;
-    public Collider2D tub;
     public Rigidbody2D rb;
     // The spine who is the main rotating body
     public Transform thigh;
@@ -13,7 +12,7 @@ public class MoveLimb : MonoBehaviour {
 	public Transform upperLeg;
 	public Transform lowerLeg;
     public Transform leftPt, rightPt;
-	public float middleFix = 0.45f;
+    public float middleFix = 0.45f;
     public bool arms;
     bool moving;
     bool startsLeft;
@@ -48,8 +47,9 @@ public class MoveLimb : MonoBehaviour {
             foreach (RaycastHit2D hit in hits)
             {
                 //Debug.Log(hit.transform.name);
-                if (hit.transform.name == tub.name)
-                { pushingAgainst = true; Debug.Log("pushing"); break; }
+                int layerMask = 1 << hit.transform.gameObject.layer;
+                if ((Constants.player.obstacleLayer.value & layerMask) > 0)
+                { pushingAgainst = true; break; }
 
             }
         }        
