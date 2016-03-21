@@ -5,7 +5,10 @@ public class MoveLimb : MonoBehaviour {
 
 	// determines which thumbstick is used
 	public bool left;
-	// The spine who is the main rotating body
+    public Collider2D tub;
+    public Rigidbody2D rb;
+    // The spine who is the main rotating body
+    public Transform chest;
 	public Transform thigh;
 	public Transform knee;
 	public Transform upperLeg;
@@ -14,11 +17,15 @@ public class MoveLimb : MonoBehaviour {
     public bool arms;
     bool moving;
     bool startsLeft;
+    Vector2 prevChestPosition;
     Vector2 movement;
 	Vector3 storedLocalPosition;
 	public float length = 1.1f;
 	GameObject testPoint;
     public PushAway push;
+    Vector2 storedMovement;
+    Vector2 prevPosition;
+    bool stoppedByMax;
 	// Use this for initialization
 	void Start () 
 	{
@@ -26,13 +33,79 @@ public class MoveLimb : MonoBehaviour {
         //Debug.Log(upperLeg.lossyScale.y);
         startsLeft = isLeft(thigh.position.XY(), transform.position.XY(), knee.position.XY());
         moving = arms;
-       
+        prevChestPosition = chest.position.XY();  
 	}
 	
 	// Update is called once per frame
 	void Update () 
 	{
-		float dTime = Time.deltaTime * Constants.player.limbSpeed;
+        stoppedByMax = false;
+        moveLimb();
+
+
+        //if (movement.magnitude > 0)
+        {
+            Vector2 newPt = Calculate3rdPoint(length, thigh.position.XY(), transform.position.XY(), knee.position.XY());
+		    knee.position = newPt.XYZ(0);
+            SetToMiddleAndAngled(upperLeg, thigh.position.XY(), knee.position.XY());
+            SetToMiddleAndAngled(lowerLeg, knee.position.XY(), transform.position.XY(), middleFix);
+            transform.up = lowerLeg.up;
+        }
+            
+       
+        if (push != null)
+            push.movement = -movement;
+        
+
+	}
+
+    void FixedUpdate()
+    {
+        //Debug.Log(movement);
+        
+        bool pushingAgainst = false;
+
+        if(Mathf.Abs(movement.x) > 0)
+        {
+            float xDiff = transform.position.x - prevPosition.x;
+            if (Mathf.Abs(xDiff) < 0.001f) pushingAgainst = true;
+        }
+
+        if (Mathf.Abs(movement.y) > 0)
+        {
+            float yDiff = transform.position.y - prevPosition.y;
+            if (Mathf.Abs(yDiff) < 0.001f) pushingAgainst = true;
+        }
+        if (pushingAgainst && !stoppedByMax)
+        {
+            Vector2 diff = chest.position.XY() - prevChestPosition;
+            //Debug.Log("pushing");
+            if (diff.magnitude > 0.001f)
+            {
+                
+              //  if (rb.IsTouching(tub))
+                {
+                 //   Debug.Log("going");
+                    storedMovement += -movement;
+                }
+            }
+ 
+        }
+        else
+        {
+            if (storedMovement.magnitude > 0)
+            {
+                Debug.Log(storedMovement);
+                rb.AddForceAtPosition(storedMovement * 5000f, transform.position);
+                storedMovement = Vector2.zero;
+            }
+        }
+        prevChestPosition = chest.position.XY();
+        prevPosition = transform.position.XY();
+    }
+    void moveLimb()
+    {
+        float dTime = Constants.player.limbSpeed;
 
         if (left)
         {
@@ -56,27 +129,16 @@ public class MoveLimb : MonoBehaviour {
             else
                 movement = new Vector2(Input.GetAxis("RightStickX") * dTime, Input.GetAxis("RightStickY") * dTime);
 
-            transform.position += movement.XYZ(0); 
+            transform.position += movement.XYZ(0);
         }
-		float dist = Vector2.Distance(thigh.position.XY(), transform.position.XY());
-		if(dist > length + length)
-		{
-			Vector2 dir = (transform.position.XY() - thigh.position.XY()).normalized;
-			transform.position = (thigh.position.XY() + dir * (length + length)).XYZ(transform.position.z);
-		}
-
-		Vector2 newPt = Calculate3rdPoint(length, thigh.position.XY(), transform.position.XY(), knee.position.XY());
-		knee.position = newPt.XYZ(0);
-		SetToMiddleAndAngled(upperLeg,thigh.position.XY(),knee.position.XY());
-        SetToMiddleAndAngled(lowerLeg, knee.position.XY(), transform.position.XY(), middleFix);
-		transform.up = lowerLeg.up;
-
-        if (push != null)
-            push.movement = -movement;
-        
-
-	}
-
+        float dist = Vector2.Distance(thigh.position.XY(), transform.position.XY());
+        if (dist > length + length)
+        {
+            Vector2 dir = (transform.position.XY() - thigh.position.XY()).normalized;
+            transform.position = (thigh.position.XY() + dir * (length + length)).XYZ(transform.position.z);
+            stoppedByMax = true;
+        }
+    }
     public bool isLeft(Vector2 a, Vector2 b, Vector2 c)
     {
         return ((b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x)) > 0;
