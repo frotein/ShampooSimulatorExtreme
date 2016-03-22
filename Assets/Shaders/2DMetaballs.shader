@@ -25,9 +25,12 @@
 
 	float totalIntensity()
 	{
+		float widthF = _width;
 		for (int i = 0; i < _width; i++)
 		{
-			fixed4 col = tex2D(_PositionsTex, i);
+			float iFloat = i;
+			float2 uv = float2(iFloat / widthF, 0.5);
+			fixed4 col = tex2D(_PositionsTex, uv);
 		}
 
 		return 0.0;
