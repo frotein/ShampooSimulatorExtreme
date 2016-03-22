@@ -15,10 +15,6 @@
 	int _width;
 	int _ScreenHeight;
 	int _ScreenWidth;
-	float _TestX0;
-	float _TestY0;
-	float _TestX1;
-	float _TestY1;
 	
 	float GetIntensity(float2 start, float2 end, float radius)
 	{
@@ -28,8 +24,6 @@
 	float totalIntensity(float2 pos)
 	{
 		float widthF = _width;
-		float2 testStart = { _TestX0, _TestY0 };
-		float2 testEnd = { _TestX1,  _TestY1 };
 		float totalIntensity = 0;
 		float2 fPos = { pos.x, _ScreenHeight - pos.y };
 		float2 screen = { _ScreenWidth * 1.17, _ScreenHeight * 1.17 };
@@ -41,8 +35,7 @@
 			float2 ballPos = { col.x * screen.x , col.y * screen.y};
 			totalIntensity += GetIntensity(ballPos, fPos, _Radius);
 		}
-		//float testIntensity = GetIntensity(testEnd, fPos, _Radius) + GetIntensity(testStart, fPos, _Radius);
-
+		
 		return totalIntensity;
 	}
 	ENDCG
