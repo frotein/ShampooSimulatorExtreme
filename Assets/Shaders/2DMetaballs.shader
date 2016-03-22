@@ -13,6 +13,8 @@
 	float _Radius;
 	float4 _Color;
 	int _width;
+	int _ScreenHeight;
+	int _ScreenWidth;
 	float _TestX0;
 	float _TestY0;
 	float _TestX1;
@@ -23,17 +25,25 @@
 		return (radius / (((start.x - end.x) * (start.x - end.x)) + ((start.y - end.y) * (start.y - end.y)) + 0.000001));	
 	}
 
-	float totalIntensity()
+	float totalIntensity(float2 pos)
 	{
 		float widthF = _width;
+		float2 testStart = { _TestX0, _TestY0 };
+		float2 testEnd = { _TestX1,  _TestY1 };
+		float totalIntensity = 0;
+		float2 fPos = { pos.x, _ScreenHeight - pos.y };
+		float2 screen = { _ScreenWidth * 1.17, _ScreenHeight * 1.17 };
 		for (int i = 0; i < _width; i++)
 		{
 			float iFloat = i;
-			float2 uv = float2(iFloat / widthF, 0.5);
+			float2 uv = float2((iFloat + 1.0) / 100.0, 0.5);
 			fixed4 col = tex2D(_PositionsTex, uv);
+			float2 ballPos = { col.x * screen.x , col.y * screen.y};
+			totalIntensity += GetIntensity(ballPos, fPos, _Radius);
 		}
+		//float testIntensity = GetIntensity(testEnd, fPos, _Radius) + GetIntensity(testStart, fPos, _Radius);
 
-		return 0.0;
+		return totalIntensity;
 	}
 	ENDCG
 
@@ -76,11 +86,15 @@
 			{
 				fixed4 col = tex2D(_MainTex, i.uv);
 				
-				float intensity = totalIntensity();
+				
+				float2 screenPos = { i.uv.x * _ScreenWidth , i.uv.y * _ScreenHeight };
+				float intensity = totalIntensity(screenPos);
 				// just set color
 				
-				if(i.vertex.x > _TestX0)
-				col = _Color;
+				if(intensity > 1)
+					col = _Color;
+				//if (screenPos.y > _TestY0)
+				//	col = _Color;
 
 				return col;
 			}
