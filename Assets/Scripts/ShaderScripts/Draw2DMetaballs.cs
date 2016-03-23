@@ -13,6 +13,7 @@ namespace UnityStandardAssets.ImageEffects
         public float testCenterY;
         public float test2ndX;
         public float test2ndY;
+        public float testX;
         public Texture2D positionsTexture;
         // resources
         public Shader shader;
@@ -20,6 +21,7 @@ namespace UnityStandardAssets.ImageEffects
         public List<Vector3> positions;
         private Material metaballMaterial = null;
         private Camera _camera;
+        private Vector2 ratio;
         
         new void Start()
         {
@@ -48,16 +50,24 @@ namespace UnityStandardAssets.ImageEffects
                 metaballMaterial = null;
             }
         }
-        void CreatePositionsTexture()
+        void CreatePositionsTexture() // position in uv coordinates
         {           
             for (int i = 0; i < positions.Count; i++)
             {
-                Vector3 pos = _camera.WorldToScreenPoint(positions[i]);
-               
-                Color positionAsColor = new Color((pos.x / (Screen.width * 1.17f) ), pos.y / (Screen.height * 1.17f), pos.z);
-                positionsTexture.SetPixel(i + 1, 1, positionAsColor);
+                Vector3 pos = WorldTOUV(positions[i]);                
+                Color positionAsColor = new Color(pos.x, pos.y, pos.z);
+                positionsTexture.SetPixel(i, 1, positionAsColor);
             }
             positionsTexture.Apply();
+        }
+
+        Vector2 WorldTOUV(Vector3 worldP)
+        {
+            
+            float x = (worldP.x + ratio.x) / (2 * ratio.x);
+            float y = ((worldP.y + ratio.y) / (2 * ratio.y)) + .1f - 0.017f;
+            
+            return new Vector2(x, y);
         }
 
         void SetTestPositions()
@@ -73,19 +83,21 @@ namespace UnityStandardAssets.ImageEffects
         void OnRenderImage(RenderTexture source, RenderTexture destination)
         {
             positions.Clear();
-                        
-           
-            //SetTestPositions();
-            CreatePositionsTexture();
+            float xRatio = _camera.orthographicSize * _camera.aspect;
+            float yRatio = _camera.orthographicSize;
+            ratio = new Vector2(xRatio, yRatio);
 
+            SetTestPositions();
+            CreatePositionsTexture();
+            //Debug.Log(WorldTOUV(_camera.ScreenToWorldPoint(new Vector3(test2ndX, test2ndY, 0))).y);
             metaballMaterial.SetColor("_Color", waterColor);
             metaballMaterial.SetFloat("_Radius", radius);
             metaballMaterial.SetTexture("_PositionsTex", positionsTexture);
-            metaballMaterial.SetInt("_width", positions.Count);
-            metaballMaterial.SetInt("_ScreenHeight", Screen.height);
-            metaballMaterial.SetInt("_ScreenWidth", Screen.width);
-
-
+            metaballMaterial.SetInt("_width",  positions.Count);
+            //Debug.Log(testX);
+            metaballMaterial.SetFloat("_TestX", testX);
+            metaballMaterial.SetFloat("_XScale", ratio.x);
+            metaballMaterial.SetFloat("_YScale", ratio.y);
             Graphics.Blit(source, destination, metaballMaterial);
         }
         public override bool CheckResources()
