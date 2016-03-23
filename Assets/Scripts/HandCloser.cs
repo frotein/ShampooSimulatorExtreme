@@ -65,9 +65,17 @@ public class HandCloser : MonoBehaviour {
         // if this sprite is different than last frames, switch the sprite image
         if (currentSprite != lastSprite)
             switchSprites(currentSprite);
+        else
+            ResetGrabChecks();
+        
         lastSprite = currentSprite;      
     }
-
+    public void ResetGrabChecks()
+    {
+        grabbingThisFrame = false;
+        openingThisFrame = false;
+        closingThisFrame = false;
+    }
     // returns true if the hand is 
     public bool isGrabbing()
     {
@@ -95,9 +103,6 @@ public class HandCloser : MonoBehaviour {
     // switches the sprites and moves the tranform slightly, 0 is closed, 1 is grabbing, 2 is closed
     void switchSprites(int newSprite)
     {
-        openingThisFrame = false;
-        grabbingThisFrame = false;
-        closingThisFrame = false;
 
         if (newSprite == 0)
         {

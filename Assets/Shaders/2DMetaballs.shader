@@ -13,10 +13,6 @@
 	float _Radius;
 	float4 _Color;
 	int _width;
-	int _ScreenHeight;
-	int _ScreenWidth;
-	float _TestX;
-	float _TestY;
 	float _XScale;
 	float _YScale;
 
@@ -90,22 +86,13 @@
 
 			fixed4 frag (v2f i) : COLOR
 			{
-				fixed4 col = tex2D(_MainTex, i.uv);
-				
-				
-				//float2 screenPos = { i.uv.x * _ScreenWidth , i.uv.y * _ScreenHeight };
-				//float2 worldPos = UVToWorld(i.uv);
-				
-				float intensity = totalIntensity(i.uv);
-				
-				//if(i.uv.x > _TestX)
-				//	col = _Color;
+				fixed4 col = tex2D(_MainTex, i.uv);				
 
+				float intensity = totalIntensity(i.uv);
+	
 				if(intensity > 1)
 					col = _Color;
-				//if (screenPos.y > _TestY0)
-				//	col = _Color;
-
+	
 				return col;
 			}
 			ENDCG

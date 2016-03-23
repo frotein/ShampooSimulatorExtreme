@@ -87,7 +87,7 @@ namespace UnityStandardAssets.ImageEffects
             float yRatio = _camera.orthographicSize;
             ratio = new Vector2(xRatio, yRatio);
 
-            SetTestPositions();
+            //SetTestPositions();
             CreatePositionsTexture();
             //Debug.Log(WorldTOUV(_camera.ScreenToWorldPoint(new Vector3(test2ndX, test2ndY, 0))).y);
             metaballMaterial.SetColor("_Color", waterColor);
@@ -95,7 +95,6 @@ namespace UnityStandardAssets.ImageEffects
             metaballMaterial.SetTexture("_PositionsTex", positionsTexture);
             metaballMaterial.SetInt("_width",  positions.Count);
             //Debug.Log(testX);
-            metaballMaterial.SetFloat("_TestX", testX);
             metaballMaterial.SetFloat("_XScale", ratio.x);
             metaballMaterial.SetFloat("_YScale", ratio.y);
             Graphics.Blit(source, destination, metaballMaterial);
