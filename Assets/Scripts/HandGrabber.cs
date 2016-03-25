@@ -69,7 +69,7 @@ public class HandGrabber : MonoBehaviour {
                 
                 Vector2 SlipDirAndPower = grabbedGO.transform.right * 10;
                 // randomly sets power and direction of flinging soap
-                SlipDirAndPower *= Random.Range(0.5f, 2f);
+                SlipDirAndPower *= Random.Range(0.5f, 1.5f);
                 if (Random.value > 0.5f)
                     SlipDirAndPower *= -1;
 

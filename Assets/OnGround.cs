@@ -1,19 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
-using System.Collections.Generic;
 
-public class PlayerConstants : MonoBehaviour {
+public class OnGround : MonoBehaviour {
 
-    public float limbSpeed;
-    public float grabAmount;
-    public float closeAmount;
     public bool onGround;
-    public LayerMask obstacleLayer;
-    public GameObject[] grabbableObjects;
+    bool hittingSomething;
     // Use this for initialization
 	void Start ()
     {
-        Constants.player = this;
+	
 	}
 	
 	// Update is called once per frame
@@ -44,4 +39,5 @@ public class PlayerConstants : MonoBehaviour {
             onGround = true;
         }
     }
+
 }
