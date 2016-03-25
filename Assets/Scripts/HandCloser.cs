@@ -76,10 +76,16 @@ public class HandCloser : MonoBehaviour {
         openingThisFrame = false;
         closingThisFrame = false;
     }
-    // returns true if the hand is 
+    // returns true if the hand is Grabbing
     public bool isGrabbing()
     {
         return currentSprite == 1;
+    }
+
+    // returns true if the hand is Closed
+    public bool isClosed()
+    {
+        return currentSprite == 2;
     }
 
     // returns if we grabbed this frame, is function so it cant be edited

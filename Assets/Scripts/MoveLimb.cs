@@ -12,6 +12,9 @@ public class MoveLimb : MonoBehaviour {
 	public Transform upperLeg;
 	public Transform lowerLeg;
     public Transform leftPt, rightPt;
+    public Transform handReset;
+    public Collider2D chestCollider;
+    public Collider2D movableArea;
     public float middleFix = 0.45f;
     public bool arms;
     bool moving;
@@ -21,9 +24,11 @@ public class MoveLimb : MonoBehaviour {
 	public float length = 1.1f;
 	GameObject testPoint;
     public PushAway push;
+    Vector2 storedKneePosition;
     Vector2 storedMovement;
-    Vector2 prevThighPosition;
+    Vector2 prevPosition;
     bool stoppedByMax;
+    
 	// Use this for initialization
 	void Start () 
 	{
@@ -66,17 +71,48 @@ public class MoveLimb : MonoBehaviour {
                 storedMovement = Vector2.zero;
             }
         }
-       
+        
         moveLimb();
         SetSegments();           
 	}
 
+    void LateUpdate()
+    {
+        ;
+        if(Physics2D.Linecast(transform.position.XY(), prevPosition, Constants.player.obstacleLayer))
+        {
+            Debug.Log("went through");
+          //  transform.position = prevPosition.XYZ(transform.position.z);
+        }
+        storedKneePosition = knee.position.XY();
+        prevPosition = transform.position.XY();
+    }
+
     void SetSegments()
     {
         Vector2 newPt = Calculate3rdPoint(length, thigh.position.XY(), transform.position.XY(), knee.position.XY());
-        knee.position = newPt.XYZ(0);
-        SetToMiddleAndAngled(upperLeg, thigh.position.XY(), knee.position.XY());
-        SetToMiddleAndAngled(lowerLeg, knee.position.XY(), transform.position.XY(), middleFix);
+       /* if (chestCollider.OverlapPoint(newPt))
+        {
+            Vector2 dir = (transform.position.XY() - knee.position.XY()).normalized;
+            transform.position = (knee.position.XY() + dir * length).XYZ(transform.position.z);
+
+            if(isLeft(thigh.position.XY(), transform.position.XY(), knee.position.XY()) != startsLeft)
+            {
+                transform.position = handReset.position.XY().XYZ(transform.position.z);
+            }
+            else
+            {
+                SetToMiddleAndAngled(lowerLeg, knee.position.XY(), transform.position.XY(), middleFix);
+            }
+        }*/
+        {
+            knee.position = newPt.XYZ(0);
+            SetToMiddleAndAngled(upperLeg, thigh.position.XY(), knee.position.XY());
+            SetToMiddleAndAngled(lowerLeg, knee.position.XY(), transform.position.XY(), middleFix);
+        }
+
+        
+        
         transform.up = lowerLeg.up;
     }
     void SetMovementVector()
@@ -111,18 +147,28 @@ public class MoveLimb : MonoBehaviour {
     void moveLimb()
     {
         stoppedByMax = false;
-        transform.position += movement.XYZ(0);
-        
-       float dist = Vector2.Distance(thigh.position.XY(), transform.position.XY());
-       if (dist > length + length)
-       {
-            Vector2 dir = (transform.position.XY() - thigh.position.XY()).normalized;
-            transform.position = (thigh.position.XY() + dir * (length + length)).XYZ(transform.position.z);
-            stoppedByMax = true;
-       }
+        bool canMoveTo = true;
+            
+        if (movableArea != null)
+        {
+            if (!movableArea.OverlapPoint(transform.position.XY() + movement)) { canMoveTo = false; stoppedByMax = true; }
+        }
+
+        if (canMoveTo)
+        {
+            transform.position += movement.XYZ(0);
+
+            float dist = Vector2.Distance(thigh.position.XY(), transform.position.XY());
+            if (dist > length + length)
+            {
+                Vector2 dir = (transform.position.XY() - thigh.position.XY()).normalized;
+                transform.position = (thigh.position.XY() + dir * (length + length)).XYZ(transform.position.z);
+                stoppedByMax = true;
+            }
+        }
     }
 
-    
+    // if point c is left of line defined by pts a and b
     public bool isLeft(Vector2 a, Vector2 b, Vector2 c)
     {
         return ((b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x)) > 0;
