@@ -13,6 +13,7 @@ public class MoveLimb : MonoBehaviour {
 	public Transform lowerLeg;
     public Transform leftPt, rightPt;
     public Transform handReset;
+    public Transform flipArms;
     public Collider2D chestCollider;
     public Collider2D movableArea;
     public float middleFix = 0.45f;
@@ -41,44 +42,50 @@ public class MoveLimb : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
 	{
-        
+        // Get the movement vector from the corrosponding analog stick
         SetMovementVector();
- 
         bool pushingAgainst = false;
-        if (leftPt != null && rightPt != null)
-        {
-            RaycastHit2D[] hits = Physics2D.LinecastAll(leftPt.position.XY() + movement * 5f, rightPt.position.XY() + movement * 5f);
 
-            foreach (RaycastHit2D hit in hits)
-            {
-                //Debug.Log(hit.transform.name);
-                int layerMask = 1 << hit.transform.gameObject.layer;
-                if ((Constants.player.obstacleLayer.value & layerMask) > 0)
-                { pushingAgainst = true; break; }
+        // if we are pushing against the ground, signal that we are
+        if (Physics2D.Linecast(leftPt.position.XY() + movement * 5f, rightPt.position.XY() + movement * 5f, Constants.player.obstacleLayer))
+            pushingAgainst = true;
 
-            }
-        }        
-
-        if(pushingAgainst && !stoppedByMax)
+        // if we are pushing against, store up movement, like preparing to push off of ground
+        if (pushingAgainst && !stoppedByMax)
         {
             storedMovement += movement; 
         }
         else
         {
-            if (storedMovement != Vector2.zero)
+            if (storedMovement != Vector2.zero) // if we are no longer pushing, release the power, causing something like a natural jump
             {
-                rb.AddForceAtPosition(-storedMovement * 500, transform.position);
+                rb.AddForceAtPosition(-storedMovement * 400, transform.position);
                 storedMovement = Vector2.zero;
             }
         }
-        
+
+        if (!arms) // if these are the elegs, we dont want them to be able to clip through the player, so slide along any surface that is the player
+        {
+            RaycastHit2D hit = Physics2D.Linecast(transform.position.XY(), transform.position.XY() + movement, Constants.player.playerLayer);
+           if(hit)
+            {
+                Vector2 perp = new Vector2(-hit.normal.y, hit.normal.x);
+                Vector2 newMovement = Vector3.Project(movement.XYZ(0), perp.XYZ(0)).XY();
+                Debug.Log(movement + " " + newMovement);
+                movement = newMovement;
+            }
+        }
+
+        // move the linbs from the movement vector
         moveLimb();
+
+        // move the limb segments so it look correct
         SetSegments();           
 	}
 
     void LateUpdate()
     {
-        ;
+        // check if we clipped through anything
         if(Physics2D.Linecast(transform.position.XY(), prevPosition, Constants.player.obstacleLayer))
         {
             Debug.Log("went through");
@@ -91,28 +98,11 @@ public class MoveLimb : MonoBehaviour {
     void SetSegments()
     {
         Vector2 newPt = Calculate3rdPoint(length, thigh.position.XY(), transform.position.XY(), knee.position.XY());
-       /* if (chestCollider.OverlapPoint(newPt))
-        {
-            Vector2 dir = (transform.position.XY() - knee.position.XY()).normalized;
-            transform.position = (knee.position.XY() + dir * length).XYZ(transform.position.z);
-
-            if(isLeft(thigh.position.XY(), transform.position.XY(), knee.position.XY()) != startsLeft)
-            {
-                transform.position = handReset.position.XY().XYZ(transform.position.z);
-            }
-            else
-            {
-                SetToMiddleAndAngled(lowerLeg, knee.position.XY(), transform.position.XY(), middleFix);
-            }
-        }*/
-        {
-            knee.position = newPt.XYZ(0);
-            SetToMiddleAndAngled(upperLeg, thigh.position.XY(), knee.position.XY());
-            SetToMiddleAndAngled(lowerLeg, knee.position.XY(), transform.position.XY(), middleFix);
-        }
-
-        
-        
+     
+        knee.position = newPt.XYZ(0);
+        SetToMiddleAndAngled(upperLeg, thigh.position.XY(), knee.position.XY());
+        SetToMiddleAndAngled(lowerLeg, knee.position.XY(), transform.position.XY(), middleFix);
+               
         transform.up = lowerLeg.up;
     }
     void SetMovementVector()
@@ -149,10 +139,10 @@ public class MoveLimb : MonoBehaviour {
         stoppedByMax = false;
         bool canMoveTo = true;
             
-        if (movableArea != null)
+        /*if (movableArea != null)
         {
             if (!movableArea.OverlapPoint(transform.position.XY() + movement)) { canMoveTo = false; stoppedByMax = true; }
-        }
+        }*/
 
         if (canMoveTo)
         {
@@ -191,11 +181,23 @@ public class MoveLimb : MonoBehaviour {
 		Vector2 perpDir = new Vector2(dir.y,-dir.x);
 		Vector2 finalPt1 = midPoint + perpDir * sideB;
 		Vector2 finalPt2 = midPoint + -perpDir * sideB;
-        if (isLeft(p1, p2, finalPt1) == startsLeft)
-            return finalPt1;
+        
+        if (arms)
+        {
+            bool left = isLeft(flipArms.position.XY(), flipArms.position.XY() + flipArms.right.XY(), transform.position.XY()) != isLeft(p1, p2, finalPt1);
+            if (left == startsLeft)
+                return finalPt1;
+            else
+                return finalPt2;
+        }
         else
-            return finalPt2;
-	}
+        {
+            if (isLeft(p1, p2, finalPt1) == startsLeft)
+                return finalPt1;
+            else
+                return finalPt2;
+        }
+    }
 
 	// Sets the transform in between the two points angled in the direction of them
 	public void SetToMiddleAndAngled(Transform piece, Vector2 pt1, Vector2 pt2, float mid = 0.5f)
