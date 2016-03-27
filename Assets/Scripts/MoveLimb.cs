@@ -11,10 +11,15 @@ public class MoveLimb : MonoBehaviour {
 	public Transform knee;
 	public Transform upperLeg;
 	public Transform lowerLeg;
+
     public Transform leftPt, rightPt;
     public Transform handReset;
-    public Transform flipArms;
+    public Transform flipArms; // a transform designation when the arms flip their elbow to look natural
+
+    public Transform maxLegs; // a transform designationg how high you can lift the legs up
+
     public Collider2D chestCollider;
+
     public Collider2D movableArea;
     public float middleFix = 0.45f;
     public bool arms;
@@ -29,6 +34,7 @@ public class MoveLimb : MonoBehaviour {
     Vector2 storedMovement;
     Vector2 prevPosition;
     bool stoppedByMax;
+    bool legsStartLeft;
     
 	// Use this for initialization
 	void Start () 
@@ -36,6 +42,10 @@ public class MoveLimb : MonoBehaviour {
 		storedLocalPosition = transform.localPosition;
         //Debug.Log(upperLeg.lossyScale.y);
         startsLeft = isLeft(thigh.position.XY(), transform.position.XY(), knee.position.XY());
+
+        if (!arms) // if these are the legs , set the default bool of what side of the line the legs are on for lift up limit;
+            legsStartLeft = isLeft(maxLegs.position.XY(), maxLegs.position.XY() + maxLegs.right.XY(), transform.position.XY());
+
         moving = arms;
 	}
 	
@@ -48,7 +58,7 @@ public class MoveLimb : MonoBehaviour {
 
         // if we are pushing against the ground, signal that we are
         if (Physics2D.Linecast(leftPt.position.XY() + movement * 5f, rightPt.position.XY() + movement * 5f, Constants.player.obstacleLayer))
-            pushingAgainst = true;
+        { pushingAgainst = true; }
 
         // if we are pushing against, store up movement, like preparing to push off of ground
         if (pushingAgainst && !stoppedByMax)
@@ -59,20 +69,27 @@ public class MoveLimb : MonoBehaviour {
         {
             if (storedMovement != Vector2.zero) // if we are no longer pushing, release the power, causing something like a natural jump
             {
-                rb.AddForceAtPosition(-storedMovement * 400, transform.position);
+               // if(arms)
+               //     rb.AddForceAtPosition(-storedMovement * 500, transform.position);
+               // else
+                    rb.AddForceAtPosition(-storedMovement * 500, transform.position);
                 storedMovement = Vector2.zero;
             }
         }
 
-        if (!arms) // if these are the elegs, we dont want them to be able to clip through the player, so slide along any surface that is the player
+        if (!arms) // if these are the legs, we dont want them to be able to clip through the player, so slide along any surface that is the player
         {
             RaycastHit2D hit = Physics2D.Linecast(transform.position.XY(), transform.position.XY() + movement, Constants.player.playerLayer);
            if(hit)
             {
                 Vector2 perp = new Vector2(-hit.normal.y, hit.normal.x);
                 Vector2 newMovement = Vector3.Project(movement.XYZ(0), perp.XYZ(0)).XY();
-                Debug.Log(movement + " " + newMovement);
                 movement = newMovement;
+            } 
+           // also if these are legs, check to make sure the new height isnt over the max height, if it is slide along the max height
+           if(isLeft(maxLegs.position.XY(), maxLegs.position.XY() + maxLegs.right.XY(), transform.position.XY() + movement) != legsStartLeft)
+            {
+                movement = Vector3.Project(movement.XYZ(0), maxLegs.right.XY().XYZ(0)).XY();
             }
         }
 
@@ -88,7 +105,7 @@ public class MoveLimb : MonoBehaviour {
         // check if we clipped through anything
         if(Physics2D.Linecast(transform.position.XY(), prevPosition, Constants.player.obstacleLayer))
         {
-            Debug.Log("went through");
+        //    Debug.Log("went through");
           //  transform.position = prevPosition.XYZ(transform.position.z);
         }
         storedKneePosition = knee.position.XY();
