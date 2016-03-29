@@ -18,7 +18,9 @@ namespace UnityStandardAssets.ImageEffects
         // resources
         public Shader shader;
         public Color waterColor;
-        public List<Vector3> positions;
+        public Transform testPosition1, testPosition2;
+        //public List<Vector3> positions;
+        public List<Transform> metaballs;
         private Material metaballMaterial = null;
         private Camera _camera;
         private Vector2 ratio;
@@ -28,8 +30,10 @@ namespace UnityStandardAssets.ImageEffects
             CheckResources();
             testCenterX = Screen.width / 2;
             testCenterY = Screen.height / 2;
-            positions = new List<Vector3>();
-
+            //positions = new List<Vector3>();
+            metaballs = new List<Transform>();
+            metaballs.Add(testPosition1);
+            //metaballs.Add(testPosition2);
             if (_camera == null)
                 _camera = GetComponent<Camera>();
         }
@@ -51,53 +55,57 @@ namespace UnityStandardAssets.ImageEffects
             }
         }
         void CreatePositionsTexture() // position in uv coordinates
-        {           
-            for (int i = 0; i < positions.Count; i++)
+        {
+            Color positionAsColor = new Color(0,0,0);
+            for (int i = 0; i < metaballs.Count; i++)
             {
-                Vector3 pos = WorldTOUV(positions[i]);                
-                Color positionAsColor = new Color(pos.x, pos.y, pos.z);
+                Vector3 pos = WorldTOUV(metaballs[i].position);
+                positionAsColor = new Color(pos.x, pos.y, pos.z);
+                //Debug.Log(pos.x + " " + positionAsColor.r);
                 positionsTexture.SetPixel(i, 1, positionAsColor);
             }
             positionsTexture.Apply();
+
+            Color c = positionsTexture.GetPixel(0, 1);
+            Vector2 grabbed = UVToWorld(new Vector2(c.r, c.g));
+           // Debug.Log(positionAsColor.r + " " + c.r);
         }
 
         Vector2 WorldTOUV(Vector3 worldP)
         {
             
-            float x = (worldP.x + ratio.x) / (2 * ratio.x);
-            float y = ((worldP.y + ratio.y) / (2 * ratio.y)) + .1f - 0.017f;
+            float x = ((worldP.x - _camera.transform.position.x) + ratio.x) / (2 * ratio.x);
+            float y = (((worldP.y - _camera.transform.position.y) + ratio.y) / (2 * ratio.y));// + .1f - 0.017f;
             
             return new Vector2(x, y);
         }
 
-        void SetTestPositions()
+        Vector2 UVToWorld(Vector2 uv)
         {
-            test2ndX = Input.mousePosition.x;
-            test2ndY = Input.mousePosition.y;
-            testCenterX = Screen.width / 2;
-            testCenterY = Screen.height / 2;
-
-            positions.Add(_camera.ScreenToWorldPoint(new Vector3(testCenterX, testCenterY, 0)));
-            positions.Add(_camera.ScreenToWorldPoint(new Vector3(test2ndX, test2ndY, 0)));
+            Vector2 pt = new Vector2( (uv.x * 2.0f * ratio.x) - ratio.x, (uv.y * 2.0f * ratio.y) - ratio.y);
+            return pt;
         }
+
         void OnRenderImage(RenderTexture source, RenderTexture destination)
         {
-            positions.Clear();
+            //positions.Clear();
             float xRatio = _camera.orthographicSize * _camera.aspect;
             float yRatio = _camera.orthographicSize;
             ratio = new Vector2(xRatio, yRatio);
 
-            //SetTestPositions();
             CreatePositionsTexture();
-            //Debug.Log(WorldTOUV(_camera.ScreenToWorldPoint(new Vector3(test2ndX, test2ndY, 0))).y);
             metaballMaterial.SetColor("_Color", waterColor);
             metaballMaterial.SetFloat("_Radius", radius);
             metaballMaterial.SetTexture("_PositionsTex", positionsTexture);
-            metaballMaterial.SetInt("_width",  positions.Count);
+            metaballMaterial.SetInt("_width",  metaballs.Count);
+            metaballMaterial.SetInt("_set", 0);
             //Debug.Log(testX);
             metaballMaterial.SetFloat("_XScale", ratio.x);
             metaballMaterial.SetFloat("_YScale", ratio.y);
             Graphics.Blit(source, destination, metaballMaterial);
+
+          //  float grabbedX = metaballMaterial.GetFloat("_testX");
+            
         }
         public override bool CheckResources()
         {

@@ -5,6 +5,7 @@
 		_MainTex ("Texture", 2D) = "white" {}
 		_PositionsTex("-", 2D) = "grey" {}
 		_Color("Water Color", Color) = (0.1,0.1 ,1,1)
+		_testX("debug tests", float) = 0
 	}
 		CGINCLUDE
 	#include "UnityCG.cginc"
@@ -15,6 +16,7 @@
 	int _width;
 	float _XScale;
 	float _YScale;
+	float _testX;
 
 	float GetIntensity(float2 start, float2 end, float radius)
 	{
@@ -23,7 +25,7 @@
 	}
 	float2 UVToWorld(float2 uv)
 	{
-		float2 pt = { (uv.x * 2 * _XScale) - _XScale , (uv.y * 2 * _YScale) - _YScale };
+		float2 pt = { (uv.x * 2.0 * _XScale) - _XScale , (uv.y * 2.0 * _YScale) - _YScale };
 		return pt;
 	}
 
@@ -42,6 +44,7 @@
 			fixed4 col = tex2D(_PositionsTex, uv);
 			float2 uvPos = { col.x , col.y };
 			float2 ballPos = UVToWorld(uvPos);
+			_testX = ballPos;
 			totalIntensity += GetIntensity(ballPos, fPos, _Radius);
 		}
 		
@@ -77,7 +80,7 @@
 			v2f vert (appdata v)
 			{
 				v2f o;
-				o.vertex = mul(UNITY_MATRIX_MVP, v.vertex);
+				o.vertex = v.vertex;//mul(UNITY_MATRIX_MVP, v.vertex);
 				o.uv = v.uv;
 				return o;
 			}
@@ -86,13 +89,16 @@
 
 			fixed4 frag (v2f i) : COLOR
 			{
-				fixed4 col = tex2D(_MainTex, i.uv);				
+				fixed4 col;
 
 				float intensity = totalIntensity(i.uv);
 	
 				if(intensity > 1)
 					col = _Color;
-	
+				else
+					col = tex2D(_MainTex, i.uv);
+
+
 				return col;
 			}
 			ENDCG
