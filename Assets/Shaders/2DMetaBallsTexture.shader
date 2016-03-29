@@ -6,9 +6,10 @@
         // so make them not be displayed in material inspector
          _MainTex("Color (RGB) Alpha (A)", 2D) = "white" {}
 		_WaterColor("Water Color", Color) = (1,1,1,1)
-		_Cutoff("Alpha Cutoff", Float) = 0.5
+		_Radius("Ball Radius", Float) = 1
 		
     }
+
     SubShader
     {
 		Tags{ "Queue" = "Transparent" "RenderType" = "Transparent" }
@@ -21,19 +22,44 @@
             // use "frag" function as the pixel (fragment) shader
             #pragma fragment frag
 			
-			
+			// Property variables
 			uniform sampler2D _MainTex;
-			uniform float _Cutoff;
 			fixed4 _WaterColor;
-			uniform Buffer<float2> _BufferX;
+			fixed _Radius;
+			uniform Buffer<float2> _Buffer;
+			
+			// Set Variables
+			int _Width;
+
             // vertex shader inputs
 			struct vertexInput {
 				float4 vertex : POSITION;
 			};
+
+			// vertex shader outputs
 			struct vertexOutput {
 				float4 pos : SV_POSITION;
 				float4 worldPos : TEXCOORD0;
 			};
+
+			// Main equation to get the intensity of a position from a specific ball
+			float GetIntensity(float2 start, float2 end, fixed radius)
+			{
+				return (radius / (((start.x - end.x) * (start.x - end.x)) + ((start.y - end.y) * (start.y - end.y)) + 0.000001));
+			}
+
+			// gets the totalintensity from all balls for this position
+			float totalIntensity(float2 pos)
+			{
+				float totalIntensity = 0;
+				
+				for (int i = 0; i < _Width; i++)
+				{
+					totalIntensity += GetIntensity(pos, _Buffer[i], _Radius);
+				}
+
+				return totalIntensity;
+			}
 
             // vertex shader
 			vertexOutput vert(vertexInput input)
@@ -52,13 +78,12 @@
             // color ("SV_Target" semantic)
             fixed4 frag (vertexOutput i) : SV_Target
             {
-				//float4 textureColor = tex2D(_MainTex, i.uv);
-				/*if (i.worldPos.x < _Cutoff) // alpha value less than user-specified threshold?					
-				{
-					discard; // yes: discard this fragment
-				}*/
-				if (_BufferX[2].x > i.worldPos.x)
+				float intensity = totalIntensity(i.worldPos);
+
+				
+				if (intensity < 1)
 					discard;
+
 				return _WaterColor;
             }
             ENDCG

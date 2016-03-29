@@ -20,8 +20,7 @@
 
 	float GetIntensity(float2 start, float2 end, float radius)
 	{
-		return (radius / (((start.x - end.x) * (start.x - end.x)) + ((start.y - end.y) * (start.y - end.y)) + 0.000001));	
-	
+		return (radius / (((start.x - end.x) * (start.x - end.x)) + ((start.y - end.y) * (start.y - end.y)) + 0.000001));		
 	}
 	float2 UVToWorld(float2 uv)
 	{

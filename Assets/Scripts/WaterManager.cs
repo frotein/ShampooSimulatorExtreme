@@ -3,7 +3,7 @@ using System.Collections;
 using UnityStandardAssets.ImageEffects;
 public class WaterManager : MonoBehaviour {
 
-    public Draw2DMetaballs shaderController;
+    public Metaball2DTextureShader shaderController;
     public Transform activePool;
     public Transform sleepingPool;
     public Vector2 startingVelocity;  
@@ -11,7 +11,8 @@ public class WaterManager : MonoBehaviour {
     // Use this for initialization
 	void Start ()
     {
-        startingVelocity = Vector2.zero;    
+        startingVelocity = Vector2.zero;
+        shaderController.poolSize = sleepingPool.childCount;
     }
 	
 	// Update is called once per frame
@@ -27,8 +28,10 @@ public class WaterManager : MonoBehaviour {
             dropT.gameObject.SetActive(true);
             dropT.parent = activePool;
             dropT.position = position.XYZ(dropT.position.z);
-            shaderController.metaballs.Add(dropT);
-            dropT.GetComponent<WaterDrop>().index = shaderController.metaballs.Count - 1;
+            dropT.gameObject.layer = LayerMask.NameToLayer("Water");
+            shaderController.balls.Add(dropT);
+            dropT.GetComponent<WaterDrop>().index = shaderController.balls.Count - 1;
+            dropT.GetComponent<WaterDrop>().manager = this;
             Rigidbody2D rb = dropT.GetComponent<Rigidbody2D>();
             if (rb != null)
                 rb.velocity = startingVelocity;
@@ -37,7 +40,7 @@ public class WaterManager : MonoBehaviour {
 
     public void DespawnDrop(Transform drop)
     {
-        shaderController.metaballs.Remove(drop);
+        shaderController.balls.Remove(drop);
         drop.gameObject.SetActive(false);
         drop.parent = sleepingPool;
     }    

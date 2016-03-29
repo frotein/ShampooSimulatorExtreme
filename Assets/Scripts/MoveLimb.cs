@@ -18,8 +18,6 @@ public class MoveLimb : MonoBehaviour {
 
     public Transform maxLegs; // a transform designationg how high you can lift the legs up
 
-    public Collider2D chestCollider;
-
     public Collider2D movableArea;
     public float middleFix = 0.45f;
     public bool arms;
