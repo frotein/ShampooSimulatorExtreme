@@ -32,6 +32,7 @@ public class WaterDrop : MonoBehaviour {
                 dripping = false;
                 rb = gameObject.AddComponent<Rigidbody2D>();
                 rb.velocity = new Vector3(0, dripSpeed * Time.deltaTime, 0);
+                rb.useAutoMass = true;
                 transform.parent = manager.activePool;
             }
         }
