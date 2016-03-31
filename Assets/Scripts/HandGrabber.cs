@@ -35,13 +35,19 @@ public class HandGrabber : MonoBehaviour {
                 if (handCollider.IsTouching(grabbable.GetComponent<Collider2D>())) 
                 {
                     // grab it
-                    grabbed = true;
-                    grabbedGO = grabbable;
-                    grabbedGO.GetComponent<Collider2D>().enabled = false;
-                    
-                    if (IsClosestAngle(grabbedGO.transform))
-                        plusAngle = 0;
-                    else plusAngle = 180;
+                    Grabbed(grabbable);
+                    break;
+                }                
+            }
+
+            // secondary check for grabbing
+            Collider2D[] cols = Physics2D.OverlapCircleAll(transform.position.XY() + handCollider.offset, 0.05f);
+            foreach (Collider2D col in cols)
+            {
+                if (col.tag == "Grabbable")
+                {
+                    Grabbed(col.gameObject);
+                    break;
                 }
             }
         }
@@ -62,19 +68,18 @@ public class HandGrabber : MonoBehaviour {
 
             if(hand.closedThisFrame())
             {
-                grabbed = false;
-                //
-               // grabbedGO.GetComponent<Collider2D>().enabled = true;
+                if (grabbedGO.name == "SoapBar") // if youare holding soap, fling it from your hand
+                {
+                    Vector2 SlipDirAndPower = grabbedGO.transform.right * 10;
+                    // randomly sets power and direction of flinging soap
+                    SlipDirAndPower *= Random.Range(0.5f, 1.5f);
+                    if (Random.value > 0.5f)
+                        SlipDirAndPower *= -1;
 
-                
-                Vector2 SlipDirAndPower = grabbedGO.transform.right * 10;
-                // randomly sets power and direction of flinging soap
-                SlipDirAndPower *= Random.Range(0.5f, 1.5f);
-                if (Random.value > 0.5f)
-                    SlipDirAndPower *= -1;
-
-                grabbedGO.GetComponent<Rigidbody2D>().velocity = SlipDirAndPower ;
-                wait = 0;
+                    grabbedGO.GetComponent<Rigidbody2D>().velocity = SlipDirAndPower;
+                    wait = 0;
+                    grabbed = false;
+                }
             }
         }
 
@@ -84,7 +89,6 @@ public class HandGrabber : MonoBehaviour {
             if (wait >= waitToBringBackCollider)
             {
                 grabbedGO.GetComponent<Collider2D>().enabled = true;
-                grabbedGO = null;Debug.Log("Turned on Collider");
             }
         }
 
@@ -94,11 +98,22 @@ public class HandGrabber : MonoBehaviour {
             hand.GetComponent<Collider2D>().enabled = false;
     }
 
-    // determions if the grab objects is the closest angle or 180 + is
+    // determines if the grab objects is the closest angle or 180 + is
     bool IsClosestAngle(Transform grabbedObject)
     {
-        //Debug.Log((Mathf.Abs(grabbedObject.eulerAngles.z - transform.eulerAngles.z)));
-        return (Mathf.Abs( grabbedObject.eulerAngles.z - transform.eulerAngles.z) < 90);
+        float ang = Mathf.Abs(grabbedObject.eulerAngles.z - transform.eulerAngles.z);
+        return (ang < 90 || ang > 270);
+    }
+
+    // grab the given object
+    void Grabbed(GameObject grabbable)
+    {
+        grabbed = true;
+        grabbedGO = grabbable;
+        grabbedGO.GetComponent<Collider2D>().enabled = false;
+        if (IsClosestAngle(grabbedGO.transform))
+            plusAngle = 0;
+        else plusAngle = 180;
     }
     
 }

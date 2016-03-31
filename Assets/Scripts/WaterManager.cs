@@ -6,8 +6,8 @@ public class WaterManager : MonoBehaviour {
     public Metaball2DTextureShader shaderController;
     public Transform activePool;
     public Transform sleepingPool;
-    public Vector2 startingVelocity;  
-  
+    public Vector2 startingVelocity;
+    public float despawnTime;
     // Use this for initialization
 	void Start ()
     {
@@ -32,6 +32,7 @@ public class WaterManager : MonoBehaviour {
             shaderController.balls.Add(dropT);
             dropT.GetComponent<WaterDrop>().index = shaderController.balls.Count - 1;
             dropT.GetComponent<WaterDrop>().manager = this;
+            dropT.GetComponent<WaterDrop>().despawnTime = despawnTime;
             Rigidbody2D rb = dropT.GetComponent<Rigidbody2D>();
             if (rb != null)
                 rb.velocity = startingVelocity;
@@ -41,6 +42,7 @@ public class WaterManager : MonoBehaviour {
     public void DespawnDrop(Transform drop)
     {
         shaderController.balls.Remove(drop);
+        drop.gameObject.layer = LayerMask.NameToLayer("Water");
         drop.gameObject.SetActive(false);
         drop.parent = sleepingPool;
     }    

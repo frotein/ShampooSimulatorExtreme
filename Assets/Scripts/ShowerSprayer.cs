@@ -20,21 +20,27 @@ public class ShowerSprayer : MonoBehaviour {
         timeElapsed += Time.deltaTime;
         if(timeElapsed >= spawnWait)
         {
-            Vector2 vec = RandomVelocity();
+            float rt = Random.Range(0.0f, 1f);
+              
+            Vector2 vec = RandomVelocity(rt);
             manager.startingVelocity = vec;
             manager.SpawnDrop(spawnPosition.position.XY());
 
-            manager.startingVelocity = new Vector2(-vec.x, vec.y);
+            rt = Random.Range(0f, 1f);
+            manager.startingVelocity = RandomVelocity(rt);
             manager.SpawnDrop(spawnPosition.position.XY());
+
+            //manager.startingVelocity = RandomVelocity(0.5f);
+            //manager.SpawnDrop(spawnPosition.position.XY());
 
             timeElapsed = 0;
         }
     }
 
-    Vector2 RandomVelocity()
+    Vector2 RandomVelocity(float t)
     {
-        float rt = Random.Range(0f, 1f);
-        Vector2 pos = (left.position.XY() - right.position.XY()) * rt + right.position.XY();
+        
+        Vector2 pos = (left.position.XY() - right.position.XY()) * t + right.position.XY();
         Vector2 dir = (pos - spawnPosition.position.XY()).normalized;
         return dir;
     }

@@ -8,7 +8,7 @@ public class PlayerConstants : MonoBehaviour {
     public float grabAmount;
     public float closeAmount;
     public bool onGround;
-    public LayerMask obstacleLayer;
+    public LayerMask obstacleLayer, grabbableLayer;
     public LayerMask playerLayer;
     public GameObject[] grabbableObjects;
     // Use this for initialization

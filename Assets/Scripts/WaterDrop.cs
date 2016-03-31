@@ -23,34 +23,48 @@ public class WaterDrop : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
     {
-        if (dripping)
+        if(dripping)
         {
-            transform.position -= new Vector3(0, dripSpeed * Time.deltaTime, 0);
-            Collider2D col =Physics2D.OverlapCircle(transform.position.XY(), radius, player);
+            Collider2D col = Physics2D.OverlapCircle(transform.position.XY(), radius, player);
             if (col == null)
             {
                 dripping = false;
-                rb = gameObject.AddComponent<Rigidbody2D>();
-                rb.velocity = new Vector3(0, dripSpeed * Time.deltaTime, 0);
-                rb.useAutoMass = true;
                 transform.parent = manager.activePool;
             }
         }
+        else
+        {
+            Collider2D[] cols = Physics2D.OverlapCircleAll(transform.position.XY(), radius,player);
+            foreach (Collider2D col in cols)
+            {
+                dripping = true;
+                transform.parent = col.transform;
+                rb.velocity = new Vector2(0, 0);
+            }   
+        }
+
+        if (despawnTime <= 0)
+            manager.DespawnDrop(transform);
 
 	}
 
+    void FixedUpdate()
+    {
+        despawnTime -= Time.deltaTime;
+        if (dripping)
+        {
+            rb.MovePosition(transform.position.XY() + new Vector2(0, -dripSpeed));           
+        }
+    }
+
     void OnCollisionEnter2D(Collision2D col)
     {
-        if(col.transform.tag == "Player")
-        {
-            Destroy(rb);
-            dripping = true;
-            transform.parent = col.transform;
-        }
-
+      
         if(col.transform.tag == "Ground" || col.gameObject.layer == LayerMask.NameToLayer("Water Ignore Player"))
         {
-            gameObject.layer = LayerMask.NameToLayer("Water Ignore Player");
+            if(gameObject.layer != LayerMask.NameToLayer("Water Ignore All"))
+            gameObject.layer = LayerMask.NameToLayer("Water Ignore Player");         
         }
+        
     }
 }

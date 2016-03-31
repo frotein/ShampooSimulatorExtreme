@@ -6,7 +6,7 @@
         // so make them not be displayed in material inspector
          _MainTex("Color (RGB) Alpha (A)", 2D) = "white" {}
 		_WaterColor("Water Color", Color) = (1,1,1,1)
-		_Radius("Ball Radius", Float) = 1
+		_Radius("Ball Radius", Float) = 1 
 		
     }
 

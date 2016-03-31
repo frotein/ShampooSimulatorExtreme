@@ -55,7 +55,7 @@ public class MoveLimb : MonoBehaviour {
         bool pushingAgainst = false;
 
         // if we are pushing against the ground, signal that we are
-        if (Physics2D.Linecast(leftPt.position.XY() + movement * 5f, rightPt.position.XY() + movement * 5f, Constants.player.obstacleLayer))
+        if (Physics2D.Linecast(leftPt.position.XY() + movement * 5f, rightPt.position.XY() + movement * 5f, Constants.player.obstacleLayer | Constants.player.grabbableLayer))
         { pushingAgainst = true; }
 
         // if we are pushing against, store up movement, like preparing to push off of ground
@@ -70,7 +70,7 @@ public class MoveLimb : MonoBehaviour {
                // if(arms)
                //     rb.AddForceAtPosition(-storedMovement * 500, transform.position);
                // else
-                    rb.AddForceAtPosition(-storedMovement * 500, transform.position);
+                    rb.AddForceAtPosition(-storedMovement * 600, transform.position);
                 storedMovement = Vector2.zero;
             }
         }
@@ -99,13 +99,7 @@ public class MoveLimb : MonoBehaviour {
 	}
 
     void LateUpdate()
-    {
-        // check if we clipped through anything
-        if(Physics2D.Linecast(transform.position.XY(), prevPosition, Constants.player.obstacleLayer))
-        {
-        //    Debug.Log("went through");
-          //  transform.position = prevPosition.XYZ(transform.position.z);
-        }
+    {        
         storedKneePosition = knee.position.XY();
         prevPosition = transform.position.XY();
     }
@@ -114,7 +108,7 @@ public class MoveLimb : MonoBehaviour {
     {
         Vector2 newPt = Calculate3rdPoint(length, thigh.position.XY(), transform.position.XY(), knee.position.XY());
      
-        knee.position = newPt.XYZ(0);
+        knee.position = newPt.XYZ(knee.position.z);
         SetToMiddleAndAngled(upperLeg, thigh.position.XY(), knee.position.XY());
         SetToMiddleAndAngled(lowerLeg, knee.position.XY(), transform.position.XY(), middleFix);
                
