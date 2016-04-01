@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public class Metaball2DTextureShader : MonoBehaviour {
 
     public float radius;
+    public Color waterColor;
     public Vector2[] positionsArray;
     public List<Transform> balls;
     public int poolSize;
@@ -20,7 +21,9 @@ public class Metaball2DTextureShader : MonoBehaviour {
     {
         positionsArray = new Vector2[poolSize];
         mat = transform.GetComponent<MeshRenderer>().material;
+        mat.SetColor("_WaterColor", waterColor);
         buffer = new ComputeBuffer(positionsArray.Length, sizeof(float) * 2, ComputeBufferType.Default);
+        if(balls == null)
         balls = new List<Transform>();     
     }
 	void SetArrayData()

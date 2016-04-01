@@ -1,0 +1,1069 @@
+fileFormatVersion: 2
+guid: 663574ce73826ed43aac4e4a3c9bc77f
+timeCreated: 1459476788
+licenseType: Free
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: eyes1_0
+    21300002: eyes1_1
+    21300004: eyes1_2
+    21300006: eyes1_3
+    21300008: eyes1_4
+    21300010: eyes1_5
+    21300012: eyes1_6
+    21300014: eyes1_7
+    21300016: eyes1_8
+    21300018: eyes1_9
+    21300020: eyes1_10
+    21300022: eyes1_11
+    21300024: eyes1_12
+    21300026: eyes1_13
+    21300028: eyes1_14
+    21300030: eyes1_15
+    21300032: eyes1_16
+    21300034: eyes1_17
+    21300036: eyes1_18
+    21300038: eyes1_19
+    21300040: eyes1_20
+    21300042: eyes1_21
+    21300044: eyes1_22
+    21300046: eyes1_23
+    21300048: eyes1_24
+    21300050: eyes1_25
+    21300052: eyes1_26
+    21300054: eyes1_27
+    21300056: eyes1_28
+    21300058: eyes1_29
+    21300060: eyes1_30
+    21300062: eyes1_31
+    21300064: eyes1_32
+    21300066: eyes1_33
+    21300068: eyes1_34
+    21300070: eyes1_35
+    21300072: eyes1_36
+    21300074: eyes1_37
+    21300076: eyes1_38
+    21300078: eyes1_39
+    21300080: eyes1_40
+    21300082: eyes1_41
+    21300084: eyes1_42
+    21300086: eyes1_43
+    21300088: eyes1_44
+    21300090: eyes1_45
+    21300092: eyes1_46
+    21300094: eyes1_47
+    21300096: eyes1_48
+    21300098: eyes1_49
+    21300100: eyes1_50
+    21300102: eyes1_51
+    21300104: eyes1_52
+    21300106: eyes1_53
+    21300108: eyes1_54
+    21300110: eyes1_55
+    21300112: eyes1_56
+    21300114: eyes1_57
+    21300116: eyes1_58
+    21300118: eyes1_59
+    21300120: eyes1_60
+    21300122: eyes1_61
+    21300124: eyes1_62
+    21300126: eyes1_63
+    21300128: eyes1_64
+    21300130: eyes1_65
+    21300132: eyes1_66
+    21300134: eyes1_67
+    21300136: eyes1_68
+    21300138: eyes1_69
+    21300140: eyes1_70
+    21300142: eyes1_71
+    21300144: eyes1_72
+    21300146: eyes1_73
+    21300148: eyes1_74
+    21300150: eyes1_75
+    21300152: eyes1_76
+    21300154: eyes1_77
+    21300156: eyes1_78
+    21300158: eyes1_79
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  cubemapConvolution: 0
+  cubemapConvolutionSteps: 7
+  cubemapConvolutionExponent: 1.5
+  seamlessCubemap: 0
+  textureFormat: -1
+  maxTextureSize: 2048
+  textureSettings:
+    filterMode: -1
+    aniso: 16
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  rGBM: 0
+  compressionQuality: 50
+  allowsAlphaSplitting: 0
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 100
+  alphaIsTransparency: 1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    sprites:
+    - name: eyes1_0
+      rect:
+        serializedVersion: 2
+        x: 23
+        y: 319
+        width: 30
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_1
+      rect:
+        serializedVersion: 2
+        x: 91
+        y: 319
+        width: 27
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_2
+      rect:
+        serializedVersion: 2
+        x: 154
+        y: 318
+        width: 33
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_3
+      rect:
+        serializedVersion: 2
+        x: 212
+        y: 318
+        width: 33
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_4
+      rect:
+        serializedVersion: 2
+        x: 277
+        y: 316
+        width: 34
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_5
+      rect:
+        serializedVersion: 2
+        x: 336
+        y: 316
+        width: 35
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_6
+      rect:
+        serializedVersion: 2
+        x: 412
+        y: 315
+        width: 33
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_7
+      rect:
+        serializedVersion: 2
+        x: 468
+        y: 315
+        width: 33
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_8
+      rect:
+        serializedVersion: 2
+        x: 547
+        y: 315
+        width: 28
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_9
+      rect:
+        serializedVersion: 2
+        x: 600
+        y: 315
+        width: 28
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_10
+      rect:
+        serializedVersion: 2
+        x: 24
+        y: 275
+        width: 33
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_11
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 275
+        width: 33
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_12
+      rect:
+        serializedVersion: 2
+        x: 157
+        y: 275
+        width: 33
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_13
+      rect:
+        serializedVersion: 2
+        x: 213
+        y: 275
+        width: 33
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_14
+      rect:
+        serializedVersion: 2
+        x: 281
+        y: 269
+        width: 87
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_15
+      rect:
+        serializedVersion: 2
+        x: 411
+        y: 237
+        width: 89
+        height: 56
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -43.5, y: -26}
+        - {x: -38.5, y: -28}
+        - {x: -16.5, y: -28}
+        - {x: -13.5, y: -25}
+        - {x: -13.5, y: -23}
+        - {x: -14.5, y: -21}
+        - {x: -43.5, y: -21}
+      - - {x: 10.5, y: -21}
+        - {x: 8.5, y: -22}
+        - {x: 8.5, y: -24}
+        - {x: 11.5, y: -28}
+        - {x: 32.5, y: -28}
+        - {x: 41.5, y: -25}
+        - {x: 41.5, y: -22}
+        - {x: 40.5, y: -21}
+      - - {x: 44.5, y: 5}
+        - {x: 44.5, y: 28}
+        - {x: -44.5, y: 28}
+        - {x: -44.5, y: 8}
+        - {x: -37.5, y: 3}
+        - {x: -16.5, y: 3}
+        - {x: -11.5, y: 5}
+        - {x: -4.5, y: 3}
+        - {x: 36.5, y: 3}
+    - name: eyes1_16
+      rect:
+        serializedVersion: 2
+        x: 530
+        y: 274
+        width: 38
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_17
+      rect:
+        serializedVersion: 2
+        x: 592
+        y: 274
+        width: 39
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_18
+      rect:
+        serializedVersion: 2
+        x: 28
+        y: 238
+        width: 36
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_19
+      rect:
+        serializedVersion: 2
+        x: 82
+        y: 238
+        width: 30
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_20
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 234
+        width: 36
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_21
+      rect:
+        serializedVersion: 2
+        x: 213
+        y: 234
+        width: 34
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_22
+      rect:
+        serializedVersion: 2
+        x: 284
+        y: 238
+        width: 28
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_23
+      rect:
+        serializedVersion: 2
+        x: 336
+        y: 237
+        width: 29
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_24
+      rect:
+        serializedVersion: 2
+        x: 553
+        y: 239
+        width: 24
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_25
+      rect:
+        serializedVersion: 2
+        x: 600
+        y: 239
+        width: 25
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_26
+      rect:
+        serializedVersion: 2
+        x: 565
+        y: 232
+        width: 8
+        height: 4
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_27
+      rect:
+        serializedVersion: 2
+        x: 602
+        y: 232
+        width: 11
+        height: 5
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_28
+      rect:
+        serializedVersion: 2
+        x: 27
+        y: 204
+        width: 32
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_29
+      rect:
+        serializedVersion: 2
+        x: 83
+        y: 202
+        width: 31
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_30
+      rect:
+        serializedVersion: 2
+        x: 287
+        y: 194
+        width: 28
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_31
+      rect:
+        serializedVersion: 2
+        x: 341
+        y: 194
+        width: 28
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_32
+      rect:
+        serializedVersion: 2
+        x: 544
+        y: 195
+        width: 28
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_33
+      rect:
+        serializedVersion: 2
+        x: 598
+        y: 195
+        width: 28
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_34
+      rect:
+        serializedVersion: 2
+        x: 29
+        y: 193
+        width: 32
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_35
+      rect:
+        serializedVersion: 2
+        x: 82
+        y: 193
+        width: 32
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_36
+      rect:
+        serializedVersion: 2
+        x: 158
+        y: 192
+        width: 28
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_37
+      rect:
+        serializedVersion: 2
+        x: 211
+        y: 192
+        width: 28
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_38
+      rect:
+        serializedVersion: 2
+        x: 417
+        y: 192
+        width: 28
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_39
+      rect:
+        serializedVersion: 2
+        x: 470
+        y: 192
+        width: 28
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_40
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 152
+        width: 28
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_41
+      rect:
+        serializedVersion: 2
+        x: 93
+        y: 152
+        width: 28
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_42
+      rect:
+        serializedVersion: 2
+        x: 151
+        y: 151
+        width: 22
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_43
+      rect:
+        serializedVersion: 2
+        x: 227
+        y: 151
+        width: 19
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_44
+      rect:
+        serializedVersion: 2
+        x: 282
+        y: 153
+        width: 33
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_45
+      rect:
+        serializedVersion: 2
+        x: 340
+        y: 153
+        width: 33
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_46
+      rect:
+        serializedVersion: 2
+        x: 405
+        y: 151
+        width: 34
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_47
+      rect:
+        serializedVersion: 2
+        x: 414
+        y: 111
+        width: 84
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -42, y: -19}
+        - {x: -42, y: -24}
+        - {x: -28, y: -26}
+        - {x: -17, y: -26}
+        - {x: -14, y: -23}
+        - {x: -14, y: -21}
+        - {x: -15, y: -19}
+      - - {x: 10, y: -19}
+        - {x: 8, y: -20}
+        - {x: 8, y: -22}
+        - {x: 11, y: -26}
+        - {x: 32, y: -26}
+        - {x: 41, y: -23}
+        - {x: 41, y: -20}
+        - {x: 40, y: -19}
+      - - {x: -42, y: 26}
+        - {x: -42, y: 16}
+        - {x: -33, y: 12}
+        - {x: -19, y: 12}
+        - {x: -15, y: 14}
+        - {x: -15, y: 20}
+        - {x: -24, y: 26}
+      - - {x: 6, y: 12}
+        - {x: 38, y: 12}
+        - {x: 42, y: 15}
+        - {x: 42, y: 26}
+        - {x: 15, y: 26}
+        - {x: 6, y: 23}
+    - name: eyes1_48
+      rect:
+        serializedVersion: 2
+        x: 540
+        y: 151
+        width: 33
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_49
+      rect:
+        serializedVersion: 2
+        x: 596
+        y: 151
+        width: 33
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_50
+      rect:
+        serializedVersion: 2
+        x: 28
+        y: 112
+        width: 36
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_51
+      rect:
+        serializedVersion: 2
+        x: 82
+        y: 112
+        width: 30
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_52
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 108
+        width: 36
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_53
+      rect:
+        serializedVersion: 2
+        x: 213
+        y: 108
+        width: 34
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_54
+      rect:
+        serializedVersion: 2
+        x: 284
+        y: 112
+        width: 28
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_55
+      rect:
+        serializedVersion: 2
+        x: 336
+        y: 111
+        width: 29
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_56
+      rect:
+        serializedVersion: 2
+        x: 553
+        y: 113
+        width: 24
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_57
+      rect:
+        serializedVersion: 2
+        x: 600
+        y: 113
+        width: 25
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_58
+      rect:
+        serializedVersion: 2
+        x: 565
+        y: 106
+        width: 8
+        height: 4
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_59
+      rect:
+        serializedVersion: 2
+        x: 602
+        y: 106
+        width: 11
+        height: 5
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_60
+      rect:
+        serializedVersion: 2
+        x: 27
+        y: 78
+        width: 32
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_61
+      rect:
+        serializedVersion: 2
+        x: 83
+        y: 76
+        width: 31
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_62
+      rect:
+        serializedVersion: 2
+        x: 287
+        y: 72
+        width: 28
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_63
+      rect:
+        serializedVersion: 2
+        x: 341
+        y: 72
+        width: 28
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_64
+      rect:
+        serializedVersion: 2
+        x: 544
+        y: 71
+        width: 27
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_65
+      rect:
+        serializedVersion: 2
+        x: 598
+        y: 72
+        width: 28
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_66
+      rect:
+        serializedVersion: 2
+        x: 29
+        y: 70
+        width: 32
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_67
+      rect:
+        serializedVersion: 2
+        x: 82
+        y: 71
+        width: 32
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_68
+      rect:
+        serializedVersion: 2
+        x: 158
+        y: 70
+        width: 28
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_69
+      rect:
+        serializedVersion: 2
+        x: 211
+        y: 70
+        width: 28
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_70
+      rect:
+        serializedVersion: 2
+        x: 417
+        y: 69
+        width: 28
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_71
+      rect:
+        serializedVersion: 2
+        x: 470
+        y: 69
+        width: 28
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_72
+      rect:
+        serializedVersion: 2
+        x: 30
+        y: 23
+        width: 32
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_73
+      rect:
+        serializedVersion: 2
+        x: 83
+        y: 24
+        width: 32
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_74
+      rect:
+        serializedVersion: 2
+        x: 157
+        y: 25
+        width: 33
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_75
+      rect:
+        serializedVersion: 2
+        x: 213
+        y: 25
+        width: 33
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_76
+      rect:
+        serializedVersion: 2
+        x: 281
+        y: 21
+        width: 34
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_77
+      rect:
+        serializedVersion: 2
+        x: 333
+        y: 20
+        width: 35
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_78
+      rect:
+        serializedVersion: 2
+        x: 405
+        y: 24
+        width: 37
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: eyes1_79
+      rect:
+        serializedVersion: 2
+        x: 467
+        y: 24
+        width: 39
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    outline: []
+  spritePackingTag: 
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

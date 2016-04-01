@@ -12,24 +12,28 @@ public class WaterDrop : MonoBehaviour {
     Rigidbody2D rb;
     bool dripping;
     float radius;
+    int inWallCheck;
     // Use this for initialization
 	void Start ()
     {
         rb = transform.GetComponent<Rigidbody2D>();
         dripping = false;
         radius = transform.GetComponent<CircleCollider2D>().radius;
+        inWallCheck = 0;
     }
 	
 	// Update is called once per frame
 	void Update ()
     {
-        if(dripping)
+        despawnTime -= Time.deltaTime;
+        if (dripping)
         {
             Collider2D col = Physics2D.OverlapCircle(transform.position.XY(), radius, player);
             if (col == null)
             {
                 dripping = false;
                 transform.parent = manager.activePool;
+                transform.localScale = new Vector3(1, 1, 1);
             }
         }
         else
@@ -50,11 +54,25 @@ public class WaterDrop : MonoBehaviour {
 
     void FixedUpdate()
     {
-        despawnTime -= Time.deltaTime;
+        
         if (dripping)
         {
-            rb.MovePosition(transform.position.XY() + new Vector2(0, -dripSpeed));           
+            Vector2 newPosition = transform.position.XY() + new Vector2(0, -dripSpeed);
+            RaycastHit2D hit = Physics2D.Linecast(transform.position.XY(), newPosition, Constants.player.obstacleLayer);
+            if(hit.normal != Vector2.zero)
+            {
+                newPosition = transform.position.XY() + Vector3.Project(new Vector2(0, -dripSpeed), hit.normal).XY();
+            }
+            rb.MovePosition(newPosition);           
         }
+
+        if (Physics2D.OverlapPoint(transform.position.XY(), Constants.player.obstacleLayer))
+            inWallCheck++;
+        else
+            inWallCheck = 0;
+
+        if(inWallCheck > 50)
+            manager.DespawnDrop(transform);
     }
 
     void OnCollisionEnter2D(Collision2D col)

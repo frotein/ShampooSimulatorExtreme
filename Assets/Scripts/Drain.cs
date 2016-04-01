@@ -3,7 +3,6 @@ using System.Collections;
 
 public class Drain : MonoBehaviour {
 
-    public WaterManager manager;
     // Use this for initialization
 	void Start ()
     {
@@ -19,6 +18,6 @@ public class Drain : MonoBehaviour {
     void OnTriggerEnter2D(Collider2D col)
     {
         if (col.tag == "Water")
-            manager.DespawnDrop(col.transform);
+            col.GetComponent<WaterDrop>().manager.DespawnDrop(col.transform);
     }
 }

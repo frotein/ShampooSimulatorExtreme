@@ -7,6 +7,7 @@ public class PlayerConstants : MonoBehaviour {
     public float limbSpeed;
     public float grabAmount;
     public float closeAmount;
+    public float squeezeAmount;
     public bool onGround;
     public LayerMask obstacleLayer, grabbableLayer;
     public LayerMask playerLayer;

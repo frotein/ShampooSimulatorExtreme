@@ -5,11 +5,11 @@ public class HandGrabber : MonoBehaviour {
 
     public HandCloser hand;
     public Transform grabPosition;
-
+    public bool left;
     float waitToBringBackCollider = 0.01f;
     bool grabbed;
     float wait;
-    GameObject grabbedGO;
+    public GameObject grabbedGO;
     Collider2D handCollider;
     float plusAngle;
     
@@ -29,26 +29,49 @@ public class HandGrabber : MonoBehaviour {
         // if you are grabbing this frame
         if(hand.grabbedThisFrame())
         {
+            float distFromGrab = 999;
+            GameObject tempGrabbedGO = null;
             foreach (GameObject grabbable in Constants.player.grabbableObjects)
             {
                 // and if you are touching a grabbable object 
                 if (handCollider.IsTouching(grabbable.GetComponent<Collider2D>())) 
                 {
-                    // grab it
-                    Grabbed(grabbable);
-                    break;
+                    float dist = Vector2.Distance(grabbable.transform.position.XY(), transform.position.XY());
+                    // make sure we are grabbing the closest object
+                    if (dist < distFromGrab)
+                    {
+                        tempGrabbedGO = grabbable;
+                        distFromGrab = dist;
+                    }
+                    
+                   
                 }                
             }
-
-            // secondary check for grabbing
-            Collider2D[] cols = Physics2D.OverlapCircleAll(transform.position.XY() + handCollider.offset, 0.05f);
-            foreach (Collider2D col in cols)
+            // if we have grabbed an object
+            if (tempGrabbedGO != null)
             {
-                if (col.tag == "Grabbable")
+                // grab it
+                Grabbed(tempGrabbedGO);
+            }
+            else // otherwise, do a secondary grab check
+            {
+                // secondary check for grabbing
+                Collider2D[] cols = Physics2D.OverlapCircleAll(transform.position.XY() + handCollider.offset, 0.05f);
+                foreach (Collider2D col in cols)
                 {
-                    Grabbed(col.gameObject);
-                    break;
+                    if (col.tag == "Grabbable")
+                    {
+                        float dist = Vector2.Distance(col.transform.position.XY(), transform.position.XY());
+                        if (dist < distFromGrab) // make sure we are grabbing the closest object
+                        {
+                            tempGrabbedGO = col.gameObject;
+                            distFromGrab = dist;
+                        }
+                    }
                 }
+
+                if(tempGrabbedGO != null)
+                    Grabbed(tempGrabbedGO);
             }
         }
 
@@ -61,13 +84,14 @@ public class HandGrabber : MonoBehaviour {
             if (hand.openedThisFrame())
             {
                 grabbed = false;
+                hand.grabbing = false;
                 grabbedGO.GetComponent<Collider2D>().enabled = true;
                 grabbedGO.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
                 grabbedGO = null;
             }
 
             if(hand.closedThisFrame())
-            {
+            {                
                 if (grabbedGO.name == "SoapBar") // if youare holding soap, fling it from your hand
                 {
                     Vector2 SlipDirAndPower = grabbedGO.transform.right * 10;
@@ -79,6 +103,24 @@ public class HandGrabber : MonoBehaviour {
                     grabbedGO.GetComponent<Rigidbody2D>().velocity = SlipDirAndPower;
                     wait = 0;
                     grabbed = false;
+                    hand.grabbing = false;
+                   
+                }             
+            }
+            if (grabbedGO != null)
+            {
+                float squeezeAmt = 0;
+                if (left)
+                    squeezeAmt = Input.GetAxis("LeftHand");
+                else
+                    squeezeAmt = Input.GetAxis("RightHand");
+
+                if (grabbedGO.name == "shampoo" &&  squeezeAmt > Constants.player.squeezeAmount)
+                {
+                    ShampooBottle bottle = grabbedGO.GetComponent<ShampooBottle>();
+                    
+
+                    bottle.SqueezedBottle(squeezeAmt);
                 }
             }
         }
@@ -89,6 +131,7 @@ public class HandGrabber : MonoBehaviour {
             if (wait >= waitToBringBackCollider)
             {
                 grabbedGO.GetComponent<Collider2D>().enabled = true;
+                grabbedGO = null;
             }
         }
 
@@ -111,6 +154,7 @@ public class HandGrabber : MonoBehaviour {
         grabbed = true;
         grabbedGO = grabbable;
         grabbedGO.GetComponent<Collider2D>().enabled = false;
+        hand.grabbing = true;
         if (IsClosestAngle(grabbedGO.transform))
             plusAngle = 0;
         else plusAngle = 180;

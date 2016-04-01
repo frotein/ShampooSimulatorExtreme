@@ -25,12 +25,12 @@ public class WaterManager : MonoBehaviour {
         if (sleepingPool.childCount > 0)
         {
             Transform dropT = sleepingPool.GetChild(0);
+            dropT.localScale = new Vector3(1, 1, 1);
             dropT.gameObject.SetActive(true);
             dropT.parent = activePool;
             dropT.position = position.XYZ(dropT.position.z);
             dropT.gameObject.layer = LayerMask.NameToLayer("Water");
             shaderController.balls.Add(dropT);
-            dropT.GetComponent<WaterDrop>().index = shaderController.balls.Count - 1;
             dropT.GetComponent<WaterDrop>().manager = this;
             dropT.GetComponent<WaterDrop>().despawnTime = despawnTime;
             Rigidbody2D rb = dropT.GetComponent<Rigidbody2D>();

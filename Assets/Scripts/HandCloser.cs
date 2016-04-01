@@ -13,7 +13,7 @@ public class HandCloser : MonoBehaviour {
     Vector3 openPosition;
     // is this the left hand?
     public bool left;
-
+    public bool grabbing;
     // is true if we switched to grabbing this frame 
     bool grabbingThisFrame;
 
@@ -27,6 +27,7 @@ public class HandCloser : MonoBehaviour {
     int currentSprite;
     int lastSprite;
 
+    bool waitFrame;
     // the sprite Renderer
     SpriteRenderer rend;
 
@@ -35,12 +36,18 @@ public class HandCloser : MonoBehaviour {
     {
         rend = transform.GetComponent<SpriteRenderer>();
         openPosition = transform.localPosition;
+        waitFrame = false;
     }
 	
 	// Update is called once per frame
 	void Update ()
     {
         float grabAmt;
+        if(waitFrame)
+        {
+            SetFrontFingers();
+            waitFrame = false;
+        }
         // switches input based on hand side hand it is
         if (left)
             grabAmt = Input.GetAxis("LeftHand");
@@ -125,8 +132,8 @@ public class HandCloser : MonoBehaviour {
             {
                 rend.sprite = holding;
                 transform.localPosition = grabbingPosition;
-                grabFingers.SetActive(true);
-                closedFingers.SetActive(false);
+
+               
                 grabbingThisFrame = true;
             }
             else
@@ -136,11 +143,32 @@ public class HandCloser : MonoBehaviour {
                     rend.sprite = closed;
                     transform.localPosition = closedPosition;
                     closingThisFrame = true;
-                    grabFingers.SetActive(false);
-                    closedFingers.SetActive(true);
+                   
                 }
             }
                 
         }
+
+        waitFrame = true;
     }
+
+    void SetFrontFingers()
+    {
+        if (currentSprite == 2)
+        {
+            grabFingers.SetActive(false);
+            if (grabbing)
+                closedFingers.SetActive(true);
+        }
+
+        if(currentSprite == 1)
+        {
+            if (grabbing)
+                grabFingers.SetActive(true);
+
+            closedFingers.SetActive(false);
+        }
+    }
+
 }
+
