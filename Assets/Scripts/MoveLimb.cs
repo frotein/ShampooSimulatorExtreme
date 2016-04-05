@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class MoveLimb : MonoBehaviour {
 
@@ -19,6 +20,8 @@ public class MoveLimb : MonoBehaviour {
     public Transform maxLegs; // a transform designationg how high you can lift the legs up
 
     public Collider2D movableArea;
+    public List<Transform> movementLimits;
+    List<bool> startingLimitSides;
     public float middleFix = 0.45f;
     public bool arms;
     bool moving;
@@ -40,7 +43,14 @@ public class MoveLimb : MonoBehaviour {
 		storedLocalPosition = transform.localPosition;
         //Debug.Log(upperLeg.lossyScale.y);
         startsLeft = isLeft(thigh.position.XY(), transform.position.XY(), knee.position.XY());
-
+        if(movementLimits != null)
+        {
+            startingLimitSides = new List<bool>();
+            foreach (Transform t in movementLimits)
+            {
+                startingLimitSides.Add(isLeft(t.position.XY(), t.position.XY() + t.right.XY(), t.position.XY()));
+            }
+        }
         if (!arms) // if these are the legs , set the default bool of what side of the line the legs are on for lift up limit;
             legsStartLeft = isLeft(maxLegs.position.XY(), maxLegs.position.XY() + maxLegs.right.XY(), transform.position.XY());
 
@@ -67,10 +77,7 @@ public class MoveLimb : MonoBehaviour {
         {
             if (storedMovement != Vector2.zero) // if we are no longer pushing, release the power, causing something like a natural jump
             {
-               // if(arms)
-               //     rb.AddForceAtPosition(-storedMovement * 500, transform.position);
-               // else
-                    rb.AddForceAtPosition(-storedMovement * 600, transform.position);
+                rb.AddForceAtPosition(-storedMovement * 600, transform.position);
                 storedMovement = Vector2.zero;
             }
         }
@@ -90,7 +97,7 @@ public class MoveLimb : MonoBehaviour {
                 movement = Vector3.Project(movement.XYZ(0), maxLegs.right.XY().XYZ(0)).XY();
             }
         }
-
+        movement = LimitMovement(movement);
         // move the linbs from the movement vector
         moveLimb();
 
@@ -114,6 +121,7 @@ public class MoveLimb : MonoBehaviour {
                
         transform.up = lowerLeg.up;
     }
+
     void SetMovementVector()
     {
         float dTime = Constants.player.limbSpeed * Time.deltaTime;
@@ -218,6 +226,21 @@ public class MoveLimb : MonoBehaviour {
 		piece.up = dir;
 	}
 
-	
+	Vector2 LimitMovement(Vector2 move)
+    {
+        int i = 0;
+        foreach (Transform movementLimit in movementLimits)
+        {
+            bool left = isLeft(movementLimit.position.XY(), movementLimit.position.XY() + movementLimit.right.XY(), transform.position.XY() + move);
+            if (left != startingLimitSides[i])
+            {
+                move = Vector3.Project(movement.XYZ(0), movementLimit.right).XY();
+                Debug.Log(move);
+            }
+            i++;
+        }
+        
+        return move;
+    }
 
 }

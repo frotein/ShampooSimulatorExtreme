@@ -4,7 +4,7 @@ using System.Collections;
 public class HandGrabber : MonoBehaviour {
 
     public HandCloser hand;
-    public Transform grabPosition;
+    public Transform grabPosition; // the position and rotation you set the grabbed object to
     public bool left;
     float waitToBringBackCollider = 0.01f;
     bool grabbed;

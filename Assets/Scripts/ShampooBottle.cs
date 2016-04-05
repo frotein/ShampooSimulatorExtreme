@@ -24,7 +24,7 @@ public class ShampooBottle : MonoBehaviour {
         if (spawnT >= spawnDelay)
         {
             Vector2 velocity = spawnPosition.right * squeezeAmt * squeezeAmt * 7f;
-            Debug.Log(velocity);
+            //Debug.Log(velocity);
             manager.startingVelocity = velocity;
             manager.SpawnDrop(spawnPosition.position.XY());
             spawnT = 0;

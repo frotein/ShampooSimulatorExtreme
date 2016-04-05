@@ -34,6 +34,7 @@ public class WaterDrop : MonoBehaviour {
                 dripping = false;
                 transform.parent = manager.activePool;
                 transform.localScale = new Vector3(1, 1, 1);
+                rb.simulated = true;
             }
         }
         else
@@ -44,6 +45,7 @@ public class WaterDrop : MonoBehaviour {
                 dripping = true;
                 transform.parent = col.transform;
                 rb.velocity = new Vector2(0, 0);
+                rb.simulated = false;
             }   
         }
 
@@ -63,7 +65,7 @@ public class WaterDrop : MonoBehaviour {
             {
                 newPosition = transform.position.XY() + Vector3.Project(new Vector2(0, -dripSpeed), hit.normal).XY();
             }
-            rb.MovePosition(newPosition);           
+            transform.position = newPosition;           
         }
 
         if (Physics2D.OverlapPoint(transform.position.XY(), Constants.player.obstacleLayer))
