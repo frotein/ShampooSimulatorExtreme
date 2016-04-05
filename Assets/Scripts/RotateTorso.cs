@@ -6,6 +6,7 @@ public class RotateTorso : MonoBehaviour {
     // Use this for initialization
     public Transform leftThigh, rightThigh;
     public Collider2D chestCol;
+    public MoveLimb left, right;
     public float leanRate;
     float lastZ;
     void Start ()
