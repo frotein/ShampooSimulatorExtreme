@@ -40,7 +40,7 @@ public class MoveLimb : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
 	{
-		storedLocalPosition = transform.localPosition;
+        storedLocalPosition = transform.localPosition;
         //Debug.Log(upperLeg.lossyScale.y);
         startsLeft = isLeft(thigh.position.XY(), transform.position.XY(), knee.position.XY());
         if(movementLimits != null)
@@ -77,7 +77,7 @@ public class MoveLimb : MonoBehaviour {
         {
             if (storedMovement != Vector2.zero) // if we are no longer pushing, release the power, causing something like a natural jump
             {
-                rb.AddForceAtPosition(-storedMovement * 600, transform.position);
+                rb.AddForceAtPosition(-storedMovement * 700, transform.position);
                 storedMovement = Vector2.zero;
             }
         }
@@ -104,7 +104,18 @@ public class MoveLimb : MonoBehaviour {
         // move the limb segments so it look correct
         SetSegments();           
 	}
-
+    public Transform GetWrongSideLimit()
+    {
+        int i = 0;
+        foreach (Transform limit in movementLimits)
+        {
+            if (isLeft(limit.position.XY(), limit.position.XY() + limit.right.XY(), transform.position.XY())
+                != startingLimitSides[i])
+                return limit;
+            i++;
+        }
+        return null;
+    }
     void LateUpdate()
     {        
         storedKneePosition = knee.position.XY();
@@ -235,7 +246,6 @@ public class MoveLimb : MonoBehaviour {
             if (left != startingLimitSides[i])
             {
                 move = Vector3.Project(movement.XYZ(0), movementLimit.right).XY();
-                Debug.Log(move);
             }
             i++;
         }

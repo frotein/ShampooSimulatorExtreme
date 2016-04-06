@@ -6,7 +6,7 @@ public class ShampooBottle : MonoBehaviour {
     public WaterManager manager;
     public Transform spawnPosition;
     public float spawnDelay;
-    float spawnT;
+    public float spawnT;
     // Use this for initialization
 	void Start ()
     {
@@ -16,18 +16,18 @@ public class ShampooBottle : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
     {
-        spawnT += Time.deltaTime;
+        spawnT -= Time.deltaTime;
 	}
 
     public void SqueezedBottle(float squeezeAmt)
     {
-        if (spawnT >= spawnDelay)
+        if (spawnT <= 0)
         {
             Vector2 velocity = spawnPosition.right * squeezeAmt * squeezeAmt * 7f;
             //Debug.Log(velocity);
             manager.startingVelocity = velocity;
             manager.SpawnDrop(spawnPosition.position.XY());
-            spawnT = 0;
+            spawnT = spawnDelay / (2 * squeezeAmt);
         }
     }
 }
