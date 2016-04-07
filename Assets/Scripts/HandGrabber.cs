@@ -66,6 +66,7 @@ public class HandGrabber : MonoBehaviour {
                         {
                             tempGrabbedGO = col.gameObject;
                             distFromGrab = dist;
+                            
                         }
                     }
                 }
@@ -86,6 +87,7 @@ public class HandGrabber : MonoBehaviour {
                 grabbed = false;
                 hand.grabbing = false;
                 grabbedGO.GetComponent<Collider2D>().enabled = true;
+                grabbedGO.GetComponent<Rigidbody2D>().isKinematic = false;
                 grabbedGO.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
                 grabbedGO = null;
             }
@@ -153,6 +155,13 @@ public class HandGrabber : MonoBehaviour {
     {
         grabbed = true;
         grabbedGO = grabbable;
+        if(grabbedGO.transform.parent != null)
+        {
+            if(grabbedGO.transform.parent.name == "Towel")
+            {
+                grabbedGO.GetComponent<Rigidbody2D>().isKinematic = true;
+            }
+        }
         grabbedGO.GetComponent<Collider2D>().enabled = false;
         hand.grabbing = true;
         if (IsClosestAngle(grabbedGO.transform))
