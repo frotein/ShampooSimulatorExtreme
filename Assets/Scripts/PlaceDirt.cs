@@ -7,7 +7,7 @@ public class PlaceDirt : MonoBehaviour
 
     public int dirtOnChest = 15;
     public int averageDirtPerLimb = 4;
-    public GameObject dirt;
+    public List<GameObject> dirts;
     public Transform chest;
     public List<Transform> limbs;
     List<Transform> dirtPiles;
@@ -35,10 +35,12 @@ public class PlaceDirt : MonoBehaviour
         Vector2 min = rend.bounds.min.XY();
         Vector2 max = rend.bounds.max.XY();
         int i = 0;
-       
+        
+        
         GameObject newPile = null;
         while (i < piles)
         {
+            GameObject dirt = dirts[Random.Range(0, dirts.Count)];
             float x = Random.Range(0.075f, 0.925f);
             float y = Random.Range(0.075f, 0.925f);
             Vector2 pos = new Vector2((max.x - min.x) * x + min.x, (max.y - min.y) * y + min.y);
@@ -80,8 +82,10 @@ public class PlaceDirt : MonoBehaviour
         GameObject newPile = null;
         List<Transform> storedPiles = new List<Transform>();
         Vector3 tempPos = new Vector3(999, 999,0);
+
         while (i < piles)
         {
+            GameObject dirt = dirts[Random.Range(0, dirts.Count)];
             float y = Random.Range(-0.3f, 0.3f);
             float x = Random.Range(-0.05f, 0.05f);
             Vector2 localPos = new Vector2(x, y);

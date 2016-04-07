@@ -45,7 +45,7 @@
 			// Main equation to get the intensity of a position from a specific ball
 			float GetIntensity(float2 start, float2 end, fixed radius)
 			{
-				return (radius / (((start.x - end.x) * (start.x - end.x)) + ((start.y - end.y) * (start.y - end.y)) + 0.000001));
+				return (radius / (((start.x - end.x) * (start.x - end.x)) + ((start.y - end.y) * (start.y - end.y))));
 			}
 
 			// gets the totalintensity from all balls for this position
@@ -68,6 +68,7 @@
 
 				output.pos = mul(UNITY_MATRIX_MVP, input.vertex);
 				output.worldPos = mul(_Object2World, input.vertex);
+				
 				// transformation of input.vertex from object 
 				// coordinates to world coordinates;
 				return output;
@@ -77,11 +78,8 @@
             // pixel shader; returns low precision ("fixed4" type)
             // color ("SV_Target" semantic)
             fixed4 frag (vertexOutput i) : SV_Target
-            {
-				float intensity = totalIntensity(i.worldPos);
-
-				
-				if (intensity < 1)
+            {				
+				if (totalIntensity(i.worldPos) < 1)
 					discard;
 
 				return _WaterColor;
