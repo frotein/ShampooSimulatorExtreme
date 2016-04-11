@@ -20,7 +20,7 @@ public class MoveLimb : MonoBehaviour {
     public Transform maxLegs; // a transform designationg how high you can lift the legs up
 
     public Collider2D movableArea;
-    public List<Transform> movementLimits;
+    public List<Transform> movementLimits; // hard coded limitations for the limbs
     List<bool> startingLimitSides;
     public float middleFix = 0.45f;
     public bool arms;
@@ -251,6 +251,25 @@ public class MoveLimb : MonoBehaviour {
         }
         
         return move;
+    }
+
+    public float FindLengthToKinematic(GameObject grabbed)
+    {
+        float lnth = 0;
+        float lnth1 = 0;
+        float lnth2 = 0;
+        /*while ((starting1 != null && starting2 != null) && !foundEnd )
+        {
+            Rigidbody2D rb1,rb2;
+            int i = 0;
+            foreach (HingeJoint2D hinge in hinges)
+            {
+                if(i == 0)
+                starting1 = 
+            }
+        }*/
+
+        return lnth;
     }
 
 }

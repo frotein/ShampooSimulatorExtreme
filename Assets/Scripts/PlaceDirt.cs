@@ -18,8 +18,14 @@ public class PlaceDirt : MonoBehaviour
     {
         dirtPiles = new List<Transform>();
         PlaceDirtPilesOnChest(dirtOnChest);
+
         foreach(Transform limb in limbs)
-        PlaceDirtOnLimb(4, limb);
+            PlaceDirtOnLimb(4, limb);   
+        
+        /*foreach(Transform d in dirtPiles)
+        {
+            d.GetComponent<Collider2D>().isTrigger = true;
+        } */   
     }
 	
 	// Update is called once per frame
@@ -30,7 +36,7 @@ public class PlaceDirt : MonoBehaviour
 
     void PlaceDirtPilesOnChest(int piles)
     {
-        int breakLimit = 999;
+        int breakLimit = 99;
         SpriteRenderer rend = chest.GetComponent<SpriteRenderer>();
         Vector2 min = rend.bounds.min.XY();
         Vector2 max = rend.bounds.max.XY();
@@ -61,10 +67,11 @@ public class PlaceDirt : MonoBehaviour
             if (!touching)
             {
                 i++;
-                newPile.transform.position = pos.XYZ(-1f);
+                newPile.transform.position = pos.XYZ(-.01f);
                 newPile.transform.parent = chest;
                 newPile.transform.eulerAngles = new Vector3(0, 0, Random.Range(0f, 360f));
                 dirtPiles.Add(newPile.transform);
+                breakLimit = 99;
                 newPile = null;
             }
             else
@@ -78,7 +85,7 @@ public class PlaceDirt : MonoBehaviour
     void PlaceDirtOnLimb(int piles, Transform limb)
     {
         int i = 0;
-        int breakLimit = 999;
+        int breakLimit = 99;
         GameObject newPile = null;
         List<Transform> storedPiles = new List<Transform>();
         Vector3 tempPos = new Vector3(999, 999,0);
@@ -87,7 +94,7 @@ public class PlaceDirt : MonoBehaviour
         {
             GameObject dirt = dirts[Random.Range(0, dirts.Count)];
             float y = Random.Range(-0.3f, 0.3f);
-            float x = Random.Range(-0.05f, 0.05f);
+            float x = 0;//Random.Range(-0.05f, 0.05f);
             Vector2 localPos = new Vector2(x, y);
             if(newPile == null)
                 newPile = GameObject.Instantiate(dirt);
@@ -109,9 +116,12 @@ public class PlaceDirt : MonoBehaviour
 
             if (!touching)
             {
-                newPile.transform.position = pos.XYZ(-1);
+                newPile.transform.position = pos.XYZ(-.01f);
+                newPile.transform.localPosition = newPile.transform.localPosition.XY().XYZ(-.01f);
                 newPile.transform.eulerAngles = new Vector3(0, 0, Random.Range(0f, 360f));
-                newPile = null;
+                dirtPiles.Add(newPile.transform);
+                newPile = null;                
+                breakLimit = 99;
                 i++;
             } 
             else
@@ -120,5 +130,5 @@ public class PlaceDirt : MonoBehaviour
             }
             if (breakLimit <= 0) { Destroy(newPile); break; }         
         }
-    }
+    }    
 }

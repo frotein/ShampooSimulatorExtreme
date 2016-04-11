@@ -3,6 +3,7 @@ using System.Collections;
 
 public class WaterDrop : MonoBehaviour {
 
+    
     public int index;
     public float despawnTime;
     public float dripSpeed;
@@ -28,14 +29,26 @@ public class WaterDrop : MonoBehaviour {
         despawnTime -= Time.deltaTime;
         if (dripping)
         {
-            Collider2D col = Physics2D.OverlapCircle(transform.position.XY(), radius, player);
-            if (col == null)
+            Collider2D[] cols = Physics2D.OverlapCircleAll(transform.position.XY(),radius, player);
+            if (cols.Length == 0)
             {
                 dripping = false;
                 transform.parent = manager.activePool;
                 transform.localScale = new Vector3(1, 1, 1);
                 rb.simulated = true;
             }
+            else
+            {
+                foreach(Collider2D col in cols)
+                {
+                    SoapBubbles bubbles = col.GetComponent<SoapBubbles>();
+                    if(bubbles != null)
+                    {
+                        bubbles.Shrink();
+                    }
+                }
+            }
+            
         }
         else
         {
@@ -63,8 +76,12 @@ public class WaterDrop : MonoBehaviour {
             RaycastHit2D hit = Physics2D.Linecast(transform.position.XY(), newPosition, Constants.player.obstacleLayer);
             if(hit.normal != Vector2.zero)
             {
-                newPosition = transform.position.XY() + Vector3.Project(new Vector2(0, -dripSpeed), hit.normal).XY();
+                if(transform.position.x < 0)
+                    newPosition = transform.position + new Vector3(dripSpeed,0,0);// + Vector3.Project(new Vector2(0, -dripSpeed), hit.normal).XY();
+                else
+                    newPosition = transform.position + new Vector3(-dripSpeed, 0, 0);
             }
+           
             transform.position = newPosition;           
         }
 
@@ -87,4 +104,6 @@ public class WaterDrop : MonoBehaviour {
         }
         
     }
+
+   
 }

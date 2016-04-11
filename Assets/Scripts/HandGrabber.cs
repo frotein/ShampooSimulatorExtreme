@@ -4,6 +4,8 @@ using System.Collections;
 public class HandGrabber : MonoBehaviour {
 
     public HandCloser hand;
+    public HandLimiter handLimiter;
+
     public Transform grabPosition; // the position and rotation you set the grabbed object to
     public bool left;
     float waitToBringBackCollider = 0.01f;
@@ -12,7 +14,7 @@ public class HandGrabber : MonoBehaviour {
     public GameObject grabbedGO;
     Collider2D handCollider;
     float plusAngle;
-    
+    MovementLimiter moveLimit;
     // Use this for initialization
 	void Start ()
     {
@@ -31,49 +33,27 @@ public class HandGrabber : MonoBehaviour {
         {
             float distFromGrab = 999;
             GameObject tempGrabbedGO = null;
-            foreach (GameObject grabbable in Constants.player.grabbableObjects)
+            // grab check
+            
+            // secondary check for grabbing
+            Collider2D[] cols = Physics2D.OverlapCircleAll(transform.position.XY() + handCollider.offset, 0.05f);
+            foreach (Collider2D col in cols)
             {
-                // and if you are touching a grabbable object 
-                if (handCollider.IsTouching(grabbable.GetComponent<Collider2D>())) 
+                if (col.tag == "Grabbable")
                 {
-                    float dist = Vector2.Distance(grabbable.transform.position.XY(), transform.position.XY());
-                    // make sure we are grabbing the closest object
-                    if (dist < distFromGrab)
+                    float dist = Vector2.Distance(col.transform.position.XY(), transform.position.XY());
+                    if (dist < distFromGrab) // make sure we are grabbing the closest object
                     {
-                        tempGrabbedGO = grabbable;
+                        tempGrabbedGO = col.gameObject;
                         distFromGrab = dist;
-                    }
-                    
-                   
-                }                
-            }
-            // if we have grabbed an object
-            if (tempGrabbedGO != null)
-            {
-                // grab it
-                Grabbed(tempGrabbedGO);
-            }
-            else // otherwise, do a secondary grab check
-            {
-                // secondary check for grabbing
-                Collider2D[] cols = Physics2D.OverlapCircleAll(transform.position.XY() + handCollider.offset, 0.05f);
-                foreach (Collider2D col in cols)
-                {
-                    if (col.tag == "Grabbable")
-                    {
-                        float dist = Vector2.Distance(col.transform.position.XY(), transform.position.XY());
-                        if (dist < distFromGrab) // make sure we are grabbing the closest object
-                        {
-                            tempGrabbedGO = col.gameObject;
-                            distFromGrab = dist;
                             
-                        }
                     }
                 }
-
-                if(tempGrabbedGO != null)
-                    Grabbed(tempGrabbedGO);
             }
+
+            if(tempGrabbedGO != null)
+                Grabbed(tempGrabbedGO);
+            
         }
 
         // If you are grabbing an object
@@ -84,6 +64,19 @@ public class HandGrabber : MonoBehaviour {
 
             if (hand.openedThisFrame())
             {
+
+                // if you grabbed the soap, check the apply soap as grabbed
+                ApplySoap soap = grabbedGO.GetComponent<ApplySoap>();
+                if (soap != null)
+                {
+                    soap.grabbed = false;
+                }
+
+                if (moveLimit != null)
+                {
+                    handLimiter.handsLimiter = null;
+                    moveLimit = null;
+                }
                 grabbed = false;
                 hand.grabbing = false;
                 grabbedGO.GetComponent<Collider2D>().enabled = true;
@@ -96,6 +89,13 @@ public class HandGrabber : MonoBehaviour {
             {                
                 if (grabbedGO.name == "SoapBar") // if youare holding soap, fling it from your hand
                 {
+                    // if you grabbed the soap, check the apply soap as grabbed
+                    ApplySoap soap = grabbedGO.GetComponent<ApplySoap>();
+                    if (soap != null)
+                    {
+                        soap.grabbed = false;
+                    }
+
                     Vector2 SlipDirAndPower = grabbedGO.transform.right * 10;
                     // randomly sets power and direction of flinging soap
                     SlipDirAndPower *= Random.Range(0.5f, 1.5f);
@@ -106,7 +106,9 @@ public class HandGrabber : MonoBehaviour {
                     wait = 0;
                     grabbed = false;
                     hand.grabbing = false;
-                   
+
+                    
+
                 }             
             }
             if (grabbedGO != null)
@@ -155,13 +157,33 @@ public class HandGrabber : MonoBehaviour {
     {
         grabbed = true;
         grabbedGO = grabbable;
-        if(grabbedGO.transform.parent != null)
+        // if you grab the towel, set grabbed section to kinematic
+        if (grabbedGO.transform.parent != null)
         {
-            if(grabbedGO.transform.parent.name == "Towel")
+            if(grabbedGO.transform.parent.name == "Towel" || grabbedGO.transform.parent.name.Contains("Curtain"))
             {
                 grabbedGO.GetComponent<Rigidbody2D>().isKinematic = true;
+                LengthFinder lf = grabbedGO.GetComponent<LengthFinder>();
+                if(lf != null)
+                {
+                    if(lf.staticLength != 0)
+                    {
+                        moveLimit = new MovementLimiter(transform, lf.staticTransform, lf.staticLength + .25f, true, false);
+                        handLimiter.handsLimiter = moveLimit;
+                    }
+                }
+
             }
         }
+
+        // if you grabbed the soap, check the apply soap as grabbed
+        ApplySoap soap = grabbedGO.GetComponent<ApplySoap>();
+        if(soap != null)
+        {
+            soap.grabbed = true;
+        }
+
+
         grabbedGO.GetComponent<Collider2D>().enabled = false;
         hand.grabbing = true;
         if (IsClosestAngle(grabbedGO.transform))
