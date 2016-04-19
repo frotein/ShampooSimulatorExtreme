@@ -124,7 +124,7 @@ public class HandGrabber : MonoBehaviour {
         if(grabbedGO != null && !grabbed)
         {
             Collider2D col = Physics2D.OverlapCircle(grabbedGO.transform.position.XY(), 0.5f, Constants.player.playerLayer); 
-            if (wait >= waitToBringBackCollider && col == null)
+            if (wait >= waitToBringBackCollider && (col == null || grabbedGO.layer == LayerMask.NameToLayer("Towel")) )
             {
                 grabbedGO.GetComponent<Collider2D>().enabled = true;
                 grabbedGO = null;
