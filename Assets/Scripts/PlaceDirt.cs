@@ -20,12 +20,9 @@ public class PlaceDirt : MonoBehaviour
         PlaceDirtPilesOnChest(dirtOnChest);
 
         foreach(Transform limb in limbs)
-            PlaceDirtOnLimb(4, limb);   
-        
-        /*foreach(Transform d in dirtPiles)
-        {
-            d.GetComponent<Collider2D>().isTrigger = true;
-        } */   
+            PlaceDirtOnLimb(4, limb);
+
+        transform.GetComponent<PlayersStatus>().dirts = dirtPiles;   
     }
 	
 	// Update is called once per frame
@@ -47,13 +44,13 @@ public class PlaceDirt : MonoBehaviour
         while (i < piles)
         {
             GameObject dirt = dirts[Random.Range(0, dirts.Count)];
-            float x = Random.Range(0.075f, 0.925f);
+            float x = Random.Range(0.1f, 0.9f);
             float y = Random.Range(0.075f, 0.925f);
             Vector2 pos = new Vector2((max.x - min.x) * x + min.x, (max.y - min.y) * y + min.y);
             if(newPile == null)
                 newPile = GameObject.Instantiate(dirt);
 
-            
+            bool inCorner = (x < .25f || x > .75f) && (y > .8f); 
             bool touching = false;
             Collider2D[] cols = Physics2D.OverlapCircleAll(pos, radius);
             foreach(Collider2D col in cols)
@@ -64,13 +61,14 @@ public class PlaceDirt : MonoBehaviour
                 }
             }
 
-            if (!touching)
+            if (!touching && !inCorner)
             {
                 i++;
                 newPile.transform.position = pos.XYZ(-.01f);
                 newPile.transform.parent = chest;
                 newPile.transform.eulerAngles = new Vector3(0, 0, Random.Range(0f, 360f));
                 dirtPiles.Add(newPile.transform);
+                newPile.GetComponent<DirtPile>().localPos = new Vector2(x, y);
                 breakLimit = 99;
                 newPile = null;
             }

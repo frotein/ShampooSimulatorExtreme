@@ -5,6 +5,7 @@ public class DirtPile : MonoBehaviour {
 
     CircleCollider2D col;
     public LayerMask playerLayer;
+    public Vector2 localPos;
     // Use this for initialization
 	void Start ()
     {

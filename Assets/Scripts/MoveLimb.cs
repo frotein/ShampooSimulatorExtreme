@@ -36,7 +36,7 @@ public class MoveLimb : MonoBehaviour {
     Vector2 prevPosition;
     bool stoppedByMax;
     bool legsStartLeft;
-    
+    bool moved;
 	// Use this for initialization
 	void Start () 
 	{
@@ -77,20 +77,20 @@ public class MoveLimb : MonoBehaviour {
         {
             if (storedMovement != Vector2.zero) // if we are no longer pushing, release the power, causing something like a natural jump
             {
-                rb.AddForceAtPosition(-storedMovement * 700, transform.position);
+                rb.AddForceAtPosition(-storedMovement * 1000, transform.position);
                 storedMovement = Vector2.zero;
             }
         }
 
         if (!arms) // if these are the legs, we dont want them to be able to clip through the player, so slide along any surface that is the player
         {
-            RaycastHit2D hit = Physics2D.Linecast(transform.position.XY(), transform.position.XY() + movement, Constants.player.playerLayer);
+           /* RaycastHit2D hit = Physics2D.Linecast(transform.position.XY(), transform.position.XY() + movement, Constants.player.chestLayer);
            if(hit)
             {
                 Vector2 perp = new Vector2(-hit.normal.y, hit.normal.x);
                 Vector2 newMovement = Vector3.Project(movement.XYZ(0), perp.XYZ(0)).XY();
                 movement = newMovement;
-            } 
+            }*/ 
            // also if these are legs, check to make sure the new height isnt over the max height, if it is slide along the max height
            if(isLeft(maxLegs.position.XY(), maxLegs.position.XY() + maxLegs.right.XY(), transform.position.XY() + movement) != legsStartLeft)
             {
@@ -102,7 +102,9 @@ public class MoveLimb : MonoBehaviour {
         moveLimb();
 
         // move the limb segments so it look correct
-        SetSegments();           
+        SetSegments();   
+        
+        moved = movement != Vector2.zero;        
 	}
     public Transform GetWrongSideLimit()
     {
@@ -196,7 +198,10 @@ public class MoveLimb : MonoBehaviour {
 		//transform.localPosition = storedLocalPosition;
 	}
 
-    
+    public bool Moved()
+    {
+        return moved;
+    }
 	// calculates the middle point in a triangle where you know the the two side points and the length of two of the sides, 
 	// also has the current 3rd point so the triangle doesnt flip
 	Vector2 Calculate3rdPoint(float length, Vector2 p1, Vector2 p2, Vector2 currentP3)

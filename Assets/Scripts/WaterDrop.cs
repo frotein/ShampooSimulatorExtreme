@@ -14,6 +14,7 @@ public class WaterDrop : MonoBehaviour {
     bool dripping;
     float radius;
     int inWallCheck;
+    bool inHair;
     // Use this for initialization
 	void Start ()
     {
@@ -21,14 +22,17 @@ public class WaterDrop : MonoBehaviour {
         dripping = false;
         radius = transform.GetComponent<CircleCollider2D>().radius;
         inWallCheck = 0;
+        inHair = false;
     }
 	
 	// Update is called once per frame
 	void Update ()
     {
+        inHair = false;
         despawnTime -= Time.deltaTime;
         if (dripping)
         {
+            
             Collider2D[] cols = Physics2D.OverlapCircleAll(transform.position.XY(),radius, player);
             if (cols.Length == 0)
             {
@@ -39,14 +43,28 @@ public class WaterDrop : MonoBehaviour {
             }
             else
             {
-                foreach(Collider2D col in cols)
+                bool onFeet = false;
+                foreach (Collider2D col in cols)
                 {
                     SoapBubbles bubbles = col.GetComponent<SoapBubbles>();
-                    if(bubbles != null)
+                    if (bubbles != null)
                     {
                         bubbles.Shrink();
                     }
+                    if (col.tag == "Limb End")
+                        onFeet = true;
+
+                    if (col.tag == "Hair")
+                        inHair = true;
+
+                    if (inHair)
+                        Constants.player.status.AddToHairWetness();
+                    else
+                    { if (!onFeet) Constants.player.status.AddToBodyWetness(); }
+
                 }
+
+                    
             }
             
         }

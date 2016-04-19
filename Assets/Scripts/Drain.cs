@@ -19,5 +19,7 @@ public class Drain : MonoBehaviour {
     {
         if (col.tag == "Water")
             col.GetComponent<WaterDrop>().manager.DespawnDrop(col.transform);
+        if(col.tag == "Shampoo")
+            col.GetComponent<ShampooDrop>().manager.DespawnDrop(col.transform);
     }
 }

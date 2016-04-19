@@ -5,8 +5,8 @@ public class HandGrabber : MonoBehaviour {
 
     public HandCloser hand;
     public HandLimiter handLimiter;
-
-    public Transform grabPosition; // the position and rotation you set the grabbed object to
+    public LayerMask defaultLayer, towelLayer;
+    public Transform handCenter; // used to check if we can grab
     public bool left;
     float waitToBringBackCollider = 0.01f;
     bool grabbed;
@@ -14,7 +14,9 @@ public class HandGrabber : MonoBehaviour {
     public GameObject grabbedGO;
     Collider2D handCollider;
     float plusAngle;
+    bool grabbedStatic;
     MovementLimiter moveLimit;
+    Transform previousParent;
     // Use this for initialization
 	void Start ()
     {
@@ -28,15 +30,13 @@ public class HandGrabber : MonoBehaviour {
 	void Update ()
     {
         wait += Time.deltaTime;
-        // if you are grabbing this frame
-        if(hand.grabbedThisFrame())
+        // if you are grabbing this frame and you arent holding anything, and it isnt something the other hand is holding
+        if(hand.grabbedThisFrame() && grabbedGO == null)
         {
             float distFromGrab = 999;
             GameObject tempGrabbedGO = null;
             // grab check
-            
-            // secondary check for grabbing
-            Collider2D[] cols = Physics2D.OverlapCircleAll(transform.position.XY() + handCollider.offset, 0.05f);
+            Collider2D[] cols = Physics2D.OverlapCircleAll(handCenter.position.XY(), 0.15f);
             foreach (Collider2D col in cols)
             {
                 if (col.tag == "Grabbable")
@@ -45,22 +45,23 @@ public class HandGrabber : MonoBehaviour {
                     if (dist < distFromGrab) // make sure we are grabbing the closest object
                     {
                         tempGrabbedGO = col.gameObject;
-                        distFromGrab = dist;
-                            
+                        distFromGrab = dist;                           
                     }
                 }
             }
 
-            if(tempGrabbedGO != null)
-                Grabbed(tempGrabbedGO);
-            
+            if (tempGrabbedGO != null)
+            {
+                if(!OtherHandIsHolding(tempGrabbedGO.transform))
+                    Grabbed(tempGrabbedGO);
+            }
         }
 
         // If you are grabbing an object
         if(grabbed && grabbedGO != null)
         {
-            grabbedGO.transform.position = new Vector3(grabPosition.position.x, grabPosition.position.y, grabbedGO.transform.position.z);
-            grabbedGO.transform.eulerAngles = new Vector3(0, 0, -grabPosition.transform.right.XY().Angle() + 90 + plusAngle);
+            //grabbedGO.transform.position = new Vector3(grabPosition.position.x, grabPosition.position.y, grabbedGO.transform.position.z);
+            //grabbedGO.transform.eulerAngles = new Vector3(0, 0, -grabPosition.transform.right.XY().Angle() + 90 + plusAngle);
 
             if (hand.openedThisFrame())
             {
@@ -77,12 +78,8 @@ public class HandGrabber : MonoBehaviour {
                     handLimiter.handsLimiter = null;
                     moveLimit = null;
                 }
-                grabbed = false;
-                hand.grabbing = false;
-                grabbedGO.GetComponent<Collider2D>().enabled = true;
-                grabbedGO.GetComponent<Rigidbody2D>().isKinematic = false;
-                grabbedGO.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
-                grabbedGO = null;
+
+                Release(Vector2.zero);
             }
 
             if(hand.closedThisFrame())
@@ -102,13 +99,7 @@ public class HandGrabber : MonoBehaviour {
                     if (Random.value > 0.5f)
                         SlipDirAndPower *= -1;
 
-                    grabbedGO.GetComponent<Rigidbody2D>().velocity = SlipDirAndPower;
-                    wait = 0;
-                    grabbed = false;
-                    hand.grabbing = false;
-
-                    
-
+                    Release(SlipDirAndPower);
                 }             
             }
             if (grabbedGO != null)
@@ -132,7 +123,8 @@ public class HandGrabber : MonoBehaviour {
         // waits a frame to turn on grabbed collider so it shoots in the correct direction
         if(grabbedGO != null && !grabbed)
         {
-            if (wait >= waitToBringBackCollider)
+            Collider2D col = Physics2D.OverlapCircle(grabbedGO.transform.position.XY(), 0.5f, Constants.player.playerLayer); 
+            if (wait >= waitToBringBackCollider && col == null)
             {
                 grabbedGO.GetComponent<Collider2D>().enabled = true;
                 grabbedGO = null;
@@ -157,25 +149,16 @@ public class HandGrabber : MonoBehaviour {
     {
         grabbed = true;
         grabbedGO = grabbable;
-        // if you grab the towel, set grabbed section to kinematic
-        if (grabbedGO.transform.parent != null)
-        {
-            if(grabbedGO.transform.parent.name == "Towel" || grabbedGO.transform.parent.name.Contains("Curtain"))
-            {
-                grabbedGO.GetComponent<Rigidbody2D>().isKinematic = true;
-                LengthFinder lf = grabbedGO.GetComponent<LengthFinder>();
-                if(lf != null)
-                {
-                    if(lf.staticLength != 0)
-                    {
-                        moveLimit = new MovementLimiter(transform, lf.staticTransform, lf.staticLength + .25f, true, false);
-                        handLimiter.handsLimiter = moveLimit;
-                    }
-                }
+        previousParent = grabbedGO.transform.parent;
+        grabbedStatic = grabbedGO.GetComponent<Rigidbody2D>().isKinematic;
+        
 
-            }
-        }
+        if (left)
+            handLimiter.leftGrabbed = grabbedGO.transform;
+        else
+            handLimiter.rightGrabbed = grabbedGO.transform;
 
+        grabbedGO.GetComponent<Rigidbody2D>().isKinematic = true;
         // if you grabbed the soap, check the apply soap as grabbed
         ApplySoap soap = grabbedGO.GetComponent<ApplySoap>();
         if(soap != null)
@@ -183,12 +166,64 @@ public class HandGrabber : MonoBehaviour {
             soap.grabbed = true;
         }
 
-
+        grabbedGO.transform.parent = transform;
         grabbedGO.GetComponent<Collider2D>().enabled = false;
         hand.grabbing = true;
         if (IsClosestAngle(grabbedGO.transform))
             plusAngle = 0;
         else plusAngle = 180;
     }
-    
+
+
+    void Release(Vector2 velocity)
+    {
+        grabbedGO.GetComponent<Rigidbody2D>().isKinematic = grabbedStatic;
+        grabbedGO.GetComponent<Rigidbody2D>().velocity = velocity;
+        wait = 0;
+
+        if (left)
+            handLimiter.leftGrabbed = null;
+        else
+            handLimiter.rightGrabbed = null;
+
+        grabbed = false;
+        hand.grabbing = false;
+        grabbedGO.transform.parent = previousParent;
+    }
+
+    bool OtherHandIsHolding(Transform grabbed)
+    {
+        bool otherHandHas = false;
+        if (left)
+            otherHandHas = handLimiter.rightGrabbed == grabbed;
+        else
+            otherHandHas = handLimiter.leftGrabbed == grabbed;    
+        
+       return otherHandHas;
+    }
+
+    // crreates limiter for towel if grabbed, not used and may be moved
+    void CreateLimiter()
+    {
+        // if you grab the towel, set grabbed section to kinematic
+        if (grabbedGO.transform.parent != null)
+        {
+            if (grabbedGO.transform.parent.name == "Towel" || grabbedGO.transform.parent.name.Contains("Curtain"))
+            {
+                LengthFinder lf = grabbedGO.GetComponent<LengthFinder>();
+                if (lf != null)
+                {
+                    if (lf.staticLength != 0)
+                    {
+                        //  moveLimit = new MovementLimiter(transform, lf.staticTransform, lf.staticLength + .25f, true, false);
+                        //  handLimiter.handsLimiter = moveLimit;
+                    }
+                    else
+                    {
+
+                    }
+                }
+            }
+        }
+    }
 }

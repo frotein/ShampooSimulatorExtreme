@@ -3,7 +3,7 @@ using System.Collections;
 
 public class ShampooBottle : MonoBehaviour {
 
-    public WaterManager manager;
+    public ShampooManager manager;
     public Transform spawnPosition;
     public float spawnDelay;
     public float spawnT;

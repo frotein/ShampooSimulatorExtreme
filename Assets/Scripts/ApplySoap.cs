@@ -3,6 +3,7 @@ using System.Collections;
 
 public class ApplySoap : MonoBehaviour {
 
+    public PlayersStatus status;
     public Transform soapPool;
     public bool grabbed;
     Transform playerT;
@@ -62,6 +63,8 @@ public class ApplySoap : MonoBehaviour {
             soap.position = transform.position.XY().XYZ(playerT.position.z - .02f);
             soap.parent = playerT;
             Constants.pools.soapBubblePool.GetComponent<AppliedSoapBubbles>().appliedSoapColliders.Add(soap.GetComponent<Collider2D>());
+            soap.GetComponent<SoapBubbles>().status = status;
+            status.soaps.Add(soap);
         }
     }
 }

@@ -3,7 +3,7 @@ using System.Collections;
 
 public class SoapBubbles : MonoBehaviour
 {
-
+    public PlayersStatus status;
     public float shrinkRate;
     float shrinkDTime;
     // Use this for initialization
@@ -24,10 +24,11 @@ public class SoapBubbles : MonoBehaviour
     public void Shrink()
     {
         transform.localScale -= new Vector3(shrinkDTime, shrinkDTime, 0);
-        if(transform.localScale.x <= 0 && transform.localScale.y <= 0)
+        if(transform.localScale.x <= .3f && transform.localScale.y <= .3f)
         {
             transform.localScale = new Vector3(1, 1, 1);
             transform.parent = Constants.pools.soapBubblePool;
+            status.soaps.Remove(transform);
             transform.gameObject.SetActive(false);
         }
     }

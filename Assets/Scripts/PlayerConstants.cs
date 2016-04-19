@@ -9,8 +9,9 @@ public class PlayerConstants : MonoBehaviour {
     public float closeAmount;
     public float squeezeAmount;
     public bool onGround;
+    public PlayersStatus status;
     public LayerMask obstacleLayer, grabbableLayer;
-    public LayerMask playerLayer;
+    public LayerMask playerLayer, chestLayer;
     public GameObject[] grabbableObjects;
     // Use this for initialization
 	void Start ()
