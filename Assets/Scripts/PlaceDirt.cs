@@ -91,7 +91,7 @@ public class PlaceDirt : MonoBehaviour
         while (i < piles)
         {
             GameObject dirt = dirts[Random.Range(0, dirts.Count)];
-            float y = Random.Range(-0.3f, 0.3f);
+            float y = Random.Range(-0.23f, 0.25f);
             float x = 0;//Random.Range(-0.05f, 0.05f);
             Vector2 localPos = new Vector2(x, y);
             if(newPile == null)
@@ -117,6 +117,7 @@ public class PlaceDirt : MonoBehaviour
                 newPile.transform.position = pos.XYZ(-.01f);
                 newPile.transform.localPosition = newPile.transform.localPosition.XY().XYZ(-.01f);
                 newPile.transform.eulerAngles = new Vector3(0, 0, Random.Range(0f, 360f));
+                newPile.GetComponent<DirtPile>().localPos = new Vector2(x, y);
                 dirtPiles.Add(newPile.transform);
                 newPile = null;                
                 breakLimit = 99;

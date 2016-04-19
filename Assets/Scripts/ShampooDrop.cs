@@ -132,8 +132,11 @@ public class ShampooDrop : MonoBehaviour
         
         drawingRadius -= shrinkRate * Time.deltaTime;
         if (drawingRadius <= 0)
+        {
+            Constants.player.status.shampoos.Remove(transform);
+            inHair = false;
             manager.DespawnDrop(transform);
-
+        }
         if(inHair)
         {
             Constants.player.status.CleanHair();
