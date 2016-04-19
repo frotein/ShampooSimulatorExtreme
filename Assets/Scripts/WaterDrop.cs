@@ -145,6 +145,10 @@ public class WaterDrop : MonoBehaviour {
                     if (farEngoughAway)
                     {
                         GameObject point = new GameObject("Point");
+                        point.AddComponent<WetnessPoint>();
+                       // CircleCollider2D col = point.AddComponent<CircleCollider2D>();
+                       // col.radius = 0.1f;
+                       // col.isTrigger = true;
                         point.transform.position = transform.position;
                         circleController.positionTransforms.Add(point.transform); 
                         point.transform.parent = circleController.pointHolder;
