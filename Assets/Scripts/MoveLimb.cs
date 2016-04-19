@@ -12,7 +12,7 @@ public class MoveLimb : MonoBehaviour {
 	public Transform knee;
 	public Transform upperLeg;
 	public Transform lowerLeg;
-
+    
     public Transform leftPt, rightPt;
     public Transform handReset;
     public Transform flipArms; // a transform designation when the arms flip their elbow to look natural

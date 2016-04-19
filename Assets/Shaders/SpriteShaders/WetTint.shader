@@ -3,6 +3,7 @@
 	Properties
 	{
 		_MainTex ("Texture", 2D) = "white" {}
+		_TintColor ("Color", Color) = (1,1,1,1)
 	}
 	SubShader
 	{
@@ -30,27 +31,43 @@
 			// vertex shader inputs
 			struct vertexInput {
 				float4 vertex : POSITION;
-				float4 color : COLOR;
 				float2 texcoord : TEXCOORD0;
 			};
 
 			// vertex shader outputs
 			struct vertexOutput {
 				float4 vertex : SV_POSITION;
-				fixed4 color : COLOR;
 				float4 worldPos : TEXCOORD1;
 				half2 texcoord : TEXCOORD0;
 			};
 
 			sampler2D _MainTex;
 			float4 _MainTex_ST;
-			uniform Buffer<float3> _Buffer;
-			
-			bool isLeft(float2 a, float2 b, float2 c)
+			int _Width;
+			uniform Buffer<float4> _LeftLines;
+			uniform Buffer<float4> _RightLines;
+			float4 _TintColor;
+			bool inside(float2 a, float2 b, float2 c, bool left)
 			{
-				return ((b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x)) > 0;
+				bool val = ((b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x)) > 0;
+				return  val == left;
 			}
 
+			bool IsInLines(float2 wPoint)
+			{
+				for (int i = 0; i < _Width; i++)
+				{
+					if (inside(_LeftLines[i].xy, _LeftLines[i].zw, wPoint, true) &&
+						inside(_RightLines[i].xy, _RightLines[i].zw, wPoint, false) && 
+						inside(_LeftLines[i].xy, _RightLines[i].xy, wPoint, false) &&
+						inside(_LeftLines[i].zw, _RightLines[i].zw, wPoint, true))
+					{
+						return true;
+					}
+				}
+
+				return false;
+			}
 			// vertex shader
 			vertexOutput vert(vertexInput input)
 			{
@@ -58,7 +75,6 @@
 
 				output.vertex = mul(UNITY_MATRIX_MVP, input.vertex);
 				output.worldPos = mul(_Object2World, input.vertex);
-				output.color = input.color;
 				output.texcoord = input.texcoord;
 				// transformation of input.vertex from object 
 				// coordinates to world coordinates;
@@ -68,8 +84,11 @@
 			fixed4 frag (vertexOutput i) : SV_Target
 			{
 				// sample the texture
-				fixed4 col = tex2D(_MainTex, i.texcoord) * i.color;
+				fixed4 col = tex2D(_MainTex, i.texcoord);
 				col.rgb *= col.a;
+				if (IsInLines(i.worldPos))
+					col *= _TintColor;
+
 				return col;
 			}
 			ENDCG

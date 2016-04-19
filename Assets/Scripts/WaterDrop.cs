@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class WaterDrop : MonoBehaviour {
 
@@ -15,6 +16,9 @@ public class WaterDrop : MonoBehaviour {
     float radius;
     int inWallCheck;
     bool inHair;
+    int tintWait = 3;
+    int wait;
+    List<Transform> currentlyOn;
     // Use this for initialization
 	void Start ()
     {
@@ -23,6 +27,7 @@ public class WaterDrop : MonoBehaviour {
         radius = transform.GetComponent<CircleCollider2D>().radius;
         inWallCheck = 0;
         inHair = false;
+        currentlyOn = new List<Transform>();
     }
 	
 	// Update is called once per frame
@@ -40,10 +45,18 @@ public class WaterDrop : MonoBehaviour {
                 transform.parent = manager.activePool;
                 transform.localScale = new Vector3(1, 1, 1);
                 rb.simulated = true;
+
+                foreach(Transform t in currentlyOn)
+                {
+                  //  Debug.Log("Exited " + t.name);
+                }
+                currentlyOn.Clear();
             }
             else
             {
                 bool onFeet = false;
+                Transform topTransform = null;
+                List<Transform> tempCurrentlyOn = new List<Transform>(currentlyOn);
                 foreach (Collider2D col in cols)
                 {
                     SoapBubbles bubbles = col.GetComponent<SoapBubbles>();
@@ -62,9 +75,35 @@ public class WaterDrop : MonoBehaviour {
                     else
                     { if (!onFeet) Constants.player.status.AddToBodyWetness(); }
 
+                    if (col.tag != "Soap Bubbles" && col.tag != "dirt")
+                    {
+                        if (topTransform != null)
+                        {
+                            if (topTransform.position.z > col.transform.position.z)
+                                topTransform = col.transform;
+                        }
+                        else
+                            topTransform = col.transform;
+                        tempCurrentlyOn.Remove(col.transform);
+
+                        if(!currentlyOn.Contains(col.transform))
+                        {
+                           // Debug.Log("Entered " + col.transform.name);
+                            currentlyOn.Add(col.transform);
+                        }
+                    }
                 }
 
-                    
+                foreach(Transform t in tempCurrentlyOn)
+                {
+                    //Debug.Log("Exited " + t.name);
+                    currentlyOn.Remove(t);                   
+                }
+                
+                transform.parent = topTransform;
+                
+
+               
             }
             
         }
@@ -90,7 +129,33 @@ public class WaterDrop : MonoBehaviour {
 
     void FixedUpdate()
     {
-        
+        foreach(Transform t in currentlyOn)
+        {
+            WetTintCircleController circleController = t.GetComponent<WetTintCircleController>();
+            if(circleController != null && wait <= 0)
+            {
+                if (!circleController.AtMax())
+                {
+                    bool farEngoughAway = true;
+                    foreach (Transform t2 in circleController.positionTransforms)
+                    {
+                        if (Vector2.Distance(transform.position.XY(), t2.position.XY()) < 0.1f)
+                        { farEngoughAway = false; break; }
+                    }
+                    if (farEngoughAway)
+                    {
+                        GameObject point = new GameObject("Point");
+                        point.transform.position = transform.position;
+                        circleController.positionTransforms.Add(point.transform); 
+                        point.transform.parent = circleController.pointHolder;
+                        wait = tintWait;
+                    }
+                }
+            }
+        }
+
+        wait--;
+
         if (dripping)
         {
             Vector2 newPosition = transform.position.XY() + new Vector2(0, -dripSpeed);
