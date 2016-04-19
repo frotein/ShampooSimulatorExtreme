@@ -13,10 +13,12 @@ public class PlayerConstants : MonoBehaviour {
     public LayerMask obstacleLayer, grabbableLayer;
     public LayerMask playerLayer, chestLayer;
     public GameObject[] grabbableObjects;
+    public List<WetTintCircleController> wetTintControllers;
     // Use this for initialization
 	void Start ()
     {
         Constants.player = this;
+        wetTintControllers = new List<WetTintCircleController>();
 	}
 	
 	// Update is called once per frame
