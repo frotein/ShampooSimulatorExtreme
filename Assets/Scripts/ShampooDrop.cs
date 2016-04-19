@@ -71,10 +71,13 @@ public class ShampooDrop : MonoBehaviour
             Collider2D[] cols = Physics2D.OverlapCircleAll(transform.position.XY(), radius, player);
             foreach (Collider2D col in cols)
             {
-                dripping = true;
-                transform.parent = col.transform;
-                rb.velocity = new Vector2(0, 0);
-                rb.simulated = false;
+                if (col.tag != "Soap Bubbles")
+                {
+                    dripping = true;
+                    transform.parent = col.transform;
+                    rb.velocity = new Vector2(0, 0);
+                    rb.simulated = false;
+                }
             }
         }
         if (!inHair)
@@ -133,7 +136,6 @@ public class ShampooDrop : MonoBehaviour
 
         if(inHair)
         {
-            Debug.Log("cleaning");
             Constants.player.status.CleanHair();
         }
     }

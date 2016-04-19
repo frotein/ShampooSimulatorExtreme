@@ -102,6 +102,10 @@ public class WaterDrop : MonoBehaviour {
            
             transform.position = newPosition;           
         }
+        else
+        {
+            if (!rb.simulated) rb.simulated = true;
+        }
 
         if (Physics2D.OverlapPoint(transform.position.XY(), Constants.player.obstacleLayer))
             inWallCheck++;
