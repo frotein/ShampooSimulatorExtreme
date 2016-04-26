@@ -37,26 +37,21 @@ public class WaterDrop : MonoBehaviour {
         despawnTime -= Time.deltaTime;
         if (dripping)
         {
-            
-            Collider2D[] cols = Physics2D.OverlapCircleAll(transform.position.XY(),radius, player);
+            currentlyOn.Clear();
+            Collider2D[] cols = Physics2D.OverlapPointAll(transform.position.XY(), player);
             if (cols.Length == 0)
             {
                 dripping = false;
                 transform.parent = manager.activePool;
                 transform.localScale = new Vector3(1, 1, 1);
                 rb.simulated = true;
-
-                foreach(Transform t in currentlyOn)
-                {
-                  //  Debug.Log("Exited " + t.name);
-                }
                 currentlyOn.Clear();
             }
             else
             {
+
                 bool onFeet = false;
                 Transform topTransform = null;
-                List<Transform> tempCurrentlyOn = new List<Transform>(currentlyOn);
                 foreach (Collider2D col in cols)
                 {
                     SoapBubbles bubbles = col.GetComponent<SoapBubbles>();
@@ -84,22 +79,12 @@ public class WaterDrop : MonoBehaviour {
                         }
                         else
                             topTransform = col.transform;
-                        tempCurrentlyOn.Remove(col.transform);
-
-                        if(!currentlyOn.Contains(col.transform))
-                        {
-                           // Debug.Log("Entered " + col.transform.name);
-                            currentlyOn.Add(col.transform);
-                        }
+                       
+                       currentlyOn.Add(col.transform);
+                        
                     }
                 }
-
-                foreach(Transform t in tempCurrentlyOn)
-                {
-                    //Debug.Log("Exited " + t.name);
-                    currentlyOn.Remove(t);                   
-                }
-                
+               
                 transform.parent = topTransform;
                 
 
@@ -146,9 +131,6 @@ public class WaterDrop : MonoBehaviour {
                     {
                         GameObject point = new GameObject("Point");
                         point.AddComponent<WetnessPoint>();
-                       // CircleCollider2D col = point.AddComponent<CircleCollider2D>();
-                       // col.radius = 0.1f;
-                       // col.isTrigger = true;
                         point.transform.position = transform.position;
                         circleController.positionTransforms.Add(point.transform); 
                         point.transform.parent = circleController.pointHolder;
@@ -167,7 +149,7 @@ public class WaterDrop : MonoBehaviour {
             if(hit.normal != Vector2.zero)
             {
                 if(transform.position.x < 0)
-                    newPosition = transform.position + new Vector3(dripSpeed,0,0);// + Vector3.Project(new Vector2(0, -dripSpeed), hit.normal).XY();
+                    newPosition = transform.position + new Vector3(dripSpeed,0,0);
                 else
                     newPosition = transform.position + new Vector3(-dripSpeed, 0, 0);
             }

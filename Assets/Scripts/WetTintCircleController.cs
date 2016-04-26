@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public class WetTintCircleController : MonoBehaviour
 {
     public Transform pointHolder;
+    public bool hair;
     public Transform[] materialHolders;
     public List<Transform> positionTransforms;
     public Vector2[] positions;

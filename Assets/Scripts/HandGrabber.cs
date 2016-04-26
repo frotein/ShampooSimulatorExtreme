@@ -17,6 +17,7 @@ public class HandGrabber : MonoBehaviour {
     bool grabbedStatic;
     MovementLimiter moveLimit;
     Transform previousParent;
+    Collider2D triggerCollider;
     // Use this for initialization
 	void Start ()
     {
@@ -60,9 +61,7 @@ public class HandGrabber : MonoBehaviour {
         // If you are grabbing an object
         if(grabbed && grabbedGO != null)
         {
-            //grabbedGO.transform.position = new Vector3(grabPosition.position.x, grabPosition.position.y, grabbedGO.transform.position.z);
-            //grabbedGO.transform.eulerAngles = new Vector3(0, 0, -grabPosition.transform.right.XY().Angle() + 90 + plusAngle);
-
+            
             if (hand.openedThisFrame())
             {
 
@@ -151,7 +150,15 @@ public class HandGrabber : MonoBehaviour {
         grabbedGO = grabbable;
         previousParent = grabbedGO.transform.parent;
         grabbedStatic = grabbedGO.GetComponent<Rigidbody2D>().isKinematic;
-        
+        //grabbedGO.BroadcastMessage("ResetParent", null, SendMessageOptions.DontRequireReceiver);
+        if (grabbedGO.transform.childCount > 0)
+        {
+            triggerCollider = grabbedGO.transform.GetChild(0).GetComponent<Collider2D>();
+            if(triggerCollider != null)
+            {
+                triggerCollider.enabled = false;
+            }
+        }
 
         if (left)
             handLimiter.leftGrabbed = grabbedGO.transform;
@@ -180,6 +187,10 @@ public class HandGrabber : MonoBehaviour {
         grabbedGO.GetComponent<Rigidbody2D>().isKinematic = grabbedStatic;
         grabbedGO.GetComponent<Rigidbody2D>().velocity = velocity;
         wait = 0;
+        if (triggerCollider != null)
+        {
+            triggerCollider.enabled = true;
+        }
 
         if (left)
             handLimiter.leftGrabbed = null;

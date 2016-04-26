@@ -101,11 +101,12 @@ public class MoveLimb : MonoBehaviour {
         // move the linbs from the movement vector
         moveLimb();
 
-        // move the limb segments so it look correct
-        SetSegments();   
+         
         
         moved = movement != Vector2.zero;        
 	}
+
+
     public Transform GetWrongSideLimit()
     {
         int i = 0;
@@ -119,7 +120,9 @@ public class MoveLimb : MonoBehaviour {
         return null;
     }
     void LateUpdate()
-    {        
+    {
+        // move the limb segments so it look correct
+        SetSegments();
         storedKneePosition = knee.position.XY();
         prevPosition = transform.position.XY();
     }

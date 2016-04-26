@@ -55,7 +55,7 @@ public class PlaceDirt : MonoBehaviour
             Collider2D[] cols = Physics2D.OverlapCircleAll(pos, radius);
             foreach(Collider2D col in cols)
             {
-                if (col.tag == "dirt")
+                if (col.tag == "dirt" || col.gameObject.name == "CensorBlock")
                 {
                     touching = true;
                 }
@@ -91,7 +91,7 @@ public class PlaceDirt : MonoBehaviour
         while (i < piles)
         {
             GameObject dirt = dirts[Random.Range(0, dirts.Count)];
-            float y = Random.Range(-0.23f, 0.25f);
+            float y = Random.Range(-0.25f, 0.25f);
             float x = 0;//Random.Range(-0.05f, 0.05f);
             Vector2 localPos = new Vector2(x, y);
             if(newPile == null)
@@ -114,8 +114,8 @@ public class PlaceDirt : MonoBehaviour
 
             if (!touching)
             {
-                newPile.transform.position = pos.XYZ(-.01f);
-                newPile.transform.localPosition = newPile.transform.localPosition.XY().XYZ(-.01f);
+                newPile.transform.position = pos.XYZ(-.02f);
+                newPile.transform.localPosition = newPile.transform.localPosition.XY().XYZ(-.02f);
                 newPile.transform.eulerAngles = new Vector3(0, 0, Random.Range(0f, 360f));
                 newPile.GetComponent<DirtPile>().localPos = new Vector2(x, y);
                 dirtPiles.Add(newPile.transform);

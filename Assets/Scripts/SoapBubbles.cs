@@ -24,7 +24,7 @@ public class SoapBubbles : MonoBehaviour
     public void Shrink()
     {
         transform.localScale -= new Vector3(shrinkDTime, shrinkDTime, 0);
-        if(transform.localScale.x <= .3f && transform.localScale.y <= .3f)
+        if(transform.lossyScale.x <= .35f && transform.lossyScale.y <= .35f)
         {
             transform.localScale = new Vector3(1, 1, 1);
             transform.parent = Constants.pools.soapBubblePool;

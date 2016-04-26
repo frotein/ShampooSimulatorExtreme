@@ -10,6 +10,7 @@ public class HandLimiter : MonoBehaviour
     public Transform leftHand, rightHand;
     public Transform leftGrabbed, rightGrabbed;
     Transform lastFrameLeftGrabbed, lastFrameRightGrabbed;
+    public Transform[] debugList;
     // Use this for initialization
 	void Start () {
 	
@@ -20,6 +21,7 @@ public class HandLimiter : MonoBehaviour
     {
 	    if(handsLimiter != null)
         {
+            //Debug.Log(handsLimiter.length);
             handsLimiter.ApplyLimits();
         }
 
@@ -78,7 +80,9 @@ public class HandLimiter : MonoBehaviour
         {
             link.BroadcastMessage("SetGrabbed", true);
         }
-        MovementLimiter limiter = new MovementLimiter(leftHand, rightHand, lengthLimit, true, true, chain);
+
+        debugList = chain;
+        MovementLimiter limiter = new MovementLimiter(leftHand, rightHand, lengthLimit, true, true, chain, 0.175f * 2f);
         handsLimiter = limiter;
        // Debug.Log("created towel limit");
     }

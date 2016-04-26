@@ -8,7 +8,6 @@ public class TowelSegment : MonoBehaviour {
     bool grabbed;
     float drag;
     Rigidbody2D rb;
-    bool onPlayer, onHair;
     Vector2 distToPlayer;
    // WetTintCircleController tintController;
     Collider2D col;
@@ -25,18 +24,13 @@ public class TowelSegment : MonoBehaviour {
 	void Update ()
     {
         bool moving = false;
-        if (grabbed)
+        //if (grabbed)
         {
             Vector2 newDist = transform.position.XY() - Constants.player.transform.position.XY();
             if ((newDist - distToPlayer).magnitude > 0.25f)
             {               
                 distToPlayer = newDist;
-                moving = true;
-                /* if(onPlayer)
-                    Constants.player.status.DryBody();
-                if(onHair)
-                    Constants.player.status.DryHair(); */
-        
+                moving = true;        
             }
         }
         if (moving)
@@ -48,7 +42,7 @@ public class TowelSegment : MonoBehaviour {
                 {
                     if (col.OverlapPoint(t.position.XY()))
                     {
-                        t.GetComponent<WetnessPoint>().despawnTime -= Time.deltaTime;
+                        t.GetComponent<WetnessPoint>().despawnTime -= Time.deltaTime * 1.5f;
                         if (t.GetComponent<WetnessPoint>().despawnTime <= 0)
                             removedPoints.Add(t);
                     }
@@ -62,36 +56,7 @@ public class TowelSegment : MonoBehaviour {
         }
 	}
 
-    void OnTriggerEnter2D(Collider2D col)
-    {
-        if (col.gameObject.layer == LayerMask.NameToLayer("player"))
-        {
-            rb.drag = 500;
-            if (col.tag == "Hair")
-                onHair = true;
-            else
-                onPlayer = true;
-
-            //tintController = col.gameObject.GetComponent<WetTintCircleController>();
-
-           // Debug.Log(col.transform.name);
-        }
-    }
-
-    void OnTriggerExit2D(Collider2D col)
-    {
-        if (col.gameObject.layer == LayerMask.NameToLayer("player"))
-        {
-            rb.drag = drag;
-            if (col.tag == "Hair")
-                onHair = false;
-            else
-               onPlayer = false;
-
-            //tintController = null;
-        }
-    }
-
+    
     void SetGrabbed(bool g)
     {
         grabbed = g;

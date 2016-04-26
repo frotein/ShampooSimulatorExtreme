@@ -43,6 +43,7 @@ public class WaterManager : MonoBehaviour {
     {
         shaderController.balls.Remove(drop);
         drop.gameObject.layer = LayerMask.NameToLayer("Water");
+        drop.GetComponent<Rigidbody2D>().drag = 0;
         drop.gameObject.SetActive(false);
         drop.parent = sleepingPool;
     }    

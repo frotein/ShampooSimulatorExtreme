@@ -7,6 +7,8 @@ public class WetnessPoint : MonoBehaviour
 	// Use this for initialization
 	void Start ()
     {
+        
+        
         despawnTime = .25f;
 	}
 	
@@ -15,5 +17,5 @@ public class WetnessPoint : MonoBehaviour
 	
 	}
 
-   
+
 }

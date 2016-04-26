@@ -30,10 +30,27 @@ public class PlayersStatus : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
     {
+
+        float totalBodyWetness = 0;
+        foreach (WetTintCircleController controller in Constants.player.wetTintControllers)
+        {
+            if (controller.hair)
+            {
+                hairWetness = controller.positionTransforms.Count - 5;
+            }
+            else
+            {
+                totalBodyWetness += controller.positionTransforms.Count;
+            }
+        }
+        bodyWetness = totalBodyWetness - 42;
+
         SetBodyStatus();
         SetHairStatus();
         if (bodyStatus == Status.clean && hairStatus == Status.clean)
             winText.gameObject.SetActive(true);
+
+       
     }
 
     void SetBodyStatus()
@@ -133,7 +150,7 @@ public class PlayersStatus : MonoBehaviour {
     {
         if(bodyWetness < 100)
         {
-            bodyWetness += .5f * Time.deltaTime;
+     //       bodyWetness += .5f * Time.deltaTime;
         }
     }
 
@@ -141,7 +158,7 @@ public class PlayersStatus : MonoBehaviour {
     {
         if (hairWetness < 100)
         {
-            hairWetness += 1f * Time.deltaTime;
+     //       hairWetness += 1f * Time.deltaTime;
         }
     }
 
@@ -149,7 +166,7 @@ public class PlayersStatus : MonoBehaviour {
     {
         if (bodyWetness > 0)
         {
-            bodyWetness -= .5f;
+   //         bodyWetness -= .5f;
         }
     }
 
@@ -157,7 +174,7 @@ public class PlayersStatus : MonoBehaviour {
     {
         if (hairWetness > 0)
         {
-            hairWetness -= 1f;
+      //      hairWetness -= 1f;
         }
     }
 
@@ -165,7 +182,7 @@ public class PlayersStatus : MonoBehaviour {
     {
         if(hairDirtyness > 0)
         {
-            hairDirtyness -= 5f * Time.deltaTime;
+            hairDirtyness -= 2.5f * Time.deltaTime;
         }
     }
 }
