@@ -11,6 +11,7 @@ public class WaterDrop : MonoBehaviour {
     public WaterManager manager;
     public LayerMask player;
     public LayerMask ignorePlayer;
+    public WaterTile currentTile;
     Rigidbody2D rb;
     bool dripping;
     float radius;
@@ -70,7 +71,7 @@ public class WaterDrop : MonoBehaviour {
                     else
                     { if (!onFeet) Constants.player.status.AddToBodyWetness(); }
 
-                    if (col.tag != "Soap Bubbles" && col.tag != "dirt")
+                    if (col.tag != "Soap Bubbles" && col.tag != "dirt" && col.tag != "Tile")
                     {
                         if (topTransform != null)
                         {
@@ -83,6 +84,14 @@ public class WaterDrop : MonoBehaviour {
                        currentlyOn.Add(col.transform);
                         
                     }
+
+                  /*  if(col.tag == "Tile")
+                    {
+                    //    Debug.Log("went");
+                       // WaterTile tile = col.transform.GetComponent<WaterTile>();
+                        if (currentTile != tile && tile != null)
+                            SwitchWaterTile(tile);
+                    }*/
                 }
                
                 transform.parent = topTransform;
@@ -181,5 +190,15 @@ public class WaterDrop : MonoBehaviour {
         
     }
 
+    public void SwitchWaterTile(WaterTile newTile)
+    {
+        if(currentTile != null)
+            currentTile.water.Remove(transform);
+
+        if (!newTile.water.Contains(transform))
+            newTile.water.Add(transform);
+
+        currentTile = newTile;
+    }
    
 }
