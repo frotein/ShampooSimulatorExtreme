@@ -15,9 +15,7 @@ public class Metaball2DTextureShader : MonoBehaviour {
     //public int arrayWidth;
     ComputeBuffer buffer;
     Material mat;
-    Transform[,] tiles;
-    public List<Transform>[,] tileLists;
-    ComputeBuffer[,] tileBuffers;
+    public TileVariables[,] tileVariables;
     // test variables
     public Transform test1, test2;
 
@@ -64,17 +62,17 @@ public class Metaball2DTextureShader : MonoBehaviour {
         {
             for (int j = 0; j < yTiles ; j++)
             {
-                tileLists[i, j].Clear();  
+                tileVariables[i, j].balls.Clear();  
             }
         }
-
-        foreach (Transform t in balls)
+        Transform t = test1;
+        //foreach (Transform t in balls)
         {
             int xPos = 0;
             int yPos = 0;
             for (int i = 0; i < xTiles; i++)
             {
-                Transform tile = tiles[i, 0];
+                Transform tile = tileVariables[i, 0].transform;
                 if(t.position.x < tile.position.x + tile.lossyScale.x &&
                    t.position.x > tile.position.x - tile.lossyScale.x)
                 {
@@ -85,7 +83,7 @@ public class Metaball2DTextureShader : MonoBehaviour {
 
             for (int i = 0; i < yTiles; i++)
             {
-                Transform tile = tiles[0, i];
+                Transform tile = tileVariables[0, i].transform;
                 if (t.position.y < tile.position.y + tile.lossyScale.y &&
                     t.position.y > tile.position.y - tile.lossyScale.y)
                 {
@@ -93,34 +91,17 @@ public class Metaball2DTextureShader : MonoBehaviour {
                     i = yTiles;
                 }
             }
-            tileLists[xPos, yPos].Add(t);
+
+            //Debug.Log(t.name + "is in " + xPos + " : " + yPos);
+            tileVariables[xPos, yPos].balls.Add(t);
+
         }
     }
 
-    void SetBuffersAndMaterials()
-    {
-        for (int i = 0; i < xTiles; i++)
-        {
-            for (int j = 0; j < yTiles; j++)
-            {
-                tileBuffers[i, j].SetData(SetArrayData(tileLists[i,j]));
-                Material mat = tiles[i,j].GetComponent<Renderer>().material;
-                mat.SetBuffer("_Buffer", tileBuffers[i, j]);
-                mat.SetInt("_Width", tileLists[i, j].Count);
-                mat.SetFloat("_Radius", radius);
-                mat.SetColor("_WaterColor", waterColor);
-            }
-        }
-    }
     // releases all buffers when done
     void OnDestroy()
     {
-        buffer.Release();
-        if (tileBuffers != null)
-        {
-            foreach (ComputeBuffer b in tileBuffers)
-                b.Release();
-        }
+        buffer.Release();       
     }
 
     // non used code to be used when i make the shader tiling for optimizations
@@ -129,7 +110,7 @@ public class Metaball2DTextureShader : MonoBehaviour {
         Vector2 size = transform.GetComponent<Renderer>().bounds.size;
         Vector2 topCorner =  transform.position.XY() + (size / 2);
         Vector2 bottomCorner = transform.position.XY() - (size / 2);
-        tiles = new Transform[xTiles,yTiles];
+        tileVariables = new TileVariables[xTiles,yTiles];
         Vector2 halfSize = ((new Vector2((topCorner.x - bottomCorner.x) * (1f / ((float)xTiles)) + bottomCorner.x,
                                         (topCorner.y - bottomCorner.y) * (1f / ((float)yTiles)) + bottomCorner.y)) - bottomCorner) / 2;
         for (int y = 0; y < yTiles; y++)
@@ -140,27 +121,21 @@ public class Metaball2DTextureShader : MonoBehaviour {
             {
                 float xI = ((float)x) / ((float)xTiles);
                 GameObject temp = GameObject.Instantiate(tilePrefab);
+                temp.name = "Tile " + x + "" + y;
                 temp.transform.position = new Vector2((topCorner.x - bottomCorner.x) * xI + bottomCorner.x,
                                                       (topCorner.y - bottomCorner.y) * yI + bottomCorner.y) + halfSize;
                 temp.transform.position = temp.transform.position.XY().XYZ(transform.position.z);
                 temp.transform.parent = transform;
                 temp.transform.localScale = new Vector3(1f / ((float)xTiles), 1f / (float)yTiles, 1);
-                tiles[x, y] = temp.transform;
+
+                TileVariables tv = temp.GetComponent<TileVariables>();
+                tv.SetRadius(radius);
+                tv.SetWaterColor(waterColor);
+                tileVariables[x, y] = tv;
+                tv.x = x;
+                tv.y = y;
             }
         }
-
-        tileLists = new List<Transform>[xTiles, yTiles];
-        tileBuffers = new ComputeBuffer[xTiles, yTiles];
-        for (int i = 0; i < xTiles; i++)
-        {         
-            for (int j = 0; j < yTiles; j++)
-            {
-                ComputeBuffer buffer = new ComputeBuffer(50, sizeof(float) * 2, ComputeBufferType.Default);
-                tileBuffers[i, j] = buffer;
-                tileLists[i, j] = new List<Transform>();
-            }
-        }
-
     }
 
 
