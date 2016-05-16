@@ -44,39 +44,35 @@ public class Metaball2DTextureShader : MonoBehaviour {
         return temp;
     }
 	// Update is called once per frame
-	void Update ()
+	void FixedUpdate ()
     {
         
         SetTilesLists();
         //SetBuffersAndMaterials();
-        buffer.SetData(SetArrayData(balls));
-        mat.SetBuffer("_Buffer", buffer);
-        mat.SetFloat("_Radius", radius);
-        mat.SetInt("_Width", balls.Count);
+        //buffer.SetData(SetArrayData(balls));
+       // mat.SetBuffer("_Buffer", buffer);
+       // mat.SetFloat("_Radius", radius);
+     //   mat.SetInt("_Width", balls.Count);
 
     }
     // assigns each ball to a tile list depending on its location
     void SetTilesLists()
     {
-        for(int i = 0; i < xTiles; i++)
+        foreach (TileVariables tv in tileVariables)
+            tv.balls.Clear();
+        //Transform t = test1;
+        foreach (Transform t in balls)
         {
-            for (int j = 0; j < yTiles ; j++)
-            {
-                tileVariables[i, j].balls.Clear();  
-            }
-        }
-        Transform t = test1;
-        //foreach (Transform t in balls)
-        {
-            int xPos = 0;
+            int xPos =0;
             int yPos = 0;
             for (int i = 0; i < xTiles; i++)
             {
                 Transform tile = tileVariables[i, 0].transform;
-                if(t.position.x < tile.position.x + tile.lossyScale.x &&
-                   t.position.x > tile.position.x - tile.lossyScale.x)
+                Bounds b = tile.GetComponent<TileVariables>().bounds;
+                if(t.position.x < b.max.x &&
+                   t.position.x > b.min.x)
                 {
-                    xPos = i;
+                    xPos =i;
                     i = xTiles;
                 }
             }
@@ -84,8 +80,9 @@ public class Metaball2DTextureShader : MonoBehaviour {
             for (int i = 0; i < yTiles; i++)
             {
                 Transform tile = tileVariables[0, i].transform;
-                if (t.position.y < tile.position.y + tile.lossyScale.y &&
-                    t.position.y > tile.position.y - tile.lossyScale.y)
+                Bounds b = tile.GetComponent<TileVariables>().bounds;
+                if (t.position.y < b.max.y &&
+                    t.position.y > b.min.y)
                 {
                     yPos = i;
                     i = yTiles;
@@ -93,8 +90,9 @@ public class Metaball2DTextureShader : MonoBehaviour {
             }
 
             //Debug.Log(t.name + "is in " + xPos + " : " + yPos);
+           
             tileVariables[xPos, yPos].balls.Add(t);
-
+            
         }
     }
 
@@ -104,7 +102,7 @@ public class Metaball2DTextureShader : MonoBehaviour {
         buffer.Release();       
     }
 
-    // non used code to be used when i make the shader tiling for optimizations
+    // tiles shader to be more optimized, passes nieghbors into each tile variable
     void SetUpTiles()
     {
         Vector2 size = transform.GetComponent<Renderer>().bounds.size;
@@ -113,6 +111,8 @@ public class Metaball2DTextureShader : MonoBehaviour {
         tileVariables = new TileVariables[xTiles,yTiles];
         Vector2 halfSize = ((new Vector2((topCorner.x - bottomCorner.x) * (1f / ((float)xTiles)) + bottomCorner.x,
                                         (topCorner.y - bottomCorner.y) * (1f / ((float)yTiles)) + bottomCorner.y)) - bottomCorner) / 2;
+
+        // places all tiles
         for (int y = 0; y < yTiles; y++)
         {          
             float yI = ((float)y) / ((float)yTiles); 
@@ -127,6 +127,9 @@ public class Metaball2DTextureShader : MonoBehaviour {
                 temp.transform.position = temp.transform.position.XY().XYZ(transform.position.z);
                 temp.transform.parent = transform;
                 temp.transform.localScale = new Vector3(1f / ((float)xTiles), 1f / (float)yTiles, 1);
+                //temp.transform.parent = null;
+                //temp.transform.localScale += new Vector3(2 * radius, 2 * radius);
+                temp.transform.parent = transform;
 
                 TileVariables tv = temp.GetComponent<TileVariables>();
                 tv.SetRadius(radius);
@@ -134,6 +137,24 @@ public class Metaball2DTextureShader : MonoBehaviour {
                 tileVariables[x, y] = tv;
                 tv.x = x;
                 tv.y = y;
+            }
+        }
+
+        // assignes all neighbors for tiles
+        for(int x = 0; x < xTiles; x++)
+        {
+            for(int y = 0; y < yTiles; y++)
+            {
+                TileVariables tv = tileVariables[x, y];
+                int neighborCount = 4;
+                if (x == 0 || x == xTiles - 1) neighborCount--;
+                if (y == 0 || y == yTiles - 1) neighborCount--;
+                tv.neighbors = new TileVariables[neighborCount];
+                int added = 0;
+                if(x != 0) { tv.neighbors[added] = tileVariables[x - 1, y]; added++; }
+                if(x != xTiles - 1) { tv.neighbors[added] = tileVariables[x + 1, y]; added++; }
+                if (y != 0) { tv.neighbors[added] = tileVariables[x, y - 1]; added++; }
+                if (y != yTiles - 1) { tv.neighbors[added] = tileVariables[x, y + 1]; }
             }
         }
     }
