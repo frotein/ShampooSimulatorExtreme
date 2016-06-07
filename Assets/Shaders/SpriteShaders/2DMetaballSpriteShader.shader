@@ -89,11 +89,11 @@
 		
 		float intensity = totalIntensity(i.worldPos);
 
-		if (intensity < 1 - _BrimSize)
-			discard;
+		//if (intensity < 1 - _BrimSize)
+		//	discard;
 
 		if (intensity < 1)
-			return _BrimColor;
+			discard;//return _BrimColor;
 
 		return _WaterColor;
 	}

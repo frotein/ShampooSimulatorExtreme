@@ -15,7 +15,7 @@ public class TileVariables : MonoBehaviour {
     // Use this for initialization
     void Start()
     {
-        buffer = new ComputeBuffer(100, sizeof(float) * 2, ComputeBufferType.Default);
+        buffer = new ComputeBuffer(1000, sizeof(float) * 2, ComputeBufferType.Default);
         balls = new List<Transform>();
         mat = transform.GetComponent<SpriteRenderer>().material;
         bounds = transform.GetComponent<SpriteRenderer>().bounds;
@@ -24,19 +24,12 @@ public class TileVariables : MonoBehaviour {
     void FixedUpdate()
     {
 
-        allBalls = new List<Transform>(balls);
+       
 
-        foreach (TileVariables tv in neighbors)
-        {
-            if(tv != null)
-                allBalls.AddRange(tv.balls);
-        }
-
-        Vector2[] pts = SetArrayData(allBalls);
-        //if (allBalls.Count != pts.Length) Debug.Log("tile " + x + " " + y + "is off");
+        Vector2[] pts = SetArrayData(balls);
         buffer.SetData(pts);
         mat.SetBuffer("_Buffer", buffer);
-        mat.SetInt("_Width", allBalls.Count);
+        mat.SetInt("_Width", balls.Count);
 
        // if (x == 5 && y == 5) Debug.Log(transform.position + " offset " +  transform.lossyScale);           
     }

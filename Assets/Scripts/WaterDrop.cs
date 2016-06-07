@@ -45,7 +45,8 @@ public class WaterDrop : MonoBehaviour {
                 dripping = false;
                 transform.parent = manager.activePool;
                 transform.localScale = new Vector3(1, 1, 1);
-                rb.simulated = true;
+                //rb.simulated = true;
+                rb.drag = 0;
                 currentlyOn.Clear();
             }
             else
@@ -84,14 +85,6 @@ public class WaterDrop : MonoBehaviour {
                        currentlyOn.Add(col.transform);
                         
                     }
-
-                  /*  if(col.tag == "Tile")
-                    {
-                    //    Debug.Log("went");
-                       // WaterTile tile = col.transform.GetComponent<WaterTile>();
-                        if (currentTile != tile && tile != null)
-                            SwitchWaterTile(tile);
-                    }*/
                 }
                
                 transform.parent = topTransform;
@@ -110,8 +103,9 @@ public class WaterDrop : MonoBehaviour {
                 {
                     dripping = true;
                     transform.parent = col.transform;
-                    rb.velocity = new Vector2(0, 0);
-                    rb.simulated = false;
+                    rb.drag = 5f;
+                    rb.velocity = new Vector2(0, -1f);
+                  //  rb.simulated = false;
                 }
             }   
         }
@@ -151,10 +145,10 @@ public class WaterDrop : MonoBehaviour {
 
         wait--;
 
-        if (dripping)
+      /*  if (dripping)
         {
-            Vector2 newPosition = transform.position.XY() + new Vector2(0, -dripSpeed);
-            RaycastHit2D hit = Physics2D.Linecast(transform.position.XY(), newPosition, Constants.player.obstacleLayer);
+          //  Vector2 newPosition = transform.position.XY() + new Vector2(0, -dripSpeed);
+         //   RaycastHit2D hit = Physics2D.Linecast(transform.position.XY(), newPosition, Constants.player.obstacleLayer);
             if(hit.normal != Vector2.zero)
             {
                 if(transform.position.x < 0)
@@ -168,15 +162,15 @@ public class WaterDrop : MonoBehaviour {
         else
         {
             if (!rb.simulated) rb.simulated = true;
-        }
+        }*/
 
-        if (Physics2D.OverlapPoint(transform.position.XY(), Constants.player.obstacleLayer))
+        /*if (Physics2D.OverlapPoint(transform.position.XY(), Constants.player.obstacleLayer))
             inWallCheck++;
         else
             inWallCheck = 0;
 
         if(inWallCheck > 50)
-            manager.DespawnDrop(transform);
+            manager.DespawnDrop(transform);*/
     }
 
     void OnCollisionEnter2D(Collision2D col)
