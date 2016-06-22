@@ -12,14 +12,16 @@ public class Metaball2DTextureShader : MonoBehaviour {
     public bool useTiling;
     public int xTiles, yTiles;
     public GameObject tilePrefab;
+    Vector2 tileLength;
+    Vector2 bottomCorner;
     //public int arrayWidth;
     ComputeBuffer buffer;
     Material mat;
     public TileVariables[,] tileVariables;
     // test variables
     public Transform test1, test2;
-
-
+    public Vector2 overlap;
+    float radiusSqr;
     // Use this for initialization
     void Start () 
     {
@@ -31,6 +33,8 @@ public class Metaball2DTextureShader : MonoBehaviour {
         balls = new List<Transform>();
         if(useTiling)
             SetUpTiles();
+
+        radiusSqr = Mathf.Sqrt(radius) * 5;
     }
 
     // puts the positions in an array to be sent
@@ -44,7 +48,7 @@ public class Metaball2DTextureShader : MonoBehaviour {
         return temp;
     }
 	// Update is called once per frame
-	void FixedUpdate ()
+	void Update ()
     {        
         SetTilesLists();
     }
@@ -53,42 +57,45 @@ public class Metaball2DTextureShader : MonoBehaviour {
     {
         foreach (TileVariables tv in tileVariables)
             tv.balls.Clear();
-        //Transform t = test1;
+       // Transform t = test1;
+       
+        
         foreach (Transform t in balls)
         {
             List<int> xPos = new List<int>();
             List<int> yPos = new List<int>();
-            for (int i = 0; i < xTiles; i++)
+
+            // calculate what tile the center is in
+            Vector2 pos = (t.position.XY() - bottomCorner);
+            pos.x /= tileLength.x;
+            pos.y /= tileLength.y;
+
+            // check position with some leeway for overlappping
+            xPos.Add(Mathf.FloorToInt(pos.x + overlap.x));
+            int pos2X = Mathf.FloorToInt(pos.x - overlap.x);
+            if(!xPos.Contains(pos2X))
             {
-                Transform tile = tileVariables[i, 0].transform;
-                Bounds b = tile.GetComponent<TileVariables>().bounds;
-                if(t.position.x < b.max.x &&
-                   t.position.x > b.min.x)
-                {
-                    xPos.Add(i);
- //                   i = xTiles;
-                }
+                xPos.Add(pos2X);
             }
 
-            for (int i = 0; i < yTiles; i++)
+            yPos.Add(Mathf.FloorToInt(pos.y + overlap.y));
+            int pos2Y = Mathf.FloorToInt(pos.y - overlap.y);
+            if (!yPos.Contains(pos2Y))
             {
-                Transform tile = tileVariables[0, i].transform;
-                Bounds b = tile.GetComponent<TileVariables>().bounds;
-                if (t.position.y < b.max.y &&
-                    t.position.y > b.min.y)
-                {
-                    yPos.Add(i);
-//                    i = yTiles;
-                }
+                yPos.Add(pos2Y);
             }
 
-            //Debug.Log(t.name + "is in " + xPos + " : " + yPos);
             foreach (int x in xPos)
             {
-                foreach(int y in yPos)
-                tileVariables[x, y].balls.Add(t);
+                if (x < xTiles)
+                {
+                    foreach (int y in yPos)
+                    { if (y < yTiles) tileVariables[x, y].balls.Add(t); }
+                }
             }
+
         }
+        
     }
 
     // releases all buffers when done
@@ -101,27 +108,29 @@ public class Metaball2DTextureShader : MonoBehaviour {
     void SetUpTiles()
     {
         Vector2 size = transform.GetComponent<Renderer>().bounds.size;
+        
         Vector2 topCorner =  transform.position.XY() + (size / 2);
-        Vector2 bottomCorner = transform.position.XY() - (size / 2);
+        bottomCorner = transform.position.XY() - (size / 2);
         tileVariables = new TileVariables[xTiles,yTiles];
-        Vector2 halfSize = ((new Vector2((topCorner.x - bottomCorner.x) * (2f / ((float)(xTiles + 1))) + bottomCorner.x,
-                                        (topCorner.y - bottomCorner.y) * (2f / ((float)(yTiles + 1))) + bottomCorner.y)) - bottomCorner) / 2;
+        Vector2 halfSize = ((new Vector2((topCorner.x - bottomCorner.x) * (2f / ((float)(xTiles))) + bottomCorner.x,
+                                        (topCorner.y - bottomCorner.y) * (2f / ((float)(yTiles))) + bottomCorner.y)) - bottomCorner) / 2;
 
         // places all tiles
         for (int y = 0; y < yTiles; y++)
         {          
-            float yI = ((float)y) / (((float)yTiles + 1)); 
+            float yI = ((float)y) / (((float)yTiles)); 
           
             for (int x = 0; x < xTiles; x++)
             {
-                float xI = ((float)x) / ((float)(xTiles + 1));
+                float xI = ((float)x) / ((float)(xTiles));
                 GameObject temp = GameObject.Instantiate(tilePrefab);
                 temp.name = "Tile " + x + "" + y;
                 temp.transform.position = new Vector2((topCorner.x - bottomCorner.x) * xI + bottomCorner.x,
-                                                      (topCorner.y - bottomCorner.y) * yI + bottomCorner.y) + halfSize;
+                                                      (topCorner.y - bottomCorner.y) * yI + bottomCorner.y) + halfSize / 2f;
                 temp.transform.position = temp.transform.position.XY().XYZ(transform.position.z);
                 temp.transform.parent = transform;
-                temp.transform.localScale = new Vector3(2f / ((float)(xTiles + 1)), 2f / ((float)yTiles + 1), 1);
+                temp.transform.localScale = new Vector3(1f / ((float)(xTiles)), 1f / ((float)yTiles), 1);
+                tileLength = temp.GetComponent<Renderer>().bounds.size;
                 //temp.transform.parent = null;
                 //temp.transform.localScale += new Vector3(2 * radius, 2 * radius);
                 temp.transform.parent = transform;

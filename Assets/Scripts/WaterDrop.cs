@@ -34,6 +34,14 @@ public class WaterDrop : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
     {
+        
+        if (despawnTime <= 0)
+            manager.DespawnDrop(transform);
+
+	}
+
+    void DrippingPhysics()
+    {
         inHair = false;
         despawnTime -= Time.deltaTime;
         if (dripping)
@@ -81,22 +89,22 @@ public class WaterDrop : MonoBehaviour {
                         }
                         else
                             topTransform = col.transform;
-                       
-                       currentlyOn.Add(col.transform);
-                        
+
+                        currentlyOn.Add(col.transform);
+
                     }
                 }
-               
-                transform.parent = topTransform;
-                
 
-               
+                transform.parent = topTransform;
+
+
+
             }
-            
+
         }
         else
         {
-            Collider2D[] cols = Physics2D.OverlapCircleAll(transform.position.XY(), radius,player);
+            Collider2D[] cols = Physics2D.OverlapCircleAll(transform.position.XY(), radius, player);
             foreach (Collider2D col in cols)
             {
                 if (col.tag != "Soap Bubbles" && col.tag != "dirt")
@@ -105,19 +113,16 @@ public class WaterDrop : MonoBehaviour {
                     transform.parent = col.transform;
                     rb.drag = 5f;
                     rb.velocity = new Vector2(0, -1f);
-                  //  rb.simulated = false;
+                    //  rb.simulated = false;
                 }
-            }   
+            }
         }
 
-        if (despawnTime <= 0)
-            manager.DespawnDrop(transform);
-
-	}
-
+    }
     void FixedUpdate()
     {
-        foreach(Transform t in currentlyOn)
+        DrippingPhysics();
+        foreach (Transform t in currentlyOn)
         {
             WetTintCircleController circleController = t.GetComponent<WetTintCircleController>();
             if(circleController != null && wait <= 0)
@@ -144,33 +149,6 @@ public class WaterDrop : MonoBehaviour {
         }
 
         wait--;
-
-      /*  if (dripping)
-        {
-          //  Vector2 newPosition = transform.position.XY() + new Vector2(0, -dripSpeed);
-         //   RaycastHit2D hit = Physics2D.Linecast(transform.position.XY(), newPosition, Constants.player.obstacleLayer);
-            if(hit.normal != Vector2.zero)
-            {
-                if(transform.position.x < 0)
-                    newPosition = transform.position + new Vector3(dripSpeed,0,0);
-                else
-                    newPosition = transform.position + new Vector3(-dripSpeed, 0, 0);
-            }
-           
-            transform.position = newPosition;           
-        }
-        else
-        {
-            if (!rb.simulated) rb.simulated = true;
-        }*/
-
-        /*if (Physics2D.OverlapPoint(transform.position.XY(), Constants.player.obstacleLayer))
-            inWallCheck++;
-        else
-            inWallCheck = 0;
-
-        if(inWallCheck > 50)
-            manager.DespawnDrop(transform);*/
     }
 
     void OnCollisionEnter2D(Collision2D col)
