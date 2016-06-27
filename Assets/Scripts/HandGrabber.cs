@@ -38,6 +38,7 @@ public class HandGrabber : MonoBehaviour {
             GameObject tempGrabbedGO = null;
             // grab check
             Collider2D[] cols = Physics2D.OverlapCircleAll(handCenter.position.XY(), 0.15f);
+            GameObject staticGrabbed = null;
             foreach (Collider2D col in cols)
             {
                 if (col.tag == "Grabbable")
@@ -49,12 +50,21 @@ public class HandGrabber : MonoBehaviour {
                         distFromGrab = dist;                           
                     }
                 }
+
+                if(col.tag == "Ground")
+                {
+                    staticGrabbed = col.gameObject;
+                }
             }
 
-            if (tempGrabbedGO != null)
+            if (tempGrabbedGO != null) // if the other hand is not holding the object, grab it
             {
                 if(!OtherHandIsHolding(tempGrabbedGO.transform))
                     Grabbed(tempGrabbedGO);
+            }
+            else
+            {
+                Grabbed(staticGrabbed);
             }
         }
 
@@ -62,7 +72,7 @@ public class HandGrabber : MonoBehaviour {
         if(grabbed && grabbedGO != null)
         {
             
-            if (hand.openedThisFrame())
+            if (hand.openedThisFrame()) // if you ope your hand, release the object
             {
 
                 // if you grabbed the soap, check the apply soap as grabbed
@@ -83,9 +93,9 @@ public class HandGrabber : MonoBehaviour {
 
             if(hand.closedThisFrame())
             {                
-                if (grabbedGO.name == "SoapBar") // if youare holding soap, fling it from your hand
+                if (grabbedGO.name == "SoapBar") // if you are holding soap ...
                 {
-                    // if you grabbed the soap, check the apply soap as grabbed
+                    // ...  check the apply soap as grabbed
                     ApplySoap soap = grabbedGO.GetComponent<ApplySoap>();
                     if (soap != null)
                     {
@@ -93,30 +103,31 @@ public class HandGrabber : MonoBehaviour {
                     }
 
                     Vector2 SlipDirAndPower = grabbedGO.transform.right * 10;
+                    
                     // randomly sets power and direction of flinging soap
                     SlipDirAndPower *= Random.Range(0.5f, 1.5f);
                     if (Random.value > 0.5f)
                         SlipDirAndPower *= -1;
-
-                    Release(SlipDirAndPower);
+                    
+                   Release(SlipDirAndPower); // ... fling it from your hand
                 }             
             }
-            if (grabbedGO != null)
+
+            if (grabbedGO.name == "shampoo") // if you are grabbing shampoo ...
             {
                 float squeezeAmt = 0;
+
                 if (left)
                     squeezeAmt = Input.GetAxis("LeftHand");
                 else
                     squeezeAmt = Input.GetAxis("RightHand");
 
-                if (grabbedGO.name == "shampoo" &&  squeezeAmt > Constants.player.squeezeAmount)
+                if(squeezeAmt > Constants.player.squeezeAmount) // ... and are squeezing hard enough ...
                 {
                     ShampooBottle bottle = grabbedGO.GetComponent<ShampooBottle>();
-                    
-
-                    bottle.SqueezedBottle(squeezeAmt);
+                    bottle.SqueezedBottle(squeezeAmt); // shoot out shampoo
                 }
-            }
+            }           
         }
 
         // waits a frame to turn on grabbed collider so it shoots in the correct direction
@@ -154,7 +165,7 @@ public class HandGrabber : MonoBehaviour {
         if (grabbedGO.transform.childCount > 0)
         {
             triggerCollider = grabbedGO.transform.GetChild(0).GetComponent<Collider2D>();
-            if(triggerCollider != null)
+            if(triggerCollider != null && !grabbedStatic)
             {
                 triggerCollider.enabled = false;
             }
@@ -174,11 +185,11 @@ public class HandGrabber : MonoBehaviour {
         }
 
         grabbedGO.transform.parent = transform;
-        grabbedGO.GetComponent<Collider2D>().enabled = false;
+        if(!grabbedStatic)
+            grabbedGO.GetComponent<Collider2D>().enabled = false;
+
         hand.grabbing = true;
-        if (IsClosestAngle(grabbedGO.transform))
-            plusAngle = 0;
-        else plusAngle = 180;
+       
     }
 
 

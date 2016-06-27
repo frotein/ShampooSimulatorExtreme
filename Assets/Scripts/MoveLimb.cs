@@ -19,15 +19,15 @@ public class MoveLimb : MonoBehaviour {
 
     public Transform maxLegs; // a transform designationg how high you can lift the legs up
 
-    public Collider2D movableArea;
     public List<Transform> movementLimits; // hard coded limitations for the limbs
-    List<bool> startingLimitSides;
+    List<bool> startingLimitSides; // what side each limb starts on, used to check if we are going beyond a movement limit
     public float middleFix = 0.45f;
-    public bool arms;
+
+    public bool arms; // are these the hands?
     bool moving;
-    bool startsLeft;
-    Vector2 movement;
-	Vector3 storedLocalPosition;
+    bool startsLeft;   
+    Vector2 movement; // the movement of this frame
+    Vector3 storedLocalPosition; // the local position ... stored at the beginning
 	public float length = 1.1f;
 	GameObject testPoint;
     public PushAway push;
@@ -41,7 +41,7 @@ public class MoveLimb : MonoBehaviour {
 	void Start () 
 	{
         storedLocalPosition = transform.localPosition;
-        //Debug.Log(upperLeg.lossyScale.y);
+
         startsLeft = isLeft(thigh.position.XY(), transform.position.XY(), knee.position.XY());
         if(movementLimits != null)
         {
@@ -64,9 +64,14 @@ public class MoveLimb : MonoBehaviour {
         SetMovementVector();
         bool pushingAgainst = false;
 
-        // if we are pushing against the ground, signal that we are
-        if (Physics2D.Linecast(leftPt.position.XY() + movement * 5f, rightPt.position.XY() + movement * 5f, Constants.player.obstacleLayer | Constants.player.grabbableLayer))
-        { pushingAgainst = true; }
+        RaycastHit2D hit = Physics2D.Linecast(leftPt.position.XY() + movement * 5f, 
+                                              rightPt.position.XY() + movement * 5f, 
+                                              Constants.player.obstacleLayer | Constants.player.grabbableLayer);
+        // if we are pushing against the ground ... 
+        if (hit)
+        {
+            pushingAgainst = true; //signal that we are pushing
+        }
 
         // if we are pushing against, store up movement, like preparing to push off of ground
         if (pushingAgainst && !stoppedByMax)
@@ -84,13 +89,6 @@ public class MoveLimb : MonoBehaviour {
 
         if (!arms) // if these are the legs, we dont want them to be able to clip through the player, so slide along any surface that is the player
         {
-           /* RaycastHit2D hit = Physics2D.Linecast(transform.position.XY(), transform.position.XY() + movement, Constants.player.chestLayer);
-           if(hit)
-            {
-                Vector2 perp = new Vector2(-hit.normal.y, hit.normal.x);
-                Vector2 newMovement = Vector3.Project(movement.XYZ(0), perp.XYZ(0)).XY();
-                movement = newMovement;
-            }*/ 
            // also if these are legs, check to make sure the new height isnt over the max height, if it is slide along the max height
            if(isLeft(maxLegs.position.XY(), maxLegs.position.XY() + maxLegs.right.XY(), transform.position.XY() + movement) != legsStartLeft)
             {
@@ -126,7 +124,7 @@ public class MoveLimb : MonoBehaviour {
         storedKneePosition = knee.position.XY();
         prevPosition = transform.position.XY();
     }
-
+    // sets the 2 segments of the limb based on the knee position
     void SetSegments()
     {
         Vector2 newPt = Calculate3rdPoint(length, thigh.position.XY(), transform.position.XY(), knee.position.XY());
@@ -167,28 +165,20 @@ public class MoveLimb : MonoBehaviour {
 
     }
 
+    // moves the limb based on the movement vector
     void moveLimb()
     {
-        stoppedByMax = false;
-        bool canMoveTo = true;
-            
-        /*if (movableArea != null)
-        {
-            if (!movableArea.OverlapPoint(transform.position.XY() + movement)) { canMoveTo = false; stoppedByMax = true; }
-        }*/
+        stoppedByMax = false;        
+        transform.position += movement.XYZ(0);
 
-        if (canMoveTo)
+        float dist = Vector2.Distance(thigh.position.XY(), transform.position.XY());
+        // if the arm is bigger than the 2 limbs, then scale it back so it looks ok
+        if (dist > length + length)
         {
-            transform.position += movement.XYZ(0);
-
-            float dist = Vector2.Distance(thigh.position.XY(), transform.position.XY());
-            if (dist > length + length)
-            {
-                Vector2 dir = (transform.position.XY() - thigh.position.XY()).normalized;
-                transform.position = (thigh.position.XY() + dir * (length + length)).XYZ(transform.position.z);
-                stoppedByMax = true;
-            }
-        }
+            Vector2 dir = (transform.position.XY() - thigh.position.XY()).normalized;
+            transform.position = (thigh.position.XY() + dir * (length + length)).XYZ(transform.position.z);
+            stoppedByMax = true;
+        }        
     }
 
     // if point c is left of line defined by pts a and b
@@ -196,11 +186,7 @@ public class MoveLimb : MonoBehaviour {
     {
         return ((b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x)) > 0;
     }
-    void UpdatePosition()
-	{
-		//transform.localPosition = storedLocalPosition;
-	}
-
+    
     public bool Moved()
     {
         return moved;
