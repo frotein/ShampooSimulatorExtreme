@@ -26,11 +26,11 @@ public class RotateTorso : MonoBehaviour {
         if ( (!chestCol.OverlapPoint(leftThigh.position.XY()) || leanDir < 0) && (!chestCol.OverlapPoint(rightThigh.position.XY()) || leanDir > 0))
             transform.eulerAngles += new Vector3(0, 0, leanRate * leanDir * Time.deltaTime);
 
-        Transform limit = right.GetWrongSideLimit();
+        Transform limit = null; //right.GetWrongSideLimit();
         if (limit != null)
             right.transform.position = PointOnLine(limit.position.XY(), limit.position.XY() + limit.right.XY(), right.transform.position.XY());
 
-        limit = left.GetWrongSideLimit();
+        limit = null; // left.GetWrongSideLimit();
         if (limit != null)
             left.transform.position = PointOnLine(limit.position.XY(), limit.position.XY() + limit.right.XY(), left.transform.position.XY());
 

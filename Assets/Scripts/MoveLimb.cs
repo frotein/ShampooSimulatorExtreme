@@ -42,7 +42,7 @@ public class MoveLimb : MonoBehaviour {
 	{
         storedLocalPosition = transform.localPosition;
 
-        startsLeft = isLeft(thigh.position.XY(), transform.position.XY(), knee.position.XY());
+        startsLeft = false;// isLeft(thigh.position.XY(), transform.position.XY(), knee.position.XY());
         if(movementLimits != null)
         {
             startingLimitSides = new List<bool>();
@@ -82,7 +82,7 @@ public class MoveLimb : MonoBehaviour {
         {
             if (storedMovement != Vector2.zero) // if we are no longer pushing, release the power, causing something like a natural jump
             {
-                rb.AddForceAtPosition(-storedMovement * 1000, transform.position);
+             //   rb.AddForceAtPosition(-storedMovement * 1000, transform.position);
                 storedMovement = Vector2.zero;
             }
         }
@@ -97,7 +97,7 @@ public class MoveLimb : MonoBehaviour {
         }
         movement = LimitMovement(movement);
         // move the linbs from the movement vector
-        moveLimb();
+       // moveLimb();
 
          
         
@@ -120,7 +120,7 @@ public class MoveLimb : MonoBehaviour {
     void LateUpdate()
     {
         // move the limb segments so it look correct
-        SetSegments();
+       // SetSegments();
         storedKneePosition = knee.position.XY();
         prevPosition = transform.position.XY();
     }
@@ -236,12 +236,18 @@ public class MoveLimb : MonoBehaviour {
         int i = 0;
         foreach (Transform movementLimit in movementLimits)
         {
-            bool left = isLeft(movementLimit.position.XY(), movementLimit.position.XY() + movementLimit.right.XY(), transform.position.XY() + move);
-            if (left != startingLimitSides[i])
+            if (startingLimitSides != null)
             {
-                move = Vector3.Project(movement.XYZ(0), movementLimit.right).XY();
+                if (movementLimit != null && i < startingLimitSides.Count)
+                {
+                    bool left = isLeft(movementLimit.position.XY(), movementLimit.position.XY() + movementLimit.right.XY(), transform.position.XY() + move);
+                    if (left != startingLimitSides[i])
+                    {
+                        move = Vector3.Project(movement.XYZ(0), movementLimit.right).XY();
+                    }
+                    i++;
+                }
             }
-            i++;
         }
         
         return move;

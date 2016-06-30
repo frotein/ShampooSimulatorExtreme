@@ -56,15 +56,17 @@ public class HandGrabber : MonoBehaviour {
                     staticGrabbed = col.gameObject;
                 }
             }
-
+            
             if (tempGrabbedGO != null) // if the other hand is not holding the object, grab it
             {
-                if(!OtherHandIsHolding(tempGrabbedGO.transform))
+                Debug.Log(tempGrabbedGO.name);
+                if (!OtherHandIsHolding(tempGrabbedGO.transform))
                     Grabbed(tempGrabbedGO);
             }
             else
             {
-                Grabbed(staticGrabbed);
+                if(staticGrabbed != null)
+                    Grabbed(staticGrabbed);
             }
         }
 
