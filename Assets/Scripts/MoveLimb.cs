@@ -12,7 +12,7 @@ public class MoveLimb : MonoBehaviour {
 	public Transform knee;
 	public Transform upperLeg;
 	public Transform lowerLeg;
-    
+    public float minimumMovement; // the smallest amount of movement needed to trigger the joint mover
     public Transform leftPt, rightPt;
     public Transform handReset;
     public Transform flipArms; // a transform designation when the arms flip their elbow to look natural
@@ -29,7 +29,7 @@ public class MoveLimb : MonoBehaviour {
     Vector2 movement; // the movement of this frame
     Vector3 storedLocalPosition; // the local position ... stored at the beginning
 	public float length = 1.1f;
-	GameObject testPoint;
+	public GameObject testPoint;
     public PushAway push;
     Vector2 storedKneePosition;
     Vector2 storedMovement;
@@ -37,11 +37,14 @@ public class MoveLimb : MonoBehaviour {
     bool stoppedByMax;
     bool legsStartLeft;
     bool moved;
+    MoveLimbToPoint jointMover;
+    float minimumMovementSqr;
+    public bool classicMovement;
 	// Use this for initialization
 	void Start () 
 	{
         storedLocalPosition = transform.localPosition;
-
+        minimumMovementSqr = minimumMovement * minimumMovement;
         startsLeft = false;// isLeft(thigh.position.XY(), transform.position.XY(), knee.position.XY());
         if(movementLimits != null)
         {
@@ -55,6 +58,7 @@ public class MoveLimb : MonoBehaviour {
             legsStartLeft = isLeft(maxLegs.position.XY(), maxLegs.position.XY() + maxLegs.right.XY(), transform.position.XY());
 
         moving = arms;
+        jointMover = transform.GetComponent<MoveLimbToPoint>();
 	}
 	
 	// Update is called once per frame
@@ -62,45 +66,62 @@ public class MoveLimb : MonoBehaviour {
 	{
         // Get the movement vector from the corrosponding analog stick
         SetMovementVector();
-        bool pushingAgainst = false;
-
-        RaycastHit2D hit = Physics2D.Linecast(leftPt.position.XY() + movement * 5f, 
-                                              rightPt.position.XY() + movement * 5f, 
-                                              Constants.player.obstacleLayer | Constants.player.grabbableLayer);
-        // if we are pushing against the ground ... 
-        if (hit)
+        if (classicMovement && jointMover != null)
         {
-            pushingAgainst = true; //signal that we are pushing
-        }
-
-        // if we are pushing against, store up movement, like preparing to push off of ground
-        if (pushingAgainst && !stoppedByMax)
-        {
-            storedMovement += movement; 
+            jointMover.SetUpperMotorSpeed(movement.y * 10f);
+            jointMover.SetLowerMotorSpeed(movement.x * -10f);
         }
         else
         {
-            if (storedMovement != Vector2.zero) // if we are no longer pushing, release the power, causing something like a natural jump
+            bool pushingAgainst = false;
+
+            RaycastHit2D hit = Physics2D.Linecast(leftPt.position.XY() + movement * 5f,
+                                                  rightPt.position.XY() + movement * 5f,
+                                                  Constants.player.obstacleLayer | Constants.player.grabbableLayer);
+            // if we are pushing against the ground ... 
+            if (hit)
             {
-             //   rb.AddForceAtPosition(-storedMovement * 1000, transform.position);
-                storedMovement = Vector2.zero;
+                pushingAgainst = true; //signal that we are pushing
             }
+
+            // if we are pushing against, store up movement, like preparing to push off of ground
+            if (pushingAgainst && !stoppedByMax)
+            {
+                storedMovement += movement;
+            }
+            else
+            {
+                if (storedMovement != Vector2.zero) // if we are no longer pushing, release the power, causing something like a natural jump
+                {
+                    //   rb.AddForceAtPosition(-storedMovement * 1000, transform.position);
+                    storedMovement = Vector2.zero;
+                }
+            }
+
+            if (!arms) // if these are the legs, we dont want them to be able to clip through the player, so slide along any surface that is the player
+            {
+                // also if these are legs, check to make sure the new height isnt over the max height, if it is slide along the max height
+                if (isLeft(maxLegs.position.XY(), maxLegs.position.XY() + maxLegs.right.XY(), transform.position.XY() + movement) != legsStartLeft)
+                {
+                    movement = Vector3.Project(movement.XYZ(0), maxLegs.right.XY().XYZ(0)).XY();
+                }
+            }
+            movement = LimitMovement(5f * movement);
+            // move the linbs from the movement vector
+            // moveLimb();
+            //Debug.Log(movement.magnitude);
+            if (jointMover != null)
+            {
+                if (movement.magnitude > minimumMovement)
+                { jointMover.MoveToPoint((Vector2)(transform.position) + movement); }
+                else
+                { jointMover.StopMoving(); }
+            }
+
+            if (testPoint != null)
+                testPoint.transform.position = transform.position + (Vector3)movement;
         }
 
-        if (!arms) // if these are the legs, we dont want them to be able to clip through the player, so slide along any surface that is the player
-        {
-           // also if these are legs, check to make sure the new height isnt over the max height, if it is slide along the max height
-           if(isLeft(maxLegs.position.XY(), maxLegs.position.XY() + maxLegs.right.XY(), transform.position.XY() + movement) != legsStartLeft)
-            {
-                movement = Vector3.Project(movement.XYZ(0), maxLegs.right.XY().XYZ(0)).XY();
-            }
-        }
-        movement = LimitMovement(movement);
-        // move the linbs from the movement vector
-       // moveLimb();
-
-         
-        
         moved = movement != Vector2.zero;        
 	}
 
