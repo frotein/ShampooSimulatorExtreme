@@ -17,6 +17,7 @@ public class MoveLimbToPoint : MonoBehaviour {
     public float prevUpperMotorSpeed;
     public Vector3 targetPoint;
     bool assignedPoint;
+  
     // Use this for initialization
 	void Start ()
     {
@@ -85,13 +86,13 @@ public class MoveLimbToPoint : MonoBehaviour {
     public void SetMotorSpeed(WheelJoint2D joint, float changeInAngle, float previousMotorSpeed = 0)
     {
         JointMotor2D motor = joint.motor;
-        if (Mathf.Abs(changeInAngle) > minimunAngleChange)
+       // if (Mathf.Abs(changeInAngle) > minimunAngleChange)
            motor.motorSpeed = (changeInAngle / -0.000349f) / (framesToReachTarget);
-        else
-            motor.motorSpeed = 0;
+      //  else
+      //      motor.motorSpeed = 0;
 
-        if (previousMotorSpeed * motor.motorSpeed < 0)
-        { motor.motorSpeed = 0; }
+     //   if (previousMotorSpeed * motor.motorSpeed < 0)
+    //    { motor.motorSpeed = 0; }
         
        
         
@@ -125,7 +126,7 @@ public class MoveLimbToPoint : MonoBehaviour {
     {
         return ((b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x)) > 0;
     }
-    float AngleFromVector(Vector2 dir)
+    public float AngleFromVector(Vector2 dir)
     {
         return Mathf.Atan2(dir.y, dir.x);
     }

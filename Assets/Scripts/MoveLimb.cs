@@ -2,16 +2,20 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class MoveLimb : MonoBehaviour {
+public class MoveLimb : MonoBehaviour
+{
 
-	// determines which thumbstick is used
-	public bool left;
+    // determines which thumbstick is used
+    public bool left;
     public Rigidbody2D rb;
+    public Transform torso;
     // The spine who is the main rotating body
     public Transform thigh;
-	public Transform knee;
-	public Transform upperLeg;
-	public Transform lowerLeg;
+    public Transform knee;
+    public Transform upperLeg;
+    public Transform lowerLeg;
+    public Transform thighToHandPointer;
+    public Transform localUpperPointer, localLowerPointer;
     public float minimumMovement; // the smallest amount of movement needed to trigger the joint mover
     public Transform leftPt, rightPt;
     public Transform handReset;
@@ -25,11 +29,11 @@ public class MoveLimb : MonoBehaviour {
 
     public bool arms; // are these the hands?
     bool moving;
-    bool startsLeft;   
+    bool startsLeft;
     Vector2 movement; // the movement of this frame
     Vector3 storedLocalPosition; // the local position ... stored at the beginning
-	public float length = 1.1f;
-	public GameObject testPoint;
+    public float length = 1.1f;
+    public GameObject testPoint;
     public PushAway push;
     Vector2 storedKneePosition;
     Vector2 storedMovement;
@@ -40,13 +44,20 @@ public class MoveLimb : MonoBehaviour {
     MoveLimbToPoint jointMover;
     float minimumMovementSqr;
     public bool classicMovement;
-	// Use this for initialization
-	void Start () 
-	{
+    public bool RebindableMovement;
+    public RebindableControlsSpeeds controlsSpeed;
+    bool startSide;
+    public RestrictedArea[] restrictedAreas;
+
+    // Use this for initialization
+    void Start()
+    {
         storedLocalPosition = transform.localPosition;
         minimumMovementSqr = minimumMovement * minimumMovement;
-        startsLeft = false;// isLeft(thigh.position.XY(), transform.position.XY(), knee.position.XY());
-        if(movementLimits != null)
+        startsLeft = false;// 
+        length = Vector2.Distance(transform.position.XY(), knee.position.XY());
+        startSide = isLeft(thigh.position.XY(), transform.position.XY(), knee.position.XY());
+        if (movementLimits != null)
         {
             startingLimitSides = new List<bool>();
             foreach (Transform t in movementLimits)
@@ -59,71 +70,159 @@ public class MoveLimb : MonoBehaviour {
 
         moving = arms;
         jointMover = transform.GetComponent<MoveLimbToPoint>();
-	}
-	
-	// Update is called once per frame
-	void Update () 
-	{
-        // Get the movement vector from the corrosponding analog stick
+        //SetSegments();
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (localUpperPointer != null)
+            localUpperPointer.up = upperLeg.up;
+        if (localLowerPointer != null)
+            localLowerPointer.up = lowerLeg.up;
+        if (thighToHandPointer != null)
+            thighToHandPointer.up = transform.position.XY() - thigh.position.XY();
+
+        if (Input.GetKeyDown("b"))
+        {
+           // jointMover.upper.enabled = false;
+         //   jointMover.lower.enabled = false;
+            SetSegments();
+
+        //    jointMover.upper.enabled = true;
+        //    jointMover.lower.enabled = true;
+        }
+            // Get the movement vector from the corrosponding analog stick
         SetMovementVector();
+        // Classic mivement rotate each joint independenrtly, will make mapable but right now up down is the upper arm, left right is the elbow
         if (classicMovement && jointMover != null)
         {
-            jointMover.SetUpperMotorSpeed(movement.y * 10f);
-            jointMover.SetLowerMotorSpeed(movement.x * -10f);
+            // limit movement based on the angles of the joints
+            float chestAngle = jointMover.AngleFromVector(torso.up);
+            float upperAngle = jointMover.AngleFromVector(upperLeg.up);
+            float lowerAngle = jointMover.AngleFromVector(lowerLeg.up);
+            float lowerAngleFix = lowerAngle;
+            if (lowerAngle > 0)
+                lowerAngleFix -= Mathf.PI * 2;
+            if ((movement.y < 0 || (upperAngle - chestAngle) < -.52f) && (movement.y > 0 || (upperAngle - chestAngle) > -3.1f))
+                jointMover.SetUpperMotorSpeed(movement.y * 10f);
+            else
+                jointMover.SetUpperMotorSpeed(0);
+
+            if (((movement.x > 0) || (lowerAngle - upperAngle) < 0 || (lowerAngle - upperAngle) > 3)
+              && (movement.x < 0 || (lowerAngleFix - upperAngle) > -2.7f || (lowerAngleFix - upperAngle) < -6))
+                jointMover.SetLowerMotorSpeed(movement.x * -10f);
+            else
+                jointMover.SetLowerMotorSpeed(0f);
+
+            //  Debug.Log(lowerAngleFix - upperAngle);
         }
         else
         {
-            bool pushingAgainst = false;
-
-            RaycastHit2D hit = Physics2D.Linecast(leftPt.position.XY() + movement * 5f,
-                                                  rightPt.position.XY() + movement * 5f,
-                                                  Constants.player.obstacleLayer | Constants.player.grabbableLayer);
-            // if we are pushing against the ground ... 
-            if (hit)
+            if (RebindableMovement && jointMover != null)
             {
-                pushingAgainst = true; //signal that we are pushing
-            }
+                float upperSpeed = 0, lowerSpeed = 0;
 
-            // if we are pushing against, store up movement, like preparing to push off of ground
-            if (pushingAgainst && !stoppedByMax)
-            {
-                storedMovement += movement;
+                bool currentSide = isLeft(thigh.position.XY(), transform.position.XY(), knee.position.XY());
+                float canMoveInOut = 1, canMoveUpDown = 1; ;
+                if (currentSide != startSide && movement.x > 0)
+                    canMoveInOut = 0;
+
+                foreach(RestrictedArea r in restrictedAreas)
+                {
+                    if (r.checkHand)
+                    {
+                        if (r.col.OverlapPoint(transform.position.XY()))
+                        {
+                            switch (r.direction)
+                            {
+                                case RestrictedArea.ControlsRestriction.InOutInner:
+                                    if (movement.x < 0)
+                                        canMoveInOut = 0;
+
+                                    break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (r.col.OverlapPoint(knee.position.XY()))
+                        {
+                            switch (r.direction)
+                            {
+                                case RestrictedArea.ControlsRestriction.UpDownAbove:
+                                    if (movement.y > 0)
+                                        canMoveUpDown = 0;
+                                    break;
+                            }
+                        }
+                    }
+                }
+
+                upperSpeed = movement.x * -controlsSpeed.inOutSpeed * canMoveInOut * controlsSpeed.overallSpeed + 
+                                       movement.y * controlsSpeed.upDownSpeed * controlsSpeed.overallSpeed * canMoveUpDown;
+
+                lowerSpeed = movement.x * -controlsSpeed.inOutSpeed * -2f * canMoveInOut * controlsSpeed.overallSpeed;
+                
+
+                jointMover.SetUpperMotorSpeed(upperSpeed);
+                jointMover.SetLowerMotorSpeed(lowerSpeed);
+                //Debug.Log(upperSpeed);
             }
             else
             {
-                if (storedMovement != Vector2.zero) // if we are no longer pushing, release the power, causing something like a natural jump
-                {
-                    //   rb.AddForceAtPosition(-storedMovement * 1000, transform.position);
-                    storedMovement = Vector2.zero;
-                }
-            }
+                bool pushingAgainst = false;
 
-            if (!arms) // if these are the legs, we dont want them to be able to clip through the player, so slide along any surface that is the player
-            {
-                // also if these are legs, check to make sure the new height isnt over the max height, if it is slide along the max height
-                if (isLeft(maxLegs.position.XY(), maxLegs.position.XY() + maxLegs.right.XY(), transform.position.XY() + movement) != legsStartLeft)
+                RaycastHit2D hit = Physics2D.Linecast(leftPt.position.XY() + movement * 5f,
+                                                      rightPt.position.XY() + movement * 5f,
+                                                      Constants.player.obstacleLayer | Constants.player.grabbableLayer);
+                // if we are pushing against the ground ... 
+                if (hit)
                 {
-                    movement = Vector3.Project(movement.XYZ(0), maxLegs.right.XY().XYZ(0)).XY();
+                    pushingAgainst = true; //signal that we are pushing
                 }
-            }
-            movement = LimitMovement(5f * movement);
-            // move the linbs from the movement vector
-            // moveLimb();
-            //Debug.Log(movement.magnitude);
-            if (jointMover != null)
-            {
-                if (movement.magnitude > minimumMovement)
-                { jointMover.MoveToPoint((Vector2)(transform.position) + movement); }
+
+                // if we are pushing against, store up movement, like preparing to push off of ground
+                if (pushingAgainst && !stoppedByMax)
+                {
+                    storedMovement += movement;
+                }
                 else
-                { jointMover.StopMoving(); }
+                {
+                    if (storedMovement != Vector2.zero) // if we are no longer pushing, release the power, causing something like a natural jump
+                    {
+                        //   rb.AddForceAtPosition(-storedMovement * 1000, transform.position);
+                        storedMovement = Vector2.zero;
+                    }
+                }
+
+                if (!arms) // if these are the legs, we dont want them to be able to clip through the player, so slide along any surface that is the player
+                {
+                    // also if these are legs, check to make sure the new height isnt over the max height, if it is slide along the max height
+                    if (isLeft(maxLegs.position.XY(), maxLegs.position.XY() + maxLegs.right.XY(), transform.position.XY() + movement) != legsStartLeft)
+                    {
+                        movement = Vector3.Project(movement.XYZ(0), maxLegs.right.XY().XYZ(0)).XY();
+                    }
+                }
+                movement = LimitMovement(5f * movement);
+                // move the linbs from the movement vector
+                // moveLimb();
+                //Debug.Log(movement.magnitude);
+                if (jointMover != null)
+                {
+                    if (movement.magnitude > minimumMovement)
+                    { jointMover.MoveToPoint((Vector2)(transform.position) + movement); }
+                    else
+                    { jointMover.StopMoving(); }
+                }
+
+                if (testPoint != null)
+                    testPoint.transform.position = transform.position + (Vector3)movement;
             }
 
-            if (testPoint != null)
-                testPoint.transform.position = transform.position + (Vector3)movement;
+            moved = movement != Vector2.zero;
         }
-
-        moved = movement != Vector2.zero;        
-	}
+    }
 
 
     public Transform GetWrongSideLimit()
@@ -141,20 +240,50 @@ public class MoveLimb : MonoBehaviour {
     void LateUpdate()
     {
         // move the limb segments so it look correct
-       // SetSegments();
+        // SetSegments();
         storedKneePosition = knee.position.XY();
         prevPosition = transform.position.XY();
     }
     // sets the 2 segments of the limb based on the knee position
     void SetSegments()
     {
-        Vector2 newPt = Calculate3rdPoint(length, thigh.position.XY(), transform.position.XY(), knee.position.XY());
-     
-        knee.position = newPt.XYZ(knee.position.z);
-        SetToMiddleAndAngled(upperLeg, thigh.position.XY(), knee.position.XY());
-        SetToMiddleAndAngled(lowerLeg, knee.position.XY(), transform.position.XY(), middleFix);
-               
-        transform.up = lowerLeg.up;
+        // 
+        /*float thighToHandAng = thighToHandPointer.localEulerAngles.z;
+        float upperAng = localUpperPointer.localEulerAngles.z;
+        float newUpperAng = thighToHandAng + (thighToHandAng - upperAng);
+        float addAngle = newUpperAng - upperAng;
+        float lowerAngAdd = localLowerPointer.eulerAngles.z * 2f;*/
+        startsLeft = !startsLeft;
+        Vector2 mid = Calculate3rdPointSetSide(length, thigh.position.XY(), transform.position.XY(), startsLeft);
+        Vector2 dir = mid - thigh.position.XY();
+        float storedUpperAng = localUpperPointer.localEulerAngles.z;
+        localUpperPointer.up = dir;
+        float newAng = localUpperPointer.localEulerAngles.z;
+        //Debug.Log(storedUpperAng + " " + newAng);
+        Vector2 dir2 = transform.position.XY() - mid;
+        float storedLowerAngle = localLowerPointer.localEulerAngles.z;
+        localLowerPointer.up = dir2;
+        float newAng2 = localLowerPointer.localEulerAngles.z;
+        Debug.Log(storedUpperAng + " " + newAng + " | " + storedLowerAngle + " " + newAng2);
+        
+
+        //Debug.Log();
+        thigh.localEulerAngles += new Vector3(0, 0, newAng - storedUpperAng);
+        knee.localEulerAngles += new Vector3(0, 0, (newAng2 - storedLowerAngle) * 2);
+        // if (localUpperPointer != null)
+        //     localUpperPointer.up = upperLeg.up;
+
+        // float ang = localUpperPointer.localEulerAngles.z - thighToHandAng;
+
+        // float newCenter = 180 - (2 * Mathf.Abs(ang));
+        // Debug.Log(newCenter + " Ang " + ang);
+        // knee.localEulerAngles += new Vector3(0, 0, lowerAngAdd);
+
+        //knee.position = newPt.XYZ(knee.position.z);
+        //SetToMiddleAndAngled(upperLeg, thigh.position.XY(), knee.position.XY());
+        //SetToMiddleAndAngled(lowerLeg, knee.position.XY(), transform.position.XY(), middleFix);
+
+        //  transform.up = lowerLeg.up;
     }
 
     void SetMovementVector()
@@ -183,13 +312,13 @@ public class MoveLimb : MonoBehaviour {
             else
                 movement = new Vector2(Input.GetAxis("RightStickX") * dTime, Input.GetAxis("RightStickY") * dTime);
         }
-
+        // Debug.Log(Input.GetAxis("RightStickY"));
     }
 
     // moves the limb based on the movement vector
     void moveLimb()
     {
-        stoppedByMax = false;        
+        stoppedByMax = false;
         transform.position += movement.XYZ(0);
 
         float dist = Vector2.Distance(thigh.position.XY(), transform.position.XY());
@@ -199,7 +328,7 @@ public class MoveLimb : MonoBehaviour {
             Vector2 dir = (transform.position.XY() - thigh.position.XY()).normalized;
             transform.position = (thigh.position.XY() + dir * (length + length)).XYZ(transform.position.z);
             stoppedByMax = true;
-        }        
+        }
     }
 
     // if point c is left of line defined by pts a and b
@@ -207,24 +336,24 @@ public class MoveLimb : MonoBehaviour {
     {
         return ((b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x)) > 0;
     }
-    
+
     public bool Moved()
     {
         return moved;
     }
-	// calculates the middle point in a triangle where you know the the two side points and the length of two of the sides, 
-	// also has the current 3rd point so the triangle doesnt flip
-	Vector2 Calculate3rdPoint(float length, Vector2 p1, Vector2 p2, Vector2 currentP3)
-	{
-		float dist = Vector2.Distance(p1,p2);
-		float sideA = dist / 2f;
-		float sideB = Mathf.Sqrt(Mathf.Abs((length * length) - (sideA * sideA)));
-		Vector2 midPoint = (p1 - p2) * .5f + p2;
-		Vector2 dir = (p2 - p1).normalized;
-		Vector2 perpDir = new Vector2(dir.y,-dir.x);
-		Vector2 finalPt1 = midPoint + perpDir * sideB;
-		Vector2 finalPt2 = midPoint + -perpDir * sideB;
-        
+    // calculates the middle point in a triangle where you know the the two side points and the length of two of the sides, 
+    // also has the current 3rd point so the triangle doesnt flip
+    Vector2 Calculate3rdPoint(float length, Vector2 p1, Vector2 p2, Vector2 currentP3)
+    {
+        float dist = Vector2.Distance(p1, p2);
+        float sideA = dist / 2f;
+        float sideB = Mathf.Sqrt(Mathf.Abs((length * length) - (sideA * sideA)));
+        Vector2 midPoint = (p1 - p2) * .5f + p2;
+        Vector2 dir = (p2 - p1).normalized;
+        Vector2 perpDir = new Vector2(dir.y, -dir.x);
+        Vector2 finalPt1 = midPoint + perpDir * sideB;
+        Vector2 finalPt2 = midPoint + -perpDir * sideB;
+
         if (arms)
         {
             bool left = isLeft(flipArms.position.XY(), flipArms.position.XY() + flipArms.right.XY(), transform.position.XY()) != isLeft(p1, p2, finalPt1);
@@ -242,17 +371,34 @@ public class MoveLimb : MonoBehaviour {
         }
     }
 
-	// Sets the transform in between the two points angled in the direction of them
-	public void SetToMiddleAndAngled(Transform piece, Vector2 pt1, Vector2 pt2, float mid = 0.5f)
-	{
-		Vector2 midPt = (pt1 - pt2) * mid + pt2;
-		Vector2 dir = (pt1 - pt2).normalized;
-		
-		piece.position = midPt.XYZ(piece.position.z);
-		piece.up = dir;
-	}
+    Vector2 Calculate3rdPointSetSide(float length, Vector2 p1, Vector2 p2,bool side = false)
+    {
+        float dist = Vector2.Distance(p1, p2);
+        float sideA = dist / 2f;
+        float sideB = Mathf.Sqrt(Mathf.Abs((length * length) - (sideA * sideA)));
+        Vector2 midPoint = (p1 - p2) * .5f + p2;
+        Vector2 dir = (p2 - p1).normalized;
+        Vector2 perpDir = new Vector2(dir.y, -dir.x);
+        Vector2 finalPt1 = midPoint + perpDir * sideB;
+        Vector2 finalPt2 = midPoint + -perpDir * sideB;
 
-	Vector2 LimitMovement(Vector2 move)
+       
+        if (side)
+            return finalPt1;
+        else
+            return finalPt2;       
+    }
+    // Sets the transform in between the two points angled in the direction of them
+    public void SetToMiddleAndAngled(Transform piece, Vector2 pt1, Vector2 pt2, float mid = 0.5f)
+    {
+        Vector2 midPt = (pt1 - pt2) * mid + pt2;
+        Vector2 dir = (pt1 - pt2).normalized;
+
+        piece.position = midPt.XYZ(piece.position.z);
+        piece.up = dir;
+    }
+
+    Vector2 LimitMovement(Vector2 move)
     {
         int i = 0;
         foreach (Transform movementLimit in movementLimits)
@@ -270,7 +416,7 @@ public class MoveLimb : MonoBehaviour {
                 }
             }
         }
-        
+
         return move;
     }
 
@@ -292,5 +438,24 @@ public class MoveLimb : MonoBehaviour {
 
         return lnth;
     }
-
 }
+
+[System.Serializable]
+public class RebindableControlsSpeeds
+{
+        public float inOutSpeed;
+        public float upDownSpeed;
+        public float overallSpeed;
+}
+
+[System.Serializable]
+public class RestrictedArea
+{
+    public Collider2D col;
+    public enum ControlsRestriction { InOutInner, UpDownBelow, UpDownAbove };
+    public ControlsRestriction direction;
+    public bool checkHand;
+}
+
+    
+
