@@ -132,50 +132,40 @@ public class MoveLimb : MonoBehaviour
             if (RebindableMovement && jointMover != null)
             {
                 float upperSpeed = 0, lowerSpeed = 0;
-
-                bool currentSide = isLeft(thigh.position.XY(), transform.position.XY(), knee.position.XY());
                 float canMoveInOut = 1, canMoveUpDown = 1;
-                Debug.Log(currentSide + " " + sideOfLine + " " + movement.x);
-                if ((movement.x > 0 && (currentSide == sideOfLine)))
-                    canMoveInOut = 0;
+                float canMoveUpper = 1;
 
-                foreach(RestrictedArea r in restrictedAreas)
-                {
-                    if (r.checkHand)
-                    {
-                        if (r.col.OverlapPoint(transform.position.XY()))
-                        {
-                            switch (r.direction)
-                            {
-                                case RestrictedArea.ControlsRestriction.InOutInner:
-                                    if (movement.x < 0 )
-                                        canMoveInOut = 0;
-
-                                    break;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (r.col.OverlapPoint(knee.position.XY()))
-                        {
-                            switch (r.direction)
-                            {
-                                case RestrictedArea.ControlsRestriction.UpDownAbove:
-                                    if (movement.y > 0)
-                                        canMoveUpDown = 0;
-                                    break;
-                            }
-                        }
-                    }
-                }
                 int dir = 1;
+                float angleFlip = 360;
                 if (sideOfLine)
-                    dir = -1;
-                upperSpeed = movement.x * dir * -controlsSpeed.inOutSpeed * canMoveInOut * controlsSpeed.overallSpeed + 
-                                       movement.y * controlsSpeed.upDownSpeed * controlsSpeed.overallSpeed * canMoveUpDown;
+                { dir = -1; angleFlip = 0; }
 
-                lowerSpeed = movement.x * dir * -controlsSpeed.inOutSpeed * -2f * canMoveInOut * controlsSpeed.overallSpeed;
+                if (movement.x > 0)
+                {                   
+                    if (angleFlip - localLowerPointer.localEulerAngles.z * dir <= 15)
+                        canMoveInOut = 0;
+                }
+                else
+                {
+                    if (-(dir * localLowerPointer.localEulerAngles.z - angleFlip) > 135)
+                        canMoveInOut = 0;
+                }
+
+                Debug.Log(localUpperPointer.localEulerAngles.z);
+                if(movement.y > 0)
+                {
+                    if (localUpperPointer.localEulerAngles.z > 330f)
+                        canMoveUpper = 0;
+                }
+                else
+                {
+                    if (localUpperPointer.localEulerAngles.z < 180f)
+                        canMoveUpper = 0;
+                }
+                upperSpeed = (movement.x * dir * -controlsSpeed.inOutSpeed * canMoveInOut * controlsSpeed.overallSpeed + 
+                                       movement.y * controlsSpeed.upDownSpeed * controlsSpeed.overallSpeed * canMoveUpDown) * canMoveUpper;
+
+                lowerSpeed = movement.x * dir * -controlsSpeed.inOutSpeed * -2f * controlsSpeed.overallSpeed * canMoveInOut;
                 
 
                 jointMover.SetUpperMotorSpeed(upperSpeed);
