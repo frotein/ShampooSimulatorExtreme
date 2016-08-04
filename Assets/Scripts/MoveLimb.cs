@@ -19,10 +19,9 @@ public class MoveLimb : MonoBehaviour
     public float minimumMovement; // the smallest amount of movement needed to trigger the joint mover
     public Transform leftPt, rightPt;
     public Transform handReset;
-    public Transform flipArms; // a transform designation when the arms flip their elbow to look natural
+    public Transform flipArmsUp,flipArmsDown; // a transform designation when the arms flip their elbow to look natural
 
     public Transform maxLegs; // a transform designationg how high you can lift the legs up
-
     public List<Transform> movementLimits; // hard coded limitations for the limbs
     List<bool> startingLimitSides; // what side each limb starts on, used to check if we are going beyond a movement limit
     public float middleFix = 0.45f;
@@ -41,6 +40,7 @@ public class MoveLimb : MonoBehaviour
     bool stoppedByMax;
     bool legsStartLeft;
     bool moved;
+    bool sideOfLine;
     MoveLimbToPoint jointMover;
     float minimumMovementSqr;
     public bool classicMovement;
@@ -68,6 +68,9 @@ public class MoveLimb : MonoBehaviour
         if (!arms) // if these are the legs , set the default bool of what side of the line the legs are on for lift up limit;
             legsStartLeft = isLeft(maxLegs.position.XY(), maxLegs.position.XY() + maxLegs.right.XY(), transform.position.XY());
 
+        sideOfLine = false;//isLeft(flipArmsUp.position.XY(), flipArms.position.XY() + flipArms.right.XY(), transform.position.XY());
+
+
         moving = arms;
         jointMover = transform.GetComponent<MoveLimbToPoint>();
         //SetSegments();
@@ -83,15 +86,22 @@ public class MoveLimb : MonoBehaviour
         if (thighToHandPointer != null)
             thighToHandPointer.up = transform.position.XY() - thigh.position.XY();
 
-        if (Input.GetKeyDown("b"))
+       // bool curSideofLine = isLeft(flipArms.position.XY(), flipArms.position.XY() + flipArms.right.XY(), transform.position.XY());
+        if (!sideOfLine)
         {
-           // jointMover.upper.enabled = false;
-         //   jointMover.lower.enabled = false;
-            SetSegments();
-
-        //    jointMover.upper.enabled = true;
-        //    jointMover.lower.enabled = true;
+            bool curSideofLine = isLeft(flipArmsUp.position.XY(), flipArmsUp.position.XY() + flipArmsUp.right.XY(), transform.position.XY());
+           
+            if (sideOfLine != curSideofLine)
+            { FlipsSegments(curSideofLine); sideOfLine = curSideofLine; }
         }
+        else
+        {
+            bool curSideofLine = isLeft(flipArmsDown.position.XY(), flipArmsDown.position.XY() + flipArmsDown.right.XY(), transform.position.XY());
+            if (sideOfLine != curSideofLine)
+            { FlipsSegments(curSideofLine); sideOfLine = curSideofLine; }
+        }
+
+        
             // Get the movement vector from the corrosponding analog stick
         SetMovementVector();
         // Classic mivement rotate each joint independenrtly, will make mapable but right now up down is the upper arm, left right is the elbow
@@ -124,8 +134,9 @@ public class MoveLimb : MonoBehaviour
                 float upperSpeed = 0, lowerSpeed = 0;
 
                 bool currentSide = isLeft(thigh.position.XY(), transform.position.XY(), knee.position.XY());
-                float canMoveInOut = 1, canMoveUpDown = 1; ;
-                if (currentSide != startSide && movement.x > 0)
+                float canMoveInOut = 1, canMoveUpDown = 1;
+                Debug.Log(currentSide + " " + sideOfLine + " " + movement.x);
+                if ((movement.x > 0 && (currentSide == sideOfLine)))
                     canMoveInOut = 0;
 
                 foreach(RestrictedArea r in restrictedAreas)
@@ -137,7 +148,7 @@ public class MoveLimb : MonoBehaviour
                             switch (r.direction)
                             {
                                 case RestrictedArea.ControlsRestriction.InOutInner:
-                                    if (movement.x < 0)
+                                    if (movement.x < 0 )
                                         canMoveInOut = 0;
 
                                     break;
@@ -158,11 +169,13 @@ public class MoveLimb : MonoBehaviour
                         }
                     }
                 }
-
-                upperSpeed = movement.x * -controlsSpeed.inOutSpeed * canMoveInOut * controlsSpeed.overallSpeed + 
+                int dir = 1;
+                if (sideOfLine)
+                    dir = -1;
+                upperSpeed = movement.x * dir * -controlsSpeed.inOutSpeed * canMoveInOut * controlsSpeed.overallSpeed + 
                                        movement.y * controlsSpeed.upDownSpeed * controlsSpeed.overallSpeed * canMoveUpDown;
 
-                lowerSpeed = movement.x * -controlsSpeed.inOutSpeed * -2f * canMoveInOut * controlsSpeed.overallSpeed;
+                lowerSpeed = movement.x * dir * -controlsSpeed.inOutSpeed * -2f * canMoveInOut * controlsSpeed.overallSpeed;
                 
 
                 jointMover.SetUpperMotorSpeed(upperSpeed);
@@ -244,17 +257,12 @@ public class MoveLimb : MonoBehaviour
         storedKneePosition = knee.position.XY();
         prevPosition = transform.position.XY();
     }
-    // sets the 2 segments of the limb based on the knee position
-    void SetSegments()
+    // flips the segments knee position to the other side, is generally on, dont overuse in a row
+    void FlipsSegments(bool side)
     {
-        // 
-        /*float thighToHandAng = thighToHandPointer.localEulerAngles.z;
-        float upperAng = localUpperPointer.localEulerAngles.z;
-        float newUpperAng = thighToHandAng + (thighToHandAng - upperAng);
-        float addAngle = newUpperAng - upperAng;
-        float lowerAngAdd = localLowerPointer.eulerAngles.z * 2f;*/
-        startsLeft = !startsLeft;
-        Vector2 mid = Calculate3rdPointSetSide(length, thigh.position.XY(), transform.position.XY(), startsLeft);
+      
+        
+        Vector2 mid = Calculate3rdPointSetSide(length, thigh.position.XY(), transform.position.XY(), side);
         Vector2 dir = mid - thigh.position.XY();
         float storedUpperAng = localUpperPointer.localEulerAngles.z;
         localUpperPointer.up = dir;
@@ -356,11 +364,11 @@ public class MoveLimb : MonoBehaviour
 
         if (arms)
         {
-            bool left = isLeft(flipArms.position.XY(), flipArms.position.XY() + flipArms.right.XY(), transform.position.XY()) != isLeft(p1, p2, finalPt1);
-            if (left == startsLeft)
+            //bool left = isLeft(flipArms.position.XY(), flipArms.position.XY() + flipArms.right.XY(), transform.position.XY()) != isLeft(p1, p2, finalPt1);
+            //if (left == startsLeft)
                 return finalPt1;
-            else
-                return finalPt2;
+        //    else
+       //         return finalPt2;
         }
         else
         {
