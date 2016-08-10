@@ -6,7 +6,7 @@ public class MoveLimb : MonoBehaviour
 {
 
     // determines which thumbstick is used
-    public bool left;
+    public bool right;
     public Rigidbody2D rb;
     public Transform torso;
     // The spine who is the main rotating body
@@ -57,14 +57,7 @@ public class MoveLimb : MonoBehaviour
         startsLeft = false;// 
         length = Vector2.Distance(transform.position.XY(), knee.position.XY());
         startSide = isLeft(thigh.position.XY(), transform.position.XY(), knee.position.XY());
-        if (movementLimits != null)
-        {
-            startingLimitSides = new List<bool>();
-            foreach (Transform t in movementLimits)
-            {
-                startingLimitSides.Add(isLeft(t.position.XY(), t.position.XY() + t.right.XY(), t.position.XY()));
-            }
-        }
+        
         if (!arms) // if these are the legs , set the default bool of what side of the line the legs are on for lift up limit;
             legsStartLeft = isLeft(maxLegs.position.XY(), maxLegs.position.XY() + maxLegs.right.XY(), transform.position.XY());
 
@@ -79,6 +72,7 @@ public class MoveLimb : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // points a bunch of transforms at stuff to use for their localEulerAngles later
         if (localUpperPointer != null)
             localUpperPointer.up = upperLeg.up;
         if (localLowerPointer != null)
@@ -86,7 +80,7 @@ public class MoveLimb : MonoBehaviour
         if (thighToHandPointer != null)
             thighToHandPointer.up = transform.position.XY() - thigh.position.XY();
 
-       // bool curSideofLine = isLeft(flipArms.position.XY(), flipArms.position.XY() + flipArms.right.XY(), transform.position.XY());
+        // flips arm segments based on if they to the left of predefined lines on the player
         if (!sideOfLine)
         {
             bool curSideofLine = isLeft(flipArmsUp.position.XY(), flipArmsUp.position.XY() + flipArmsUp.right.XY(), transform.position.XY());
@@ -140,18 +134,46 @@ public class MoveLimb : MonoBehaviour
                 if (sideOfLine)
                 { dir = -1; angleFlip = 0; }
 
-                if (movement.x > 0)
-                {                   
-                    if (angleFlip - localLowerPointer.localEulerAngles.z * dir <= 15)
-                        canMoveInOut = 0;
+                int flipInOut = 1;
+
+                // flips in out mvement so the analoge movement more reflects the onscreen movement
+                /*if (transform.position.x < thigh.position.x)
+                    flipInOut = -1;*/
+                if (right)
+                {
+                    Debug.Log(angleFlip - localLowerPointer.localEulerAngles.z * dir  + " " + movement.x * flipInOut + " " + -(dir * localLowerPointer.localEulerAngles.z - angleFlip));//+ localLowerPointer.localEulerAngles.z); 
+                                                                                       //Debug.Log("InOut " + canMoveInOut + " upDown " + canMoveUpDown + " upper " + canMoveUpper);
+                                                                                       //  Debug.Log(upperSpeed + " " + lowerSpeed);
+                }
+
+                if (movement.x * flipInOut > 0)
+                {
+                    if (right)
+                    {
+                        if (angleFlip - localLowerPointer.localEulerAngles.z * dir <= 215)
+                            canMoveInOut = 0;
+                    }
+                    else
+                    {
+                        if (angleFlip - localLowerPointer.localEulerAngles.z * dir <= 15)
+                            canMoveInOut = 0;
+                    }
                 }
                 else
                 {
-                    if (-(dir * localLowerPointer.localEulerAngles.z - angleFlip) > 135)
-                        canMoveInOut = 0;
+                    if (right)
+                    {
+                        if (-(dir * localLowerPointer.localEulerAngles.z - angleFlip) > 350)
+                            canMoveInOut = 0;
+                    }
+                    else
+                    {
+                        if (-(dir * localLowerPointer.localEulerAngles.z - angleFlip) > 135)
+                            canMoveInOut = 0;
+                    }
                 }
 
-                Debug.Log(localUpperPointer.localEulerAngles.z);
+
                 if(movement.y > 0)
                 {
                     if (localUpperPointer.localEulerAngles.z > 330f)
@@ -159,13 +181,21 @@ public class MoveLimb : MonoBehaviour
                 }
                 else
                 {
-                    if (localUpperPointer.localEulerAngles.z < 180f)
+                    if (localUpperPointer.localEulerAngles.z < 180f && !right)
+                        canMoveUpper = 0;
+
+                    if(right && localUpperPointer.localEulerAngles.z >  180f && localUpperPointer.localEulerAngles.z < 345f)
                         canMoveUpper = 0;
                 }
+                if (right)
+                    canMoveUpDown *= -1;
+                
+                canMoveInOut *= flipInOut;
                 upperSpeed = (movement.x * dir * -controlsSpeed.inOutSpeed * canMoveInOut * controlsSpeed.overallSpeed + 
                                        movement.y * controlsSpeed.upDownSpeed * controlsSpeed.overallSpeed * canMoveUpDown) * canMoveUpper;
 
                 lowerSpeed = movement.x * dir * -controlsSpeed.inOutSpeed * -2f * controlsSpeed.overallSpeed * canMoveInOut;
+
                 
 
                 jointMover.SetUpperMotorSpeed(upperSpeed);
@@ -262,10 +292,7 @@ public class MoveLimb : MonoBehaviour
         float storedLowerAngle = localLowerPointer.localEulerAngles.z;
         localLowerPointer.up = dir2;
         float newAng2 = localLowerPointer.localEulerAngles.z;
-        Debug.Log(storedUpperAng + " " + newAng + " | " + storedLowerAngle + " " + newAng2);
         
-
-        //Debug.Log();
         thigh.localEulerAngles += new Vector3(0, 0, newAng - storedUpperAng);
         knee.localEulerAngles += new Vector3(0, 0, (newAng2 - storedLowerAngle) * 2);
         // if (localUpperPointer != null)
@@ -288,7 +315,7 @@ public class MoveLimb : MonoBehaviour
     {
         float dTime = Constants.player.limbSpeed * Time.deltaTime;
         movement = Vector2.zero;
-        if (left)
+        if (right)
         {
             if (Input.GetButton("UseLeftLeg"))
                 moving = !arms;
@@ -305,7 +332,7 @@ public class MoveLimb : MonoBehaviour
 
         if (moving)
         {
-            if (left)
+            if (right)
                 movement = new Vector2(Input.GetAxis("LeftStickX") * dTime, Input.GetAxis("LeftStickY") * dTime);
             else
                 movement = new Vector2(Input.GetAxis("RightStickX") * dTime, Input.GetAxis("RightStickY") * dTime);
