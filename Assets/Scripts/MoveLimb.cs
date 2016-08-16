@@ -141,7 +141,7 @@ public class MoveLimb : MonoBehaviour
                     flipInOut = -1;*/
                 if (right)
                 {
-                    Debug.Log(angleFlip - localLowerPointer.localEulerAngles.z * dir  + " " + movement.x * flipInOut + " " + -(dir * localLowerPointer.localEulerAngles.z - angleFlip));//+ localLowerPointer.localEulerAngles.z); 
+                   // Debug.Log(angleFlip - localLowerPointer.localEulerAngles.z * dir  + " " + movement.x * flipInOut + " " + -(dir * localLowerPointer.localEulerAngles.z - angleFlip));//+ localLowerPointer.localEulerAngles.z); 
                                                                                        //Debug.Log("InOut " + canMoveInOut + " upDown " + canMoveUpDown + " upper " + canMoveUpper);
                                                                                        //  Debug.Log(upperSpeed + " " + lowerSpeed);
                 }
@@ -280,9 +280,13 @@ public class MoveLimb : MonoBehaviour
     // flips the segments knee position to the other side, is generally on, dont overuse in a row
     void FlipsSegments(bool side)
     {
-      
-        
+
+        if (right) side = !side;
+
         Vector2 mid = Calculate3rdPointSetSide(length, thigh.position.XY(), transform.position.XY(), side);
+        Debug.Log(mid + " " + knee.position.XY() + " " + right);
+        if (right)
+            testPoint.transform.position = new Vector3(mid.x, mid.y, testPoint.transform.position.z);
         Vector2 dir = mid - thigh.position.XY();
         float storedUpperAng = localUpperPointer.localEulerAngles.z;
         localUpperPointer.up = dir;
@@ -292,23 +296,10 @@ public class MoveLimb : MonoBehaviour
         float storedLowerAngle = localLowerPointer.localEulerAngles.z;
         localLowerPointer.up = dir2;
         float newAng2 = localLowerPointer.localEulerAngles.z;
-        
+        Debug.Log(newAng - storedUpperAng + " " + right);
         thigh.localEulerAngles += new Vector3(0, 0, newAng - storedUpperAng);
         knee.localEulerAngles += new Vector3(0, 0, (newAng2 - storedLowerAngle) * 2);
-        // if (localUpperPointer != null)
-        //     localUpperPointer.up = upperLeg.up;
-
-        // float ang = localUpperPointer.localEulerAngles.z - thighToHandAng;
-
-        // float newCenter = 180 - (2 * Mathf.Abs(ang));
-        // Debug.Log(newCenter + " Ang " + ang);
-        // knee.localEulerAngles += new Vector3(0, 0, lowerAngAdd);
-
-        //knee.position = newPt.XYZ(knee.position.z);
-        //SetToMiddleAndAngled(upperLeg, thigh.position.XY(), knee.position.XY());
-        //SetToMiddleAndAngled(lowerLeg, knee.position.XY(), transform.position.XY(), middleFix);
-
-        //  transform.up = lowerLeg.up;
+      
     }
 
     void SetMovementVector()
@@ -381,11 +372,7 @@ public class MoveLimb : MonoBehaviour
 
         if (arms)
         {
-            //bool left = isLeft(flipArms.position.XY(), flipArms.position.XY() + flipArms.right.XY(), transform.position.XY()) != isLeft(p1, p2, finalPt1);
-            //if (left == startsLeft)
-                return finalPt1;
-        //    else
-       //         return finalPt2;
+                return finalPt1;        
         }
         else
         {
