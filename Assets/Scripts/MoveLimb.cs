@@ -284,9 +284,11 @@ public class MoveLimb : MonoBehaviour
         if (right) side = !side;
 
         Vector2 mid = Calculate3rdPointSetSide(length, thigh.position.XY(), transform.position.XY(), side);
-        Debug.Log(mid + " " + knee.position.XY() + " " + right);
-        if (right)
-            testPoint.transform.position = new Vector3(mid.x, mid.y, testPoint.transform.position.z);
+      //  Debug.Log(mid + " " + knee.position.XY() + " " + right);
+      //  if (right)
+       //     testPoint.transform.position = new Vector3(mid.x, mid.y, testPoint.transform.position.z);
+
+
         Vector2 dir = mid - thigh.position.XY();
         float storedUpperAng = localUpperPointer.localEulerAngles.z;
         localUpperPointer.up = dir;
@@ -296,7 +298,6 @@ public class MoveLimb : MonoBehaviour
         float storedLowerAngle = localLowerPointer.localEulerAngles.z;
         localLowerPointer.up = dir2;
         float newAng2 = localLowerPointer.localEulerAngles.z;
-        Debug.Log(newAng - storedUpperAng + " " + right);
         thigh.localEulerAngles += new Vector3(0, 0, newAng - storedUpperAng);
         knee.localEulerAngles += new Vector3(0, 0, (newAng2 - storedLowerAngle) * 2);
       
