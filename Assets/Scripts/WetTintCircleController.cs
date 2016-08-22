@@ -18,14 +18,17 @@ public class WetTintCircleController : MonoBehaviour
         positionTransforms = new List<Transform>();
         
         mat =  transform.GetComponent<SpriteRenderer>().material;
-        foreach(Transform t in materialHolders)
+       // Debug.Log(mat);
+        foreach (Transform t in materialHolders)
         {
+            if(t != null)
             t.GetComponent<SpriteRenderer>().material = mat;
         }
-        
+
         positions = new Vector2[maxWidth];
         buffer = new ComputeBuffer(maxWidth, sizeof(float) * 2, ComputeBufferType.Default);
         Constants.player.wetTintControllers.Add(this);
+       
     }
 
     void SetArrayData()

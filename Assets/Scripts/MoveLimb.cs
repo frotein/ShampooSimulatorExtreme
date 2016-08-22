@@ -58,8 +58,8 @@ public class MoveLimb : MonoBehaviour
         length = Vector2.Distance(transform.position.XY(), knee.position.XY());
         startSide = isLeft(thigh.position.XY(), transform.position.XY(), knee.position.XY());
         
-        if (!arms) // if these are the legs , set the default bool of what side of the line the legs are on for lift up limit;
-            legsStartLeft = isLeft(maxLegs.position.XY(), maxLegs.position.XY() + maxLegs.right.XY(), transform.position.XY());
+       // if (!arms) // if these are the legs , set the default bool of what side of the line the legs are on for lift up limit;
+       //     legsStartLeft = isLeft(maxLegs.position.XY(), maxLegs.position.XY() + maxLegs.right.XY(), transform.position.XY());
 
         sideOfLine = false;//isLeft(flipArmsUp.position.XY(), flipArms.position.XY() + flipArms.right.XY(), transform.position.XY());
 
@@ -81,20 +81,22 @@ public class MoveLimb : MonoBehaviour
             thighToHandPointer.up = transform.position.XY() - thigh.position.XY();
 
         // flips arm segments based on if they to the left of predefined lines on the player
-        if (!sideOfLine)
+        if (arms)
         {
-            bool curSideofLine = isLeft(flipArmsUp.position.XY(), flipArmsUp.position.XY() + flipArmsUp.right.XY(), transform.position.XY());
-           
-            if (sideOfLine != curSideofLine)
-            { FlipsSegments(curSideofLine); sideOfLine = curSideofLine; }
-        }
-        else
-        {
-            bool curSideofLine = isLeft(flipArmsDown.position.XY(), flipArmsDown.position.XY() + flipArmsDown.right.XY(), transform.position.XY());
-            if (sideOfLine != curSideofLine)
-            { FlipsSegments(curSideofLine); sideOfLine = curSideofLine; }
-        }
+            if (!sideOfLine)
+            {
+                bool curSideofLine = isLeft(flipArmsUp.position.XY(), flipArmsUp.position.XY() + flipArmsUp.right.XY(), transform.position.XY());
 
+                if (sideOfLine != curSideofLine)
+                { FlipsSegments(curSideofLine); sideOfLine = curSideofLine; }
+            }
+            else
+            {
+                bool curSideofLine = isLeft(flipArmsDown.position.XY(), flipArmsDown.position.XY() + flipArmsDown.right.XY(), transform.position.XY());
+                if (sideOfLine != curSideofLine)
+                { FlipsSegments(curSideofLine); sideOfLine = curSideofLine; }
+            }
+        }
         
             // Get the movement vector from the corrosponding analog stick
         SetMovementVector();
