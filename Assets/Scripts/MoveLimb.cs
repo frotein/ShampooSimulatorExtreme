@@ -147,51 +147,88 @@ public class MoveLimb : MonoBehaviour
                                                                                        //Debug.Log("InOut " + canMoveInOut + " upDown " + canMoveUpDown + " upper " + canMoveUpper);
                                                                                        //  Debug.Log(upperSpeed + " " + lowerSpeed);
                 }
-
-                if (movement.x * flipInOut > 0)
+                if (arms)
                 {
-                    if (right)
+                    if (movement.x * flipInOut > 0)
                     {
-                        if (angleFlip - localLowerPointer.localEulerAngles.z * dir <= 215)
-                            canMoveInOut = 0;
+                        if (right)
+                        {
+                            if (angleFlip - localLowerPointer.localEulerAngles.z * dir <= 215)
+                                canMoveInOut = 0;
+                        }
+                        else
+                        {
+                            if (angleFlip - localLowerPointer.localEulerAngles.z * dir <= 15)
+                                canMoveInOut = 0;
+                        }
                     }
                     else
                     {
-                        if (angleFlip - localLowerPointer.localEulerAngles.z * dir <= 15)
-                            canMoveInOut = 0;
+                        if (right)
+                        {
+                            if (-(dir * localLowerPointer.localEulerAngles.z - angleFlip) > 350)
+                                canMoveInOut = 0;
+                        }
+                        else
+                        {
+                            if (-(dir * localLowerPointer.localEulerAngles.z - angleFlip) > 135)
+                                canMoveInOut = 0;
+                        }
                     }
-                }
-                else
-                {
-                    if (right)
+
+
+                    if (movement.y > 0)
                     {
-                        if (-(dir * localLowerPointer.localEulerAngles.z - angleFlip) > 350)
-                            canMoveInOut = 0;
+                        if (localUpperPointer.localEulerAngles.z > 330f)
+                            canMoveUpper = 0;
                     }
                     else
                     {
-                        if (-(dir * localLowerPointer.localEulerAngles.z - angleFlip) > 135)
-                            canMoveInOut = 0;
+                        if (localUpperPointer.localEulerAngles.z < 180f && !right)
+                            canMoveUpper = 0;
+
+                        if (right && localUpperPointer.localEulerAngles.z > 180f && localUpperPointer.localEulerAngles.z < 345f)
+                            canMoveUpper = 0;
                     }
-                }
-
-
-                if(movement.y > 0)
-                {
-                    if (localUpperPointer.localEulerAngles.z > 330f)
-                        canMoveUpper = 0;
+                    if (right)
+                        canMoveUpDown *= -1;
                 }
                 else
                 {
-                    if (localUpperPointer.localEulerAngles.z < 180f && !right)
-                        canMoveUpper = 0;
+                    if(movement.y > 0 || movement.x < 0)
+                    {
+                        if(localUpperPointer.localEulerAngles.z > 145f && localUpperPointer.localEulerAngles.z < 330f)
+                        {
+                            canMoveUpper = 0;
+                        }
+                    }
 
-                    if(right && localUpperPointer.localEulerAngles.z >  180f && localUpperPointer.localEulerAngles.z < 345f)
-                        canMoveUpper = 0;
+                    if(movement.y < 0 || movement.x > 0)
+                    {
+                        if(localUpperPointer.localEulerAngles.z < 345 && localUpperPointer.localEulerAngles.z > 200)
+                        {
+                            canMoveUpper = 0;
+                        }
+                    }
+
+                    if(movement.x < 0)
+                    {
+                        if(localLowerPointer.localEulerAngles.z < 25)
+                        {
+                            canMoveInOut = 0;
+                        }
+                    }
+                    else
+                    {
+                        if (localLowerPointer.localEulerAngles.z > 180)
+                        {
+                            canMoveInOut = 0;
+                        }
+                    }
+
+                 //   Debug.Log(localLowerPointer.localEulerAngles.z + " " + movement);
                 }
-                if (right)
-                    canMoveUpDown *= -1;
-                
+
                 canMoveInOut *= flipInOut;
                 upperSpeed = (movement.x * dir * -controlsSpeed.inOutSpeed * canMoveInOut * controlsSpeed.overallSpeed + 
                                        movement.y * controlsSpeed.upDownSpeed * controlsSpeed.overallSpeed * canMoveUpDown) * canMoveUpper;
