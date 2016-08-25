@@ -195,37 +195,75 @@ public class MoveLimb : MonoBehaviour
                 }
                 else
                 {
-                    if(movement.y > 0 || movement.x < 0)
+                    if (!right)
                     {
-                        if(localUpperPointer.localEulerAngles.z > 145f && localUpperPointer.localEulerAngles.z < 330f)
+                        if (movement.y > 0 || movement.x < 0)
                         {
-                            canMoveUpper = 0;
+                            if (localUpperPointer.localEulerAngles.z > 145f && localUpperPointer.localEulerAngles.z < 330f)
+                            {
+                                canMoveUpper = 0;
+                            }
                         }
-                    }
 
-                    if(movement.y < 0 || movement.x > 0)
-                    {
-                        if(localUpperPointer.localEulerAngles.z < 345 && localUpperPointer.localEulerAngles.z > 200)
+                        if (movement.y < 0 || movement.x > 0)
                         {
-                            canMoveUpper = 0;
+                            if (localUpperPointer.localEulerAngles.z < 345 && localUpperPointer.localEulerAngles.z > 200)
+                            {
+                                canMoveUpper = 0;
+                            }
                         }
-                    }
 
-                    if(movement.x < 0)
-                    {
-                        if(localLowerPointer.localEulerAngles.z < 25)
+                        if (movement.x < 0)
                         {
-                            canMoveInOut = 0;
+                            if (localLowerPointer.localEulerAngles.z < 25)
+                            {
+                                canMoveInOut = 0;
+                            }
                         }
+                        else
+                        {
+                            if (localLowerPointer.localEulerAngles.z > 180)
+                            {
+                                canMoveInOut = 0;
+                            }
+                        }                      
                     }
                     else
                     {
-                        if (localLowerPointer.localEulerAngles.z > 180)
+                        Debug.Log(movement.x + " " + localLowerPointer.localEulerAngles.z);
+                        if (movement.y > 0 || movement.x > 0)
                         {
-                            canMoveInOut = 0;
+                            if (localUpperPointer.localEulerAngles.z < 215f && localUpperPointer.localEulerAngles.z > 90)
+                            {
+                                canMoveUpper = 0;
+                            }
                         }
-                    }
 
+                        if(movement.y < 0 || movement.x < 0)
+                        {
+                            if(localUpperPointer.localEulerAngles.z > 20f && localUpperPointer.localEulerAngles.z < 180f)
+                            {
+                                canMoveUpper = 0;
+                            }
+                        }
+
+                        if(movement.x > 0)
+                        {
+                            if(localLowerPointer.localEulerAngles.z > 310)
+                            {
+                                canMoveInOut = 0;
+                            }
+                        }
+                        else
+                        {
+                            if (localLowerPointer.localEulerAngles.z < 185)
+                            {
+                                canMoveInOut = 0;
+                            }
+                        }
+
+                        canMoveUpDown *= -1;
+                    }
                  //   Debug.Log(localLowerPointer.localEulerAngles.z + " " + movement);
                 }
 
