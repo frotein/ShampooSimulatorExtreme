@@ -7,6 +7,7 @@ public class RotateTorso : MonoBehaviour {
     public Transform leftThigh, rightThigh;
     public Collider2D chestCol;
     public MoveLimb left, right;
+    public TestMotorsScript leaningMotors;
     public float leanRate;
     float lastZ;
     void Start ()
@@ -20,19 +21,9 @@ public class RotateTorso : MonoBehaviour {
     {
         float leanDir = Input.GetAxisRaw("Lean");
 
-      //  if (chestCol.OverlapPoint(leftThigh.position.XY()))
-      //      Debug.Log("touching left thigh");
-        lastZ = transform.eulerAngles.z;
-        if ( (!chestCol.OverlapPoint(leftThigh.position.XY()) || leanDir < 0) && (!chestCol.OverlapPoint(rightThigh.position.XY()) || leanDir > 0))
-            transform.eulerAngles += new Vector3(0, 0, leanRate * leanDir * Time.deltaTime);
-
-        Transform limit = null; //right.GetWrongSideLimit();
-        if (limit != null)
-            right.transform.position = PointOnLine(limit.position.XY(), limit.position.XY() + limit.right.XY(), right.transform.position.XY());
-
-        limit = null; // left.GetWrongSideLimit();
-        if (limit != null)
-            left.transform.position = PointOnLine(limit.position.XY(), limit.position.XY() + limit.right.XY(), left.transform.position.XY());
+        //  if (chestCol.OverlapPoint(leftThigh.position.XY()))
+        //      Debug.Log("touching left thigh");
+        leaningMotors.totalSpeed = leanDir;
 
     }
 
