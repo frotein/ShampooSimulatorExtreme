@@ -1,4 +1,6 @@
-﻿Shader "Unlit/2DMetaBallsTexture"
+﻿// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+
+Shader "Unlit/2DMetaBallsTexture"
 {
 	Properties
     {
@@ -67,7 +69,7 @@
 				vertexOutput output;
 
 				output.pos = mul(UNITY_MATRIX_MVP, input.vertex);
-				output.worldPos = mul(_Object2World, input.vertex);
+				output.worldPos = mul(unity_ObjectToWorld, input.vertex);
 				
 				// transformation of input.vertex from object 
 				// coordinates to world coordinates;

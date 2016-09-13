@@ -87,10 +87,10 @@ public class Metaball2DTextureShader : MonoBehaviour {
 
             foreach (int x in xPos)
             {
-                if (x < xTiles)
+                if (x < xTiles && x >= 0)
                 {
                     foreach (int y in yPos)
-                    { if (y < yTiles) tileVariables[x, y].balls.Add(t); }
+                    { if (y < yTiles && y >= 0) tileVariables[x, y].balls.Add(t); }
                 }
             }
 

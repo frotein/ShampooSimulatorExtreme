@@ -64,7 +64,8 @@ public class HandGrabber : MonoBehaviour {
             }
             else
             {
-                Grabbed(staticGrabbed);
+           //     if(staticGrabbed != null)
+             //       Grabbed(staticGrabbed);
             }
         }
 
@@ -160,7 +161,10 @@ public class HandGrabber : MonoBehaviour {
         grabbed = true;
         grabbedGO = grabbable;
         previousParent = grabbedGO.transform.parent;
-        grabbedStatic = grabbedGO.GetComponent<Rigidbody2D>().isKinematic;
+        if (grabbedGO.GetComponent<Rigidbody2D>() != null)
+            grabbedStatic = grabbedGO.GetComponent<Rigidbody2D>().isKinematic;
+        else
+            grabbedStatic = true;
         //grabbedGO.BroadcastMessage("ResetParent", null, SendMessageOptions.DontRequireReceiver);
         if (grabbedGO.transform.childCount > 0)
         {
@@ -175,8 +179,8 @@ public class HandGrabber : MonoBehaviour {
             handLimiter.leftGrabbed = grabbedGO.transform;
         else
             handLimiter.rightGrabbed = grabbedGO.transform;
-
-        grabbedGO.GetComponent<Rigidbody2D>().isKinematic = true;
+        if (grabbedGO.GetComponent<Rigidbody2D>() != null)
+            grabbedGO.GetComponent<Rigidbody2D>().isKinematic = true;
         // if you grabbed the soap, check the apply soap as grabbed
         ApplySoap soap = grabbedGO.GetComponent<ApplySoap>();
         if(soap != null)
@@ -195,8 +199,11 @@ public class HandGrabber : MonoBehaviour {
 
     void Release(Vector2 velocity)
     {
-        grabbedGO.GetComponent<Rigidbody2D>().isKinematic = grabbedStatic;
-        grabbedGO.GetComponent<Rigidbody2D>().velocity = velocity;
+        if (grabbedGO.GetComponent<Rigidbody2D>() != null)
+        {
+            grabbedGO.GetComponent<Rigidbody2D>().isKinematic = grabbedStatic;
+            grabbedGO.GetComponent<Rigidbody2D>().velocity = velocity;
+        }
         wait = 0;
         if (triggerCollider != null)
         {

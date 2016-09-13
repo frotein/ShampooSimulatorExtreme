@@ -1,4 +1,6 @@
-﻿Shader "Sprite/WetTintWithCircles"
+﻿// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+
+Shader "Sprite/WetTintWithCircles"
 {
 	Properties
 	{
@@ -69,7 +71,7 @@
 		vertexOutput output;
 
 		output.vertex = mul(UNITY_MATRIX_MVP, input.vertex);
-		output.worldPos = mul(_Object2World, input.vertex);
+		output.worldPos = mul(unity_ObjectToWorld, input.vertex);
 		output.texcoord = input.texcoord;
 		// transformation of input.vertex from object 
 		// coordinates to world coordinates;
