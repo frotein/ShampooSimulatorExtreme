@@ -9,6 +9,7 @@ public class CustomizableControls
     {
         controlsDictionary = new Dictionary<string, CustomizableControl>();
         player = playr;
+
     }
 }
 
@@ -31,7 +32,8 @@ public class CustomizableControl
     {
         controller = true;
     }
-    public bool WasClicked()
+
+    public bool Pressed() // was the key or button 
     {
         bool clicked = false;
 
@@ -43,6 +45,42 @@ public class CustomizableControl
         else
         {
             if (Input.GetButtonDown(name))
+                clicked = true;
+        }
+
+        return clicked;
+    }
+
+    public bool Released()
+    {
+        bool clicked = false;
+
+        if (!controller)
+        {
+            if (Input.GetKeyUp(key))
+                clicked = true;
+        }
+        else
+        {
+            if (Input.GetButtonUp(name))
+                clicked = true;
+        }
+
+        return clicked;
+    }
+
+    public bool Down()
+    {
+        bool clicked = false;
+
+        if (!controller)
+        {
+            if (Input.GetKey(key))
+                clicked = true;
+        }
+        else
+        {
+            if (Input.GetButton(name))
                 clicked = true;
         }
 

@@ -45,6 +45,7 @@ public class MoveLimb : MonoBehaviour
     float minimumMovementSqr;
     public bool classicMovement;
     public bool RebindableMovement;
+    public bool RedoneControls;
     public RebindableControlsSpeeds controlsSpeed;
     bool startSide;
     public RestrictedArea[] restrictedAreas;
@@ -143,9 +144,9 @@ public class MoveLimb : MonoBehaviour
                     flipInOut = -1;*/
                 if (right)
                 {
-                   // Debug.Log(angleFlip - localLowerPointer.localEulerAngles.z * dir  + " " + movement.x * flipInOut + " " + -(dir * localLowerPointer.localEulerAngles.z - angleFlip));//+ localLowerPointer.localEulerAngles.z); 
-                                                                                       //Debug.Log("InOut " + canMoveInOut + " upDown " + canMoveUpDown + " upper " + canMoveUpper);
-                                                                                       //  Debug.Log(upperSpeed + " " + lowerSpeed);
+                    // Debug.Log(angleFlip - localLowerPointer.localEulerAngles.z * dir  + " " + movement.x * flipInOut + " " + -(dir * localLowerPointer.localEulerAngles.z - angleFlip));//+ localLowerPointer.localEulerAngles.z); 
+                    //Debug.Log("InOut " + canMoveInOut + " upDown " + canMoveUpDown + " upper " + canMoveUpper);
+                    //  Debug.Log(upperSpeed + " " + lowerSpeed);
                 }
                 if (arms)
                 {
@@ -197,10 +198,13 @@ public class MoveLimb : MonoBehaviour
                 {
                     if (!right)
                     {
+
                         if (movement.y > 0 || movement.x < 0)
                         {
+                            //Debug.Log(movement.y);
                             if (localUpperPointer.localEulerAngles.z > 145f && localUpperPointer.localEulerAngles.z < 330f)
                             {
+                                Debug.Log(localUpperPointer.localEulerAngles.z);
                                 canMoveUpper = 0;
                             }
                         }
@@ -209,6 +213,7 @@ public class MoveLimb : MonoBehaviour
                         {
                             if (localUpperPointer.localEulerAngles.z < 345 && localUpperPointer.localEulerAngles.z > 200)
                             {
+                                Debug.Log(localUpperPointer.localEulerAngles.z);
                                 canMoveUpper = 0;
                             }
                         }
@@ -226,30 +231,31 @@ public class MoveLimb : MonoBehaviour
                             {
                                 canMoveInOut = 0;
                             }
-                        }                      
+                        }
                     }
                     else
                     {
-                        Debug.Log(movement.x + " " + localLowerPointer.localEulerAngles.z);
+
                         if (movement.y > 0 || movement.x > 0)
                         {
                             if (localUpperPointer.localEulerAngles.z < 215f && localUpperPointer.localEulerAngles.z > 90)
                             {
                                 canMoveUpper = 0;
                             }
+                            //  Debug.Log(localUpperPointer.localEulerAngles.z);
                         }
 
-                        if(movement.y < 0 || movement.x < 0)
+                        if (movement.y < 0 || movement.x < 0)
                         {
-                            if(localUpperPointer.localEulerAngles.z > 20f && localUpperPointer.localEulerAngles.z < 180f)
+                            if (localUpperPointer.localEulerAngles.z > 330f)
                             {
                                 canMoveUpper = 0;
                             }
                         }
 
-                        if(movement.x > 0)
+                        if (movement.x > 0)
                         {
-                            if(localLowerPointer.localEulerAngles.z > 310)
+                            if (localLowerPointer.localEulerAngles.z > 310)
                             {
                                 canMoveInOut = 0;
                             }
@@ -264,16 +270,16 @@ public class MoveLimb : MonoBehaviour
 
                         canMoveUpDown *= -1;
                     }
-                 //   Debug.Log(localLowerPointer.localEulerAngles.z + " " + movement);
+                    //   Debug.Log(localLowerPointer.localEulerAngles.z + " " + movement);
                 }
 
                 canMoveInOut *= flipInOut;
-                upperSpeed = (movement.x * dir * -controlsSpeed.inOutSpeed * canMoveInOut * controlsSpeed.overallSpeed + 
+                upperSpeed = (movement.x * dir * -controlsSpeed.inOutSpeed * canMoveInOut * controlsSpeed.overallSpeed +
                                        movement.y * controlsSpeed.upDownSpeed * controlsSpeed.overallSpeed * canMoveUpDown) * canMoveUpper;
 
                 lowerSpeed = movement.x * dir * -controlsSpeed.inOutSpeed * -2f * controlsSpeed.overallSpeed * canMoveInOut;
 
-                
+
 
                 jointMover.SetUpperMotorSpeed(upperSpeed);
                 jointMover.SetLowerMotorSpeed(lowerSpeed);
@@ -281,56 +287,71 @@ public class MoveLimb : MonoBehaviour
             }
             else
             {
-                bool pushingAgainst = false;
-
-                RaycastHit2D hit = Physics2D.Linecast(leftPt.position.XY() + movement * 5f,
-                                                      rightPt.position.XY() + movement * 5f,
-                                                      Constants.player.obstacleLayer | Constants.player.grabbableLayer);
-                // if we are pushing against the ground ... 
-                if (hit)
+                if (RedoneControls)
                 {
-                    pushingAgainst = true; //signal that we are pushing
-                }
-
-                // if we are pushing against, store up movement, like preparing to push off of ground
-                if (pushingAgainst && !stoppedByMax)
-                {
-                    storedMovement += movement;
+                    Vector2 change = GetChangeInAngles(movement);
+                    Debug.Log(change.x + " : " +  change.y);
+                    float tempScaler = -20;
+                    if(startSide == isLeft(thigh.position.XY(), transform.position.XY(), knee.position.XY()))
+                    {
+                        change.x *= -1;
+                    }
+                    jointMover.SetUpperMotorSpeed(change.x * tempScaler);
+                    jointMover.SetLowerMotorSpeed(change.y * tempScaler);
                 }
                 else
-                {
-                    if (storedMovement != Vector2.zero) // if we are no longer pushing, release the power, causing something like a natural jump
-                    {
-                        //   rb.AddForceAtPosition(-storedMovement * 1000, transform.position);
-                        storedMovement = Vector2.zero;
-                    }
-                }
+                { 
+                    bool pushingAgainst = false;
 
-                if (!arms) // if these are the legs, we dont want them to be able to clip through the player, so slide along any surface that is the player
-                {
-                    // also if these are legs, check to make sure the new height isnt over the max height, if it is slide along the max height
-                    if (isLeft(maxLegs.position.XY(), maxLegs.position.XY() + maxLegs.right.XY(), transform.position.XY() + movement) != legsStartLeft)
+                    RaycastHit2D hit = Physics2D.Linecast(leftPt.position.XY() + movement * 5f,
+                                                          rightPt.position.XY() + movement * 5f,
+                                                          Constants.player.obstacleLayer | Constants.player.grabbableLayer);
+                    // if we are pushing against the ground ... 
+                    if (hit)
                     {
-                        movement = Vector3.Project(movement.XYZ(0), maxLegs.right.XY().XYZ(0)).XY();
+                        pushingAgainst = true; //signal that we are pushing
                     }
-                }
-                movement = LimitMovement(5f * movement);
-                // move the linbs from the movement vector
-                // moveLimb();
-                //Debug.Log(movement.magnitude);
-                if (jointMover != null)
-                {
-                    if (movement.magnitude > minimumMovement)
-                    { jointMover.MoveToPoint((Vector2)(transform.position) + movement); }
+
+                    // if we are pushing against, store up movement, like preparing to push off of ground
+                    if (pushingAgainst && !stoppedByMax)
+                    {
+                        storedMovement += movement;
+                    }
                     else
-                    { jointMover.StopMoving(); }
+                    {
+                        if (storedMovement != Vector2.zero) // if we are no longer pushing, release the power, causing something like a natural jump
+                        {
+                            //   rb.AddForceAtPosition(-storedMovement * 1000, transform.position);
+                            storedMovement = Vector2.zero;
+                        }
+                    }
+
+                    if (!arms) // if these are the legs, we dont want them to be able to clip through the player, so slide along any surface that is the player
+                    {
+                        // also if these are legs, check to make sure the new height isnt over the max height, if it is slide along the max height
+                        if (isLeft(maxLegs.position.XY(), maxLegs.position.XY() + maxLegs.right.XY(), transform.position.XY() + movement) != legsStartLeft)
+                        {
+                            movement = Vector3.Project(movement.XYZ(0), maxLegs.right.XY().XYZ(0)).XY();
+                        }
+                    }
+                    movement = LimitMovement(5f * movement);
+                    // move the linbs from the movement vector
+                    // moveLimb();
+                    //Debug.Log(movement.magnitude);
+                    if (jointMover != null)
+                    {
+                        if (movement.magnitude > minimumMovement)
+                        { jointMover.MoveToPoint((Vector2)(transform.position) + movement); }
+                        else
+                        { jointMover.StopMoving(); }
+                    }
+
+                    if (testPoint != null)
+                        testPoint.transform.position = transform.position + (Vector3)movement;
                 }
 
-                if (testPoint != null)
-                    testPoint.transform.position = transform.position + (Vector3)movement;
+                moved = movement != Vector2.zero;
             }
-
-            moved = movement != Vector2.zero;
         }
     }
 
@@ -434,6 +455,20 @@ public class MoveLimb : MonoBehaviour
     public bool Moved()
     {
         return moved;
+    }
+    
+    public Vector2 GetChangeInAngles(Vector2 move)
+    {
+        Vector2 p1 = thigh.position.XY();
+        Vector2 p2 = transform.position.XY();
+        Vector2 p3 = Calculate3rdPoint(length, p1, p2, knee.position.XY());
+        float startingUpperAngle = jointMover.AngleFromVector((p3 - p1).normalized);
+        float startingLowerAngle = jointMover.AngleFromVector((p2 - p3).normalized);
+        Vector2 newPos = p2 + move;
+        Vector2 newP3 = Calculate3rdPoint(length, p1, newPos, knee.position.XY());
+        float endingUpperAngle = jointMover.AngleFromVector((newP3 - p1).normalized);
+        float endingLowerAngle = jointMover.AngleFromVector((newPos - newP3).normalized);
+        return new Vector2(startingUpperAngle - endingUpperAngle, startingLowerAngle - endingLowerAngle);
     }
     // calculates the middle point in a triangle where you know the the two side points and the length of two of the sides, 
     // also has the current 3rd point so the triangle doesnt flip
