@@ -50,9 +50,9 @@ public class HandCloser : MonoBehaviour {
         }
         // switches input based on hand side hand it is
         if (left)
-            grabAmt = Input.GetAxis("LeftHand");
+            grabAmt = 0;//Input.GetAxis("LeftHand");
         else
-            grabAmt = Input.GetAxis("RightHand");
+            grabAmt = 0;// Input.GetAxis("RightHand");
 
         // if we dont have enoguh force to grab, set it to open hand sprite
         if (grabAmt < Constants.player.grabAmount)

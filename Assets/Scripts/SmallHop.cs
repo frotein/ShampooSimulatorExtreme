@@ -14,9 +14,9 @@ public class SmallHop : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
     {
-	    if(Input.GetButtonDown("Hop") && Constants.player.onGround)
+	    /*if(Input.GetButtonDown("Hop") && Constants.player.onGround)
         {
             rb.AddForce(transform.up.XY() * power);
-        }
+        }*/
 	}
 }

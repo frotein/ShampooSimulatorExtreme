@@ -18,7 +18,7 @@ public class RotateTorso : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
     {
-        float leanDir = Input.GetAxisRaw("Lean");
+        float leanDir = 0;// Input.GetAxisRaw("Lean");
 
       //  if (chestCol.OverlapPoint(leftThigh.position.XY()))
       //      Debug.Log("touching left thigh");

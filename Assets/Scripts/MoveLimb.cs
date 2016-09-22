@@ -61,7 +61,7 @@ public class MoveLimb : MonoBehaviour {
 	void Update () 
 	{
         // Get the movement vector from the corrosponding analog stick
-        SetMovementVector();
+       // SetMovementVector();
         bool pushingAgainst = false;
 
         RaycastHit2D hit = Physics2D.Linecast(leftPt.position.XY() + movement * 5f, 
@@ -165,6 +165,15 @@ public class MoveLimb : MonoBehaviour {
 
     }
 
+    public void SetHorizontalMovement(float axis)
+    {
+        movement.x = axis * Constants.player.limbSpeed;
+    }
+
+    public void SetVerticalMovement(float axis)
+    {
+        movement.y = axis * Constants.player.limbSpeed;
+    }
     // moves the limb based on the movement vector
     void moveLimb()
     {
