@@ -26,6 +26,7 @@ public class HandCloser : MonoBehaviour {
     // the current and last sprites, used to transition and so sprites arent set every frame
     int currentSprite;
     int lastSprite;
+    
 
     bool waitFrame;
     // the sprite Renderer
@@ -38,35 +39,36 @@ public class HandCloser : MonoBehaviour {
         openPosition = transform.localPosition;
         waitFrame = false;
     }
-	
-	// Update is called once per frame
-	void Update ()
+	public void ToggleGrabbing()
     {
-        float grabAmt;
+           grabbing = !grabbing;
+        Debug.Log("running");
+    }
+
+    // Update is called once per frame
+    void Update ()
+    {
+        
         if(waitFrame)
         {
             SetFrontFingers();
             waitFrame = false;
         }
-        // switches input based on hand side hand it is
-        if (left)
-            grabAmt = 0;//Input.GetAxis("LeftHand");
-        else
-            grabAmt = 0;// Input.GetAxis("RightHand");
+        
 
         // if we dont have enoguh force to grab, set it to open hand sprite
-        if (grabAmt < Constants.player.grabAmount)
+        if (!grabbing)
             currentSprite = 0;
         else
         {
             // if we have enough to grab but not to close, set it to grab hand sprite
-            if (grabAmt < Constants.player.closeAmount)
+            if (grabbing)
                 currentSprite = 1;
-            else
+            /*else
             {
                 // if we have enough force to close, set it to closed hand sprite;
                 currentSprite = 2;
-            }
+            }*/
         }
 
         // if this sprite is different than last frames, switch the sprite image

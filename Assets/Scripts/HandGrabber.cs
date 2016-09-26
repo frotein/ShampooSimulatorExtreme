@@ -62,10 +62,12 @@ public class HandGrabber : MonoBehaviour {
                 if(!OtherHandIsHolding(tempGrabbedGO.transform))
                     Grabbed(tempGrabbedGO);
             }
-            else
+            else // if we grabbed nothing, open hand
             {
-           //     if(staticGrabbed != null)
-             //       Grabbed(staticGrabbed);
+                //     if(staticGrabbed != null)
+                //       Grabbed(staticGrabbed);
+                hand.grabbing = false;
+
             }
         }
 
@@ -116,12 +118,9 @@ public class HandGrabber : MonoBehaviour {
 
             if (grabbedGO.name == "shampoo") // if you are grabbing shampoo ...
             {
-                float squeezeAmt = 0;
+                float squeezeAmt = 1;
 
-                if (left)
-                    squeezeAmt = Input.GetAxis("LeftHand");
-                else
-                    squeezeAmt = Input.GetAxis("RightHand");
+                
 
                 if(squeezeAmt > Constants.player.squeezeAmount) // ... and are squeezing hard enough ...
                 {

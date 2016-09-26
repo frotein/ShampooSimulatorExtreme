@@ -15,6 +15,7 @@ public class PlayerConstants : MonoBehaviour {
     public GameObject[] grabbableObjects;
     public List<WetTintCircleController> wetTintControllers;
     MoveLimb[] limbs;
+    HandCloser[] closer;
     bool controllingLeftArm = true;
     bool controllingRightArm = true;
     // Use this for initialization
@@ -23,6 +24,7 @@ public class PlayerConstants : MonoBehaviour {
         Constants.player = this;
         wetTintControllers = new List<WetTintCircleController>();
         limbs  = transform.GetComponentsInChildren<MoveLimb>();
+        closer = transform.GetComponentsInChildren<HandCloser>();
     }
 	
 	// Update is called once per frame
@@ -62,7 +64,23 @@ public class PlayerConstants : MonoBehaviour {
         }
     }
 
+    public void ToggleGrabbingLeft()
+    {
+        foreach(HandCloser c in closer)
+        {
+            if (c.left)
+                c.ToggleGrabbing();
+        }
+    }
 
+    public void ToggleGrabbingRight()
+    {
+        foreach (HandCloser c in closer)
+        {
+            if (!c.left)
+                c.ToggleGrabbing();
+        }
+    }
     void OnCollisionEnter2D(Collision2D col)
     {
         if (col.transform.tag == "Ground")
