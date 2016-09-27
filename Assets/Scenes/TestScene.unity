@@ -5555,7 +5555,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inputConfigurations:
-  - name: KeyboardAndMouse
+  - name: JustKeyboard
     axes:
     - name: Left Horizontal
       description: 
@@ -5683,7 +5683,7 @@ MonoBehaviour:
       type: 0
       axis: 0
       joystick: 0
-    isExpanded: 1
+    isExpanded: 0
   - name: Gamepad
     axes:
     - name: Horizontal
@@ -5841,7 +5841,7 @@ MonoBehaviour:
       axis: 0
       joystick: 0
     isExpanded: 0
-  playerOneDefault: KeyboardAndMouse
+  playerOneDefault: JustKeyboard
   playerTwoDefault: 
   playerThreeDefault: 
   playerFourDefault: 
