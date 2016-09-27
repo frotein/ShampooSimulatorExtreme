@@ -24,7 +24,7 @@ public class MoveLimb : MonoBehaviour {
     public float middleFix = 0.45f;
 
     public bool arms; // are these the hands?
-    bool moving;
+    public bool moving;
     bool startsLeft;   
     Vector2 movement; // the movement of this frame
     Vector3 storedLocalPosition; // the local position ... stored at the beginning

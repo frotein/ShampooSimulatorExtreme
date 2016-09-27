@@ -16,7 +16,13 @@ public class SmallHop : MonoBehaviour
     {
 	    /*if(Input.GetButtonDown("Hop") && Constants.player.onGround)
         {
-            rb.AddForce(transform.up.XY() * power);
+            
         }*/
 	}
+
+    public void Jump()
+    {
+        if(Constants.player.onGround)
+            rb.AddForce(transform.up.XY() * power);
+    }
 }

@@ -36,7 +36,7 @@ public class PlayerConstants : MonoBehaviour {
     {
         foreach(MoveLimb limb in limbs)
         {
-            if (limb.left && limb.arms == controllingLeftArm) limb.SetHorizontalMovement(axis);
+            if (limb.left && limb.moving) limb.SetHorizontalMovement(axis);
         }
     }
 
@@ -44,7 +44,7 @@ public class PlayerConstants : MonoBehaviour {
     {
         foreach (MoveLimb limb in limbs)
         {
-            if (limb.left && limb.arms == controllingLeftArm) limb.SetVerticalMovement(axis);
+            if (limb.left && limb.moving) limb.SetVerticalMovement(axis);
         }
     }
 
@@ -52,7 +52,7 @@ public class PlayerConstants : MonoBehaviour {
     {
         foreach (MoveLimb limb in limbs)
         {
-            if (!limb.left && limb.arms == controllingLeftArm) limb.SetHorizontalMovement(axis);
+            if (!limb.left && limb.moving) limb.SetHorizontalMovement(axis);
         }
     }
 
@@ -60,7 +60,7 @@ public class PlayerConstants : MonoBehaviour {
     {
         foreach (MoveLimb limb in limbs)
         {
-            if (!limb.left && limb.arms == controllingLeftArm) limb.SetVerticalMovement(axis);
+            if (!limb.left && limb.moving) limb.SetVerticalMovement(axis);
         }
     }
 
@@ -81,6 +81,25 @@ public class PlayerConstants : MonoBehaviour {
                 c.ToggleGrabbing();
         }
     }
+
+    public void ToggleLeftControl()
+    {
+        foreach(MoveLimb m in limbs)
+        {
+            if (m.left)
+                m.moving = !m.moving;
+        }
+    }
+
+    public void ToggleRightControl()
+    {
+        foreach (MoveLimb m in limbs)
+        {
+            if (!m.left)
+                m.moving = !m.moving;
+        }
+    }
+
     void OnCollisionEnter2D(Collision2D col)
     {
         if (col.transform.tag == "Ground")

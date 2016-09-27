@@ -37,7 +37,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.3735644, g: 0.38112032, b: 0.35887682, a: 1}
+  m_IndirectSpecularColor: {r: 0.37356424, g: 0.3811201, b: 0.35887662, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -5490,6 +5490,7 @@ MonoBehaviour:
   - {fileID: 1722557010}
   middleFix: 0.5
   arms: 1
+  moving: 0
   length: 1
   push: {fileID: 0}
 --- !u!114 &153700179
@@ -5564,8 +5565,8 @@ MonoBehaviour:
       altPositive: 0
       altNegative: 0
       deadZone: 0
-      gravity: 3
-      sensitivity: 0.1
+      gravity: 20
+      sensitivity: 10
       snap: 1
       invert: 0
       type: 2
@@ -5578,8 +5579,8 @@ MonoBehaviour:
       altPositive: 0
       altNegative: 0
       deadZone: 0
-      gravity: 1
-      sensitivity: 0.1
+      gravity: 20
+      sensitivity: 10
       snap: 1
       invert: 0
       type: 2
@@ -5592,9 +5593,9 @@ MonoBehaviour:
       altPositive: 0
       altNegative: 0
       deadZone: 0
-      gravity: 1
-      sensitivity: 0.1
-      snap: 0
+      gravity: 20
+      sensitivity: 10
+      snap: 1
       invert: 1
       type: 2
       axis: 0
@@ -5606,9 +5607,9 @@ MonoBehaviour:
       altPositive: 0
       altNegative: 0
       deadZone: 0
-      gravity: 1
-      sensitivity: 0.1
-      snap: 0
+      gravity: 20
+      sensitivity: 10
+      snap: 1
       invert: 0
       type: 2
       axis: 1
@@ -5620,9 +5621,9 @@ MonoBehaviour:
       altPositive: 0
       altNegative: 0
       deadZone: 0
-      gravity: 1
-      sensitivity: 0.1
-      snap: 0
+      gravity: 20
+      sensitivity: 10
+      snap: 1
       invert: 0
       type: 2
       axis: 0
@@ -5630,25 +5631,25 @@ MonoBehaviour:
     - name: Switch Left
       description: 
       positive: 101
-      negative: 0
+      negative: 97
       altPositive: 0
       altNegative: 0
       deadZone: 0
       gravity: 1
       sensitivity: 0.1
-      snap: 0
+      snap: 1
       invert: 0
       type: 0
       axis: 0
       joystick: 0
     - name: Switch Right
       description: 
-      positive: 105
-      negative: 0
+      positive: 117
+      negative: 97
       altPositive: 0
       altNegative: 0
       deadZone: 0
-      gravity: 1
+      gravity: 10
       sensitivity: 0.1
       snap: 0
       invert: 0
@@ -5657,33 +5658,47 @@ MonoBehaviour:
       joystick: 0
     - name: Grab Left
       description: 
-      positive: 101
-      negative: 0
+      positive: 304
+      negative: 97
       altPositive: 0
       altNegative: 0
       deadZone: 0
       gravity: 1
       sensitivity: 0.1
-      snap: 0
+      snap: 1
       invert: 0
       type: 0
       axis: 0
       joystick: 0
     - name: Grab Right
       description: 
-      positive: 117
-      negative: 0
+      positive: 39
+      negative: 97
       altPositive: 0
       altNegative: 0
       deadZone: 0
       gravity: 1
       sensitivity: 0.1
-      snap: 0
+      snap: 1
       invert: 0
       type: 0
       axis: 0
       joystick: 0
-    isExpanded: 0
+    - name: Jump
+      description: 
+      positive: 32
+      negative: 97
+      altPositive: 0
+      altNegative: 0
+      deadZone: 0
+      gravity: 20
+      sensitivity: 10
+      snap: 1
+      invert: 0
+      type: 0
+      axis: 0
+      joystick: 0
+    isExpanded: 1
   - name: Gamepad
     axes:
     - name: Horizontal
@@ -6062,6 +6077,162 @@ MonoBehaviour:
           m_CallState: 2
       m_TypeName: TeamUtility.IO.InputEvent+AxisEvent, Assembly-CSharp, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
+  - name: Lean
+    axisName: Lean
+    buttonName: Grab Right
+    keyCode: 0
+    eventType: 0
+    inputState: 0
+    playerID: 0
+    onAction:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 502134416}
+          m_MethodName: ToggleGrabbingRight
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+      m_TypeName: TeamUtility.IO.InputEvent+ActionEvent, Assembly-CSharp, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+    onAxis:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 805010609}
+          m_MethodName: SetLeanDirection
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+      m_TypeName: TeamUtility.IO.InputEvent+AxisEvent, Assembly-CSharp, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+  - name: Jump
+    axisName: Lean
+    buttonName: Jump
+    keyCode: 0
+    eventType: 1
+    inputState: 0
+    playerID: 0
+    onAction:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 805010610}
+          m_MethodName: Jump
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+      m_TypeName: TeamUtility.IO.InputEvent+ActionEvent, Assembly-CSharp, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+    onAxis:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 805010609}
+          m_MethodName: SetLeanDirection
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+      m_TypeName: TeamUtility.IO.InputEvent+AxisEvent, Assembly-CSharp, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+  - name: SwitchLeftControl
+    axisName: Lean
+    buttonName: Switch Left
+    keyCode: 0
+    eventType: 1
+    inputState: 0
+    playerID: 0
+    onAction:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 502134416}
+          m_MethodName: ToggleLeftControl
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+      m_TypeName: TeamUtility.IO.InputEvent+ActionEvent, Assembly-CSharp, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+    onAxis:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 805010609}
+          m_MethodName: SetLeanDirection
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+      m_TypeName: TeamUtility.IO.InputEvent+AxisEvent, Assembly-CSharp, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+  - name: SwitchRightControl
+    axisName: Lean
+    buttonName: Switch Right
+    keyCode: 0
+    eventType: 1
+    inputState: 0
+    playerID: 0
+    onAction:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 502134416}
+          m_MethodName: ToggleRightControl
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+      m_TypeName: TeamUtility.IO.InputEvent+ActionEvent, Assembly-CSharp, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+    onAxis:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 805010609}
+          m_MethodName: SetLeanDirection
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+      m_TypeName: TeamUtility.IO.InputEvent+AxisEvent, Assembly-CSharp, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
 --- !u!1001 &158305184
 Prefab:
   m_ObjectHideFlags: 0
@@ -6394,6 +6565,7 @@ MonoBehaviour:
   - {fileID: 1590591534}
   middleFix: 0.505
   arms: 1
+  moving: 0
   length: 0.95
   push: {fileID: 0}
 --- !u!114 &177891527
@@ -18894,7 +19066,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 881c755cf2a2b794283ecc42f09e5d60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  limbSpeed: 4
+  limbSpeed: 0.1
   grabAmount: 0.4
   closeAmount: 0.95
   squeezeAmount: 0.55
@@ -28594,7 +28766,7 @@ MonoBehaviour:
   chestCol: {fileID: 1666701859}
   left: {fileID: 864491292}
   right: {fileID: 1293736452}
-  leanRate: 70
+  leanRate: 100
 --- !u!114 &805010610
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -30869,6 +31041,7 @@ MonoBehaviour:
   - {fileID: 1622189187}
   middleFix: 0.53
   arms: 0
+  moving: 0
   length: 1.1
   push: {fileID: 0}
 --- !u!1001 &864594437
@@ -31314,7 +31487,7 @@ MonoBehaviour:
   checkInputDeviceEveryFrame: 0
   inputDeviceChecksPerSecond: 15
   updateJoystickCountInterval: 1
-  keyboardConfiguration: KeyboardAndMouse
+  keyboardConfiguration: JustKeyboard
   windowsJoystickConfiguration: Windows_Gamepad
   osxJoystickConfiguration: OSX_Gamepad
   linuxJoystickConfiguration: Linux_Gamepad
@@ -45655,6 +45828,7 @@ MonoBehaviour:
   - {fileID: 1695953405}
   middleFix: 0.53
   arms: 0
+  moving: 0
   length: 1.1
   push: {fileID: 0}
 --- !u!4 &1294595261 stripped

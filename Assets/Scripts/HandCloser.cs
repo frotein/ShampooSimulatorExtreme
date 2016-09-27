@@ -42,7 +42,6 @@ public class HandCloser : MonoBehaviour {
 	public void ToggleGrabbing()
     {
            grabbing = !grabbing;
-        Debug.Log("running");
     }
 
     // Update is called once per frame

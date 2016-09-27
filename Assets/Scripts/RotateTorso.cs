@@ -9,17 +9,21 @@ public class RotateTorso : MonoBehaviour {
     public MoveLimb left, right;
     public float leanRate;
     float lastZ;
+    float leanDir;
     void Start ()
     {
         lastZ = transform.eulerAngles.z;
-
+        leanDir = 0;
     }
 	
+    public void SetLeanDirection(float axis)
+    {
+        leanDir = axis;
+    }
 	// Update is called once per frame
 	void Update ()
     {
-        float leanDir = 0;// Input.GetAxisRaw("Lean");
-
+        
       //  if (chestCol.OverlapPoint(leftThigh.position.XY()))
       //      Debug.Log("touching left thigh");
         lastZ = transform.eulerAngles.z;
