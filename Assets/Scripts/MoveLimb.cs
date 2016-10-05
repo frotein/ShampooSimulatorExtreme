@@ -25,6 +25,7 @@ public class MoveLimb : MonoBehaviour {
 
     public bool arms; // are these the hands?
     public bool moving;
+    public bool inAir;
     bool startsLeft;   
     Vector2 movement; // the movement of this frame
     Vector3 storedLocalPosition; // the local position ... stored at the beginning
@@ -37,11 +38,12 @@ public class MoveLimb : MonoBehaviour {
     bool stoppedByMax;
     bool legsStartLeft;
     bool moved;
+    Transform originalParent;
 	// Use this for initialization
 	void Start () 
 	{
         storedLocalPosition = transform.localPosition;
-
+        originalParent = transform.parent;
         startsLeft = isLeft(thigh.position.XY(), transform.position.XY(), knee.position.XY());
         if(movementLimits != null)
         {
@@ -61,12 +63,14 @@ public class MoveLimb : MonoBehaviour {
 	void Update () 
 	{
         // Get the movement vector from the corrosponding analog stick
-       // SetMovementVector();
-        bool pushingAgainst = false;
-
-        RaycastHit2D hit = Physics2D.Linecast(leftPt.position.XY() + movement * 5f, 
+        // SetMovementVector();
+        //bool pushingAgainst = false;
+        if (!moving)
+            movement = Vector2.zero;
+        /*RaycastHit2D hit = Physics2D.Linecast(leftPt.position.XY() + movement * 5f, 
                                               rightPt.position.XY() + movement * 5f, 
                                               Constants.player.obstacleLayer | Constants.player.grabbableLayer);
+        
         // if we are pushing against the ground ... 
         if (hit)
         {
@@ -82,8 +86,44 @@ public class MoveLimb : MonoBehaviour {
         {
             if (storedMovement != Vector2.zero) // if we are no longer pushing, release the power, causing something like a natural jump
             {
-                rb.AddForceAtPosition(-storedMovement * 1000, transform.position);
+              //  rb.AddForceAtPosition(-storedMovement * 1000, transform.position);
                 storedMovement = Vector2.zero;
+            }
+        } */
+        
+        // if you are sliding you feet on the ground
+        if( !arms)
+        {
+            Collider2D[] cols = Physics2D.OverlapPointAll(leftPt.position.XY() + new Vector2(0, -.1f), Constants.player.obstacleLayer);
+            Collider2D[] cols2 = Physics2D.OverlapPointAll(rightPt.position.XY() + new Vector2(0, -.1f), Constants.player.obstacleLayer);
+            /* bool foundGround = false;
+             foreach (Collider2D col in cols)
+             {
+                 if(col.tag == "Ground") { foundGround = true; break; }
+             }
+
+             if(!foundGround)
+             {
+                 foreach (Collider2D col in cols2)
+                 {
+                     if (col.tag == "Ground") { foundGround = true; break; }
+                 }
+             }*/
+
+            //if (foundGround)
+            if(cols.Length > 0 || cols2.Length > 0)
+            {
+                inAir = false;
+                Debug.Log("pushing");
+                // apply force to position
+                Vector2 move = movement;
+                if (move.y > move.x * 3)
+                    move.y *= 1.5f;
+                rb.AddForceAtPosition(-move * 1000f, transform.position.XY());
+            }
+            else
+            {
+                inAir = true;
             }
         }
 
@@ -99,7 +139,14 @@ public class MoveLimb : MonoBehaviour {
         // move the linbs from the movement vector
         moveLimb();
 
-         
+        if(inAir && movement.x == 0 && movement.y == 0 && Constants.player.onGround)
+        {
+            transform.parent = Constants.player.torsoRotator.transform;
+        }
+        else
+        {
+            transform.parent = originalParent;
+        }
         
         moved = movement != Vector2.zero;        
 	}

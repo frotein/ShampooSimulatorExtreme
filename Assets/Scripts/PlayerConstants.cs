@@ -14,6 +14,7 @@ public class PlayerConstants : MonoBehaviour {
     public LayerMask playerLayer, chestLayer;
     public GameObject[] grabbableObjects;
     public List<WetTintCircleController> wetTintControllers;
+    public RotateTorso torsoRotator;
     MoveLimb[] limbs;
     HandCloser[] closer;
     bool controllingLeftArm = true;

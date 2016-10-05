@@ -737,6 +737,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 4000012525894730}
+  - 114: {fileID: 114000010799501918}
   m_Layer: 0
   m_Name: PlayerAndControls
   m_TagString: Untagged
@@ -2557,7 +2558,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000011845208754}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.2700882, y: -1.7613544, z: 0}
+  m_LocalPosition: {x: 2.1721275, y: 1.0684178, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
@@ -3104,7 +3105,7 @@ Rigidbody2D:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000012651830204}
   m_UseAutoMass: 1
-  m_Mass: 7.6927376
+  m_Mass: 10.89022
   m_LinearDrag: 0
   m_AngularDrag: 0.2
   m_GravityScale: 1
@@ -3193,7 +3194,7 @@ PolygonCollider2D:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000011728475046}
   m_Enabled: 1
-  m_Density: 1
+  m_Density: 5
   m_Material: {fileID: 6200000, guid: 2435c9bca5dab504cb05f4dc6bf808fc, type: 2}
   m_IsTrigger: 0
   m_UsedByEffector: 0
@@ -3409,7 +3410,7 @@ PolygonCollider2D:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000012204014056}
   m_Enabled: 1
-  m_Density: 1
+  m_Density: 5
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_UsedByEffector: 0
@@ -4603,6 +4604,20 @@ MonoBehaviour:
   positionTransforms: []
   positions: []
   maxWidth: 150
+--- !u!114 &114000010799501918
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000011845208754}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5c37cd958ffb3445a322ce5eccf6b7e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  points: 0
+  changeInAngle: 0
+  player: {fileID: 50000012860566716}
 --- !u!114 &114000010827060240
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -4703,6 +4718,7 @@ MonoBehaviour:
   middleFix: 0.53
   arms: 0
   moving: 0
+  inAir: 0
   length: 1.1
   push: {fileID: 0}
 --- !u!114 &114000011718272990
@@ -4738,6 +4754,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   wetTintControllers: []
+  torsoRotator: {fileID: 114000013890352734}
 --- !u!114 &114000011801025656
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -4765,6 +4782,7 @@ MonoBehaviour:
   middleFix: 0.53
   arms: 0
   moving: 0
+  inAir: 0
   length: 1.1
   push: {fileID: 0}
 --- !u!114 &114000011850757750
@@ -4850,6 +4868,7 @@ MonoBehaviour:
   middleFix: 0.505
   arms: 1
   moving: 0
+  inAir: 0
   length: 0.95
   push: {fileID: 0}
 --- !u!114 &114000012924077976
@@ -4920,6 +4939,7 @@ MonoBehaviour:
   middleFix: 0.5
   arms: 1
   moving: 0
+  inAir: 0
   length: 1
   push: {fileID: 0}
 --- !u!114 &114000013005831158
@@ -6235,7 +6255,7 @@ HingeJoint2D:
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 1
   m_Anchor: {x: 0, y: 1}
-  m_ConnectedAnchor: {x: 0, y: -0.082782984}
+  m_ConnectedAnchor: {x: 0, y: -0.08278307}
   m_UseMotor: 0
   m_Motor:
     m_MotorSpeed: 0
