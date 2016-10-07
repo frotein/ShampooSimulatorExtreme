@@ -19,6 +19,8 @@ public class PlayerConstants : MonoBehaviour {
     HandCloser[] closer;
     bool controllingLeftArm = true;
     bool controllingRightArm = true;
+    bool LeftCanGrab;
+    bool rightCanGrab;
     // Use this for initialization
 	void Start ()
     {
@@ -72,6 +74,28 @@ public class PlayerConstants : MonoBehaviour {
             if (c.left)
                 c.ToggleGrabbing();
         }
+    }
+
+    public void ToggleGrabbingLeftAxis(float axis)
+    {
+        if(axis > 0.8f && LeftCanGrab)
+        {
+            ToggleGrabbingLeft();
+            LeftCanGrab = false;
+        }
+
+        if (axis < 0.2f) LeftCanGrab = true;
+    }
+
+    public void ToggleGrabbingRightAxis(float axis)
+    {
+        if (axis > 0.8f && rightCanGrab)
+        {
+            ToggleGrabbingRight();
+            rightCanGrab = false;
+        }
+        if (axis < 0.2f) rightCanGrab = true;
+        
     }
 
     public void ToggleGrabbingRight()

@@ -1680,7 +1680,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000010887816806}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.41, z: 0}
+  m_LocalPosition: {x: 0, y: 0.72, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
@@ -3105,7 +3105,7 @@ Rigidbody2D:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000012651830204}
   m_UseAutoMass: 1
-  m_Mass: 10.89022
+  m_Mass: 10.890219
   m_LinearDrag: 0
   m_AngularDrag: 0.2
   m_GravityScale: 1
@@ -4170,6 +4170,84 @@ MonoBehaviour:
           m_CallState: 2
       m_TypeName: TeamUtility.IO.InputEvent+AxisEvent, Assembly-CSharp, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
+  - name: Grab Left Axis
+    axisName: Grab Left
+    buttonName: Switch Right
+    keyCode: 0
+    eventType: 0
+    inputState: 0
+    playerID: 0
+    onAction:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 114000011718272990}
+          m_MethodName: ToggleRightControl
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+      m_TypeName: TeamUtility.IO.InputEvent+ActionEvent, Assembly-CSharp, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+    onAxis:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 114000011718272990}
+          m_MethodName: ToggleGrabbingLeftAxis
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+      m_TypeName: TeamUtility.IO.InputEvent+AxisEvent, Assembly-CSharp, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+  - name: Grab Right Axis
+    axisName: Grab Right
+    buttonName: Switch Right
+    keyCode: 0
+    eventType: 0
+    inputState: 0
+    playerID: 0
+    onAction:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 114000011718272990}
+          m_MethodName: ToggleRightControl
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+      m_TypeName: TeamUtility.IO.InputEvent+ActionEvent, Assembly-CSharp, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+    onAxis:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 114000011718272990}
+          m_MethodName: ToggleGrabbingRightAxis
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+      m_TypeName: TeamUtility.IO.InputEvent+AxisEvent, Assembly-CSharp, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
 --- !u!114 &114000010229674150
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -4413,7 +4491,7 @@ MonoBehaviour:
     isExpanded: 1
   - name: Gamepad
     axes:
-    - name: Horizontal
+    - name: Left Horizontal
       description: 
       positive: 0
       negative: 0
@@ -4427,7 +4505,7 @@ MonoBehaviour:
       type: 3
       axis: 0
       joystick: 0
-    - name: Vertical
+    - name: Left Vertical
       description: 
       positive: 0
       negative: 0
@@ -4441,7 +4519,7 @@ MonoBehaviour:
       type: 3
       axis: 1
       joystick: 0
-    - name: LookHorizontal
+    - name: Right Horizontal
       description: 
       positive: 0
       negative: 0
@@ -4455,7 +4533,7 @@ MonoBehaviour:
       type: 3
       axis: 3
       joystick: 0
-    - name: LookVertical
+    - name: Right Vertical
       description: 
       positive: 0
       negative: 0
@@ -4469,23 +4547,23 @@ MonoBehaviour:
       type: 3
       axis: 4
       joystick: 0
-    - name: MenuHorizontal
+    - name: Lean
       description: 
-      positive: 0
-      negative: 0
+      positive: 352
+      negative: 351
       altPositive: 0
       altNegative: 0
       deadZone: 0.2
-      gravity: 0
-      sensitivity: 1
+      gravity: 20
+      sensitivity: 10
       snap: 0
       invert: 0
-      type: 3
+      type: 2
       axis: 0
       joystick: 0
-    - name: MenuVertical
+    - name: Switch Left
       description: 
-      positive: 0
+      positive: 354
       negative: 0
       altPositive: 0
       altNegative: 0
@@ -4494,7 +4572,7 @@ MonoBehaviour:
       sensitivity: 1
       snap: 0
       invert: 1
-      type: 3
+      type: 0
       axis: 1
       joystick: 0
     - name: Jump
@@ -4511,7 +4589,35 @@ MonoBehaviour:
       type: 0
       axis: 0
       joystick: 0
-    - name: Pause
+    - name: Switch Right
+      description: 
+      positive: 355
+      negative: 0
+      altPositive: 0
+      altNegative: 0
+      deadZone: 0
+      gravity: 0
+      sensitivity: 0
+      snap: 0
+      invert: 0
+      type: 0
+      axis: 0
+      joystick: 0
+    - name: Grab Left
+      description: 
+      positive: 0
+      negative: 0
+      altPositive: 27
+      altNegative: 0
+      deadZone: 0
+      gravity: 0
+      sensitivity: 1
+      snap: 0
+      invert: 0
+      type: 3
+      axis: 8
+      joystick: 0
+    - name: Grab Right
       description: 
       positive: 0
       negative: 0
@@ -4519,39 +4625,11 @@ MonoBehaviour:
       altNegative: 0
       deadZone: 0
       gravity: 0
-      sensitivity: 0
+      sensitivity: 1
       snap: 0
       invert: 0
-      type: 0
-      axis: 0
-      joystick: 0
-    - name: PauseMenu
-      description: 
-      positive: 357
-      negative: 0
-      altPositive: 27
-      altNegative: 0
-      deadZone: 0
-      gravity: 0
-      sensitivity: 0
-      snap: 0
-      invert: 0
-      type: 0
-      axis: 0
-      joystick: 0
-    - name: Submit
-      description: 
-      positive: 350
-      negative: 0
-      altPositive: 0
-      altNegative: 0
-      deadZone: 0
-      gravity: 0
-      sensitivity: 0
-      snap: 0
-      invert: 0
-      type: 0
-      axis: 0
+      type: 3
+      axis: 9
       joystick: 0
     - name: Cancel
       description: 
@@ -4567,7 +4645,35 @@ MonoBehaviour:
       type: 0
       axis: 0
       joystick: 0
-    isExpanded: 0
+    - name: DPADHorizontal
+      description: 
+      positive: 0
+      negative: 0
+      altPositive: 0
+      altNegative: 0
+      deadZone: 0
+      gravity: 0
+      sensitivity: 0
+      snap: 0
+      invert: 0
+      type: 3
+      axis: 0
+      joystick: 0
+    - name: DPADVertical
+      description: 
+      positive: 356
+      negative: 0
+      altPositive: 27
+      altNegative: 0
+      deadZone: 0
+      gravity: 0
+      sensitivity: 0
+      snap: 0
+      invert: 0
+      type: 3
+      axis: 0
+      joystick: 0
+    isExpanded: 1
   playerOneDefault: JustKeyboard
   playerTwoDefault: 
   playerThreeDefault: 
@@ -5002,11 +5108,11 @@ MonoBehaviour:
   inputDeviceChecksPerSecond: 15
   updateJoystickCountInterval: 1
   keyboardConfiguration: JustKeyboard
-  windowsJoystickConfiguration: Windows_Gamepad
+  windowsJoystickConfiguration: Gamepad
   osxJoystickConfiguration: OSX_Gamepad
   linuxJoystickConfiguration: Linux_Gamepad
-  leftTriggerAxis: LeftTrigger
-  rightTriggerAxis: RightTrigger
+  leftTriggerAxis: Grab Left
+  rightTriggerAxis: Grab Right
   dpadHorizontalAxis: DPADHorizontal
   dpadVerticalAxis: DPADVertical
 --- !u!114 &114000013425554864

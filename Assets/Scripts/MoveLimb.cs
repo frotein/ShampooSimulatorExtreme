@@ -114,7 +114,7 @@ public class MoveLimb : MonoBehaviour {
             if(cols.Length > 0 || cols2.Length > 0)
             {
                 inAir = false;
-                Debug.Log("pushing");
+               // Debug.Log("pushing");
                 // apply force to position
                 Vector2 move = movement;
                 if (move.y > move.x * 3)

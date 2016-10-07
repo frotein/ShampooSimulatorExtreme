@@ -93,7 +93,7 @@ public class HandGrabber : MonoBehaviour {
 
                 Release(Vector2.zero);
             }
-
+            Debug.Log(grabbedGO.name);
             if(hand.closedThisFrame())
             {                
                 if (grabbedGO.name == "SoapBar") // if you are holding soap ...
