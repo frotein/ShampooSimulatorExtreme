@@ -11,7 +11,7 @@ public class PlayerConstants : MonoBehaviour {
     public bool onGround;
     public PlayersStatus status;
     public LayerMask obstacleLayer, grabbableLayer;
-    public LayerMask playerLayer, chestLayer;
+    public LayerMask playerLayer, chestLayer, ignorePlayerLayer;
     public GameObject[] grabbableObjects;
     public List<WetTintCircleController> wetTintControllers;
     public RotateTorso torsoRotator;

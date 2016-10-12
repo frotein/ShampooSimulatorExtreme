@@ -38,7 +38,10 @@ public class MoveLimb : MonoBehaviour {
     bool stoppedByMax;
     bool legsStartLeft;
     bool moved;
+    bool currentFlip;
+    bool grabbingStatic = false;
     Transform originalParent;
+    TargetJoint2D tj;
 	// Use this for initialization
 	void Start () 
 	{
@@ -67,50 +70,14 @@ public class MoveLimb : MonoBehaviour {
         //bool pushingAgainst = false;
         if (!moving)
             movement = Vector2.zero;
-        /*RaycastHit2D hit = Physics2D.Linecast(leftPt.position.XY() + movement * 5f, 
-                                              rightPt.position.XY() + movement * 5f, 
-                                              Constants.player.obstacleLayer | Constants.player.grabbableLayer);
-        
-        // if we are pushing against the ground ... 
-        if (hit)
-        {
-            pushingAgainst = true; //signal that we are pushing
-        }
-
-        // if we are pushing against, store up movement, like preparing to push off of ground
-        if (pushingAgainst && !stoppedByMax)
-        {
-            storedMovement += movement; 
-        }
-        else
-        {
-            if (storedMovement != Vector2.zero) // if we are no longer pushing, release the power, causing something like a natural jump
-            {
-              //  rb.AddForceAtPosition(-storedMovement * 1000, transform.position);
-                storedMovement = Vector2.zero;
-            }
-        } */
+      
         
         // if you are sliding you feet on the ground
-        if( !arms)
+        if(!arms)
         {
             Collider2D[] cols = Physics2D.OverlapPointAll(leftPt.position.XY() + new Vector2(0, -.1f), Constants.player.obstacleLayer);
             Collider2D[] cols2 = Physics2D.OverlapPointAll(rightPt.position.XY() + new Vector2(0, -.1f), Constants.player.obstacleLayer);
-            /* bool foundGround = false;
-             foreach (Collider2D col in cols)
-             {
-                 if(col.tag == "Ground") { foundGround = true; break; }
-             }
-
-             if(!foundGround)
-             {
-                 foreach (Collider2D col in cols2)
-                 {
-                     if (col.tag == "Ground") { foundGround = true; break; }
-                 }
-             }*/
-
-            //if (foundGround)
+            
             if(cols.Length > 0 || cols2.Length > 0)
             {
                 inAir = false;
@@ -135,10 +102,21 @@ public class MoveLimb : MonoBehaviour {
                 movement = Vector3.Project(movement.XYZ(0), maxLegs.right.XY().XYZ(0)).XY();
             }
         }
-        movement = LimitMovement(movement);
-        // move the linbs from the movement vector
-        moveLimb();
 
+        movement = LimitMovement(movement);
+
+        if (!grabbingStatic)
+        {
+            // move the linbs from the movement vector
+            moveLimb();
+        }
+        else
+        {
+            if (tj != null)
+                moveBody();
+            else
+                grabbingStatic = false;
+        }
         if(inAir && movement.x == 0 && movement.y == 0 && Constants.player.onGround)
         {
             transform.parent = Constants.player.torsoRotator.transform;
@@ -221,9 +199,10 @@ public class MoveLimb : MonoBehaviour {
     {
         movement.y = axis * Constants.player.limbSpeed;
     }
-    // moves the limb based on the movement vector
+    // moves the limb based on the movement vector, if static is grabbed, move body opposie?
     void moveLimb()
     {
+        
         stoppedByMax = false;        
         transform.position += movement.XYZ(0);
 
@@ -237,6 +216,15 @@ public class MoveLimb : MonoBehaviour {
         }        
     }
 
+
+    void moveBody()
+    {
+        /*  Vector3 storedPosition = transform.position;
+          Constants.player.status.transform.position -= movement.XYZ(0);
+          transform.position = storedPosition;*/
+        moveLimb();
+        tj.anchor = rb.transform.InverseTransformPoint(transform.position);
+    }
     // if point c is left of line defined by pts a and b
     public bool isLeft(Vector2 a, Vector2 b, Vector2 c)
     {
@@ -247,6 +235,9 @@ public class MoveLimb : MonoBehaviour {
     {
         return moved;
     }
+
+    public Vector2 Movement()
+    { return movement;  }
 	// calculates the middle point in a triangle where you know the the two side points and the length of two of the sides, 
 	// also has the current 3rd point so the triangle doesnt flip
 	Vector2 Calculate3rdPoint(float length, Vector2 p1, Vector2 p2, Vector2 currentP3)
@@ -262,11 +253,23 @@ public class MoveLimb : MonoBehaviour {
         
         if (arms)
         {
-            bool left = isLeft(flipArms.position.XY(), flipArms.position.XY() + flipArms.right.XY(), transform.position.XY()) != isLeft(p1, p2, finalPt1);
-            if (left == startsLeft)
-                return finalPt1;
+            if (!grabbingStatic)
+            {
+                bool left = isLeft(flipArms.position.XY(), flipArms.position.XY() + flipArms.right.XY(), transform.position.XY()) != isLeft(p1, p2, finalPt1);
+                currentFlip = left;
+
+                if (left == startsLeft)
+                    return finalPt1;
+                else
+                    return finalPt2;
+            }
             else
-                return finalPt2;
+            {
+                if (currentFlip == startsLeft)
+                    return finalPt1;
+                else
+                    return finalPt2;
+            }
         }
         else
         {
@@ -320,6 +323,21 @@ public class MoveLimb : MonoBehaviour {
         }*/
 
         return lnth;
+    }
+
+    public void GrabbedStatic()
+    {
+        grabbingStatic = true;
+        if (rb.gameObject.GetComponent<TargetJoint2D>() == null)
+        {
+            tj = rb.gameObject.AddComponent<TargetJoint2D>();
+            tj.autoConfigureTarget = false;
+            tj.target = transform.position;
+            tj.anchor = rb.transform.InverseTransformPoint(transform.position);
+            tj.breakForce = 5000;
+            
+        }
+       // Debug.Break();
     }
 
 }
