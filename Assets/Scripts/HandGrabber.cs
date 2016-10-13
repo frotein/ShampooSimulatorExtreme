@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class HandGrabber : MonoBehaviour {
 
@@ -22,6 +23,8 @@ public class HandGrabber : MonoBehaviour {
     LayerMask storedLayer;
     RelativeJoint2D rj;
     Rigidbody2D handRB;
+    Vector3 storedLocal;
+    List<Rigidbody2D> connectedBodies;
     public float scaler = 1.1f;
     // Use this for initialization
 	void Start ()
@@ -29,6 +32,7 @@ public class HandGrabber : MonoBehaviour {
         grabbed = false;
         handCollider = transform.GetComponent<Collider2D>();
         plusAngle = 0;
+        connectedBodies = new List<Rigidbody2D>();
         waitToBringBackCollider = 0.05f;
         mover = transform.GetComponent<MoveLimb>();
         handRB = transform.GetComponentInChildren<Rigidbody2D>();
@@ -147,21 +151,26 @@ public class HandGrabber : MonoBehaviour {
         grabbed = true;
         grabbedGO = grabbable;
         previousParent = grabbedGO.transform.parent;
-        
+        storedLocal = handRB.transform.localPosition;
         storedLayer = grabbable.layer;
+        handRB.transform.position = grabbedGO.transform.position;
+        
         grabbable.layer = LayerMask.NameToLayer("Ignore Player");
 
         if (left)
             handLimiter.leftGrabbed = grabbedGO.transform;
         else
             handLimiter.rightGrabbed = grabbedGO.transform;
-       
-       
-
+        Joint2D[] connectedJoints = grabbedGO.GetComponentsInChildren<Joint2D>();
+        foreach (Joint2D joint in connectedJoints)
+        {
+            connectedBodies.Add(joint.connectedBody);
+            joint.connectedBody.gameObject.layer = LayerMask.NameToLayer("Ignore Player");
+        }
         rj = grabbedGO.AddComponent<RelativeJoint2D>();
         rj.connectedBody = handRB;
         rj.autoConfigureOffset = false;
-        rj.angularOffset = -3.36f;
+        //rj.angularOffset = -3.36f;
         rj.linearOffset = new Vector2(0, 0);
         rj.breakForce = 6000;
         rj.correctionScale = 0.7f;
