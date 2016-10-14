@@ -76,9 +76,9 @@ public class HandGrabber : MonoBehaviour {
             else // if we grabbed nothing, open hand
             {
                 if (staticGrabbed != null)
-                    mover.GrabbedStatic();
-                    //       Grabbed(staticGrabbed);
-                hand.grabbing = false;
+                    Grabbed(staticGrabbed, true);
+                else
+                    hand.grabbing = false;
 
             }
         }
@@ -102,11 +102,11 @@ public class HandGrabber : MonoBehaviour {
                     handLimiter.handsLimiter = null;
                     moveLimit = null;
                 }
-
-                Release(1000);
+                //if(!grabbedStatic)
+                Release(1000, grabbedStatic);
             }
 
-            if(rj != null)
+            if(rj != null && !grabbedStatic)
             {
                 if(Vector2.Distance(handRB.position, grabbedGO.transform.position.XY()) > 0.75f)
                 {
@@ -146,40 +146,54 @@ public class HandGrabber : MonoBehaviour {
     }
 
     // grab the given object
-    void Grabbed(GameObject grabbable)
+    void Grabbed(GameObject grabbable, bool gStatic = false)
     {
         grabbed = true;
         grabbedGO = grabbable;
-        previousParent = grabbedGO.transform.parent;
-        storedLocal = handRB.transform.localPosition;
-        storedLayer = grabbable.layer;
-        handRB.transform.position = grabbedGO.transform.position;
-        
-        grabbable.layer = LayerMask.NameToLayer("Ignore Player");
+        grabbedStatic = gStatic;
+        if (!grabbedStatic)
+        {
+            previousParent = grabbedGO.transform.parent;
+            storedLocal = handRB.transform.localPosition;
+            storedLayer = grabbable.layer;
+            handRB.transform.position = grabbedGO.transform.position;
+            grabbable.layer = LayerMask.NameToLayer("Ignore Player");
+
+
+
+            Joint2D[] connectedJoints = grabbedGO.GetComponentsInChildren<Joint2D>();
+            foreach (Joint2D joint in connectedJoints)
+            {
+                connectedBodies.Add(joint.connectedBody);
+                joint.connectedBody.gameObject.layer = LayerMask.NameToLayer("Ignore Player");
+            }
+
+            rj = grabbedGO.AddComponent<RelativeJoint2D>();
+            rj.connectedBody = handRB;
+            rj.autoConfigureOffset = false;
+            //rj.angularOffset = -3.36f;
+            rj.linearOffset = new Vector2(0, 0);
+            rj.breakForce = 6000;
+            rj.correctionScale = 0.7f;
+           
+        }
+        else
+        {
+            mover.GrabbedStatic();
+        }
 
         if (left)
             handLimiter.leftGrabbed = grabbedGO.transform;
         else
             handLimiter.rightGrabbed = grabbedGO.transform;
-        Joint2D[] connectedJoints = grabbedGO.GetComponentsInChildren<Joint2D>();
-        foreach (Joint2D joint in connectedJoints)
-        {
-            connectedBodies.Add(joint.connectedBody);
-            joint.connectedBody.gameObject.layer = LayerMask.NameToLayer("Ignore Player");
-        }
-        rj = grabbedGO.AddComponent<RelativeJoint2D>();
-        rj.connectedBody = handRB;
-        rj.autoConfigureOffset = false;
-        //rj.angularOffset = -3.36f;
-        rj.linearOffset = new Vector2(0, 0);
-        rj.breakForce = 6000;
-        rj.correctionScale = 0.7f;
+
         hand.grabbing = true;
+       
        
     }
 
 
-    void Release(float scale = 0)
+    public void Release(float scale = 0, bool GrabbedStatic = false)
     {
         if (grabbedGO.GetComponent<Rigidbody2D>() != null)
         {
@@ -200,7 +214,10 @@ public class HandGrabber : MonoBehaviour {
         grabbed = false;
         hand.grabbing = false;
         Destroy(rj);
-        grabbedGO.layer = LayerMask.NameToLayer("Grabbable");
+        if (!GrabbedStatic)
+            grabbedGO.layer = LayerMask.NameToLayer("Grabbable");
+        else
+            mover.ReleasedStatic();
     }
 
     bool OtherHandIsHolding(Transform grabbed)

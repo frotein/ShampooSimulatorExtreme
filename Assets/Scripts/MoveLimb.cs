@@ -39,10 +39,12 @@ public class MoveLimb : MonoBehaviour {
     bool legsStartLeft;
     bool moved;
     bool currentFlip;
-    bool grabbingStatic = false;
+    public bool grabbingStatic = false;
     Transform originalParent;
     TargetJoint2D tj;
-	// Use this for initialization
+    HandGrabber grabber;
+    HandCloser closer;
+  // Use this for initialization
 	void Start () 
 	{
         storedLocalPosition = transform.localPosition;
@@ -60,6 +62,8 @@ public class MoveLimb : MonoBehaviour {
             legsStartLeft = isLeft(maxLegs.position.XY(), maxLegs.position.XY() + maxLegs.right.XY(), transform.position.XY());
 
         moving = arms;
+        grabber = transform.GetComponent<HandGrabber>();
+        closer = transform.GetComponentInChildren<HandCloser>();
 	}
 	
 	// Update is called once per frame
@@ -84,9 +88,11 @@ public class MoveLimb : MonoBehaviour {
                // Debug.Log("pushing");
                 // apply force to position
                 Vector2 move = movement;
-                if (move.y > move.x * 3)
-                    move.y *= 1.5f;
-                rb.AddForceAtPosition(-move * 1000f, transform.position.XY());
+                if (move.y < -Mathf.Abs(move.x) )
+                { move.y *= 2f;}
+
+                if (move.y > 0) move.y = 0;
+                rb.AddForceAtPosition(-move * 700f, transform.position.XY());
             }
             else
             {
@@ -115,7 +121,7 @@ public class MoveLimb : MonoBehaviour {
             if (tj != null)
                 moveBody();
             else
-                grabbingStatic = false;
+            { grabbingStatic = false; closer.grabbing = false; }
         }
         if(inAir && movement.x == 0 && movement.y == 0 && Constants.player.onGround)
         {
@@ -338,6 +344,12 @@ public class MoveLimb : MonoBehaviour {
             
         }
        // Debug.Break();
+    }
+
+    public void ReleasedStatic()
+    {
+        grabbingStatic = false;
+        Destroy(tj);
     }
 
 }

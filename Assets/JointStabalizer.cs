@@ -25,9 +25,7 @@ public class JointStabalizer : MonoBehaviour {
         {
             rb.velocity = new Vector2(0, 0);
             transform.position = connectedBody.transform.TransformPoint(localPositionInConnected);
-            transform.up = connectedBody.transform.TransformDirection(localDirectionInConnected);
-            Debug.Log(rb.velocity.sqrMagnitude);
-
+            transform.up = connectedBody.transform.TransformDirection(localDirectionInConnected); 
         }
     }
 }
