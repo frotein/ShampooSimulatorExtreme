@@ -26,6 +26,7 @@ public class HandGrabber : MonoBehaviour {
     Vector3 storedLocal;
     List<Rigidbody2D> connectedBodies;
     public float scaler = 1.1f;
+    bool setLayerBackToGrabbable;
     // Use this for initialization
 	void Start ()
     {
@@ -120,9 +121,9 @@ public class HandGrabber : MonoBehaviour {
         if(grabbedGO != null && !grabbed)
         {
             Collider2D col = Physics2D.OverlapCircle(grabbedGO.transform.position.XY(), 0.5f, Constants.player.playerLayer); 
-            if (wait >= waitToBringBackCollider && (col == null || grabbedGO.layer == LayerMask.NameToLayer("Towel")) )
+            if (wait >= waitToBringBackCollider && col == null)
             {
-                grabbedGO.GetComponent<Collider2D>().enabled = true;
+                grabbedGO.layer = LayerMask.NameToLayer("Grabbable");
                 grabbedGO = null;
             }
         }
@@ -188,8 +189,12 @@ public class HandGrabber : MonoBehaviour {
             handLimiter.rightGrabbed = grabbedGO.transform;
 
         hand.grabbing = true;
-       
-       
+
+        PointGiver pg = grabbedGO.GetComponent<PointGiver>();
+        if(pg !=null)
+        {
+            pg.Caught();
+        }
     }
 
 
@@ -214,9 +219,7 @@ public class HandGrabber : MonoBehaviour {
         grabbed = false;
         hand.grabbing = false;
         Destroy(rj);
-        if (!GrabbedStatic)
-            grabbedGO.layer = LayerMask.NameToLayer("Grabbable");
-        else
+        if (GrabbedStatic)
             mover.ReleasedStatic();
     }
 
