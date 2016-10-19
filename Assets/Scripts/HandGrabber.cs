@@ -55,6 +55,7 @@ public class HandGrabber : MonoBehaviour {
             {
                 if (col.tag == "Grabbable")
                 {
+                   // Debug.Log("over grabbable");
                     float dist = Vector2.Distance(col.transform.position.XY(), transform.position.XY());
                     if (dist < distFromGrab) // make sure we are grabbing the closest object
                     {
@@ -123,7 +124,9 @@ public class HandGrabber : MonoBehaviour {
             Collider2D col = Physics2D.OverlapCircle(grabbedGO.transform.position.XY(), 0.5f, Constants.player.playerLayer); 
             if (wait >= waitToBringBackCollider && col == null)
             {
-                grabbedGO.layer = LayerMask.NameToLayer("Grabbable");
+                if(!grabbedStatic)
+                    grabbedGO.layer = LayerMask.NameToLayer("Grabbable");
+
                 grabbedGO = null;
             }
         }
@@ -160,7 +163,7 @@ public class HandGrabber : MonoBehaviour {
             handRB.transform.position = grabbedGO.transform.position;
             grabbable.layer = LayerMask.NameToLayer("Ignore Player");
 
-
+            grabbedGO.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0);
 
             Joint2D[] connectedJoints = grabbedGO.GetComponentsInChildren<Joint2D>();
             foreach (Joint2D joint in connectedJoints)

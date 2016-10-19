@@ -77,7 +77,7 @@ public class MoveLimb : MonoBehaviour {
       
         
         // if you are sliding you feet on the ground
-        if(!arms)
+        if(!arms || (arms && grabber.grabbedGO == null))
         {
             Collider2D[] cols = Physics2D.OverlapPointAll(leftPt.position.XY() + new Vector2(0, -.1f), Constants.player.obstacleLayer);
             Collider2D[] cols2 = Physics2D.OverlapPointAll(rightPt.position.XY() + new Vector2(0, -.1f), Constants.player.obstacleLayer);
@@ -89,7 +89,7 @@ public class MoveLimb : MonoBehaviour {
                 // apply force to position
                 Vector2 move = movement;
                 if (move.y < -Mathf.Abs(move.x) )
-                { move.y *= 2f;}
+                { move.y *= 1.85f;}
 
                 if (move.y > 0) move.y = 0;
                 rb.AddForceAtPosition(-move * 700f, transform.position.XY());
@@ -225,9 +225,7 @@ public class MoveLimb : MonoBehaviour {
 
     void moveBody()
     {
-        /*  Vector3 storedPosition = transform.position;
-          Constants.player.status.transform.position -= movement.XYZ(0);
-          transform.position = storedPosition;*/
+      
         moveLimb();
         tj.anchor = rb.transform.InverseTransformPoint(transform.position);
     }
@@ -351,5 +349,7 @@ public class MoveLimb : MonoBehaviour {
         grabbingStatic = false;
         Destroy(tj);
     }
+
+    
 
 }

@@ -2066,7 +2066,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000011051774022}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.208, y: -1.8870001, z: 0.199}
+  m_LocalPosition: {x: -0.48, y: -1.89, z: 0.199}
   m_LocalScale: {x: -1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
@@ -2166,7 +2166,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000011119356056}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.16, y: -0.26, z: -2.23}
+  m_LocalPosition: {x: -0.96, y: -1.07, z: -2.23}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
@@ -2274,7 +2274,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000011784084168}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.319, y: -1.848595, z: 0.199}
+  m_LocalPosition: {x: 0.58, y: -1.85, z: 0.199}
   m_LocalScale: {x: -1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
@@ -2431,7 +2431,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000010663691960}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: -0.00000016292068}
-  m_LocalPosition: {x: 1.913, y: -0.252, z: -0.23}
+  m_LocalPosition: {x: 1.13, y: -0.89, z: -0.23}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
@@ -2604,10 +2604,10 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000011845208754}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.2700882, y: -1.7613544, z: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0.09341321, w: 0.99562746}
+  m_LocalPosition: {x: -0.35, y: 1.15, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 10.72}
   m_Children:
   - {fileID: 4000012741728426}
   - {fileID: 4000011414256670}
@@ -2661,7 +2661,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000012651830204}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -2.2700882, y: -1.1186457, z: 0}
+  m_LocalPosition: {x: -1.36, y: 0.31, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
@@ -3182,7 +3182,7 @@ Rigidbody2D:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000012651830204}
   m_UseAutoMass: 1
-  m_Mass: 10.890218
+  m_Mass: 10.890221
   m_LinearDrag: 0
   m_AngularDrag: 0.2
   m_GravityScale: 1
@@ -3199,7 +3199,7 @@ Rigidbody2D:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000012780216864}
   m_UseAutoMass: 1
-  m_Mass: 0.27681652
+  m_Mass: 0.2768165
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
@@ -4922,6 +4922,7 @@ MonoBehaviour:
   inAir: 0
   length: 1.1
   push: {fileID: 0}
+  grabbingStatic: 0
 --- !u!114 &114000011718272990
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -4948,9 +4949,9 @@ MonoBehaviour:
   playerLayer:
     serializedVersion: 2
     m_Bits: 2304
-  chestLayer:
+  playerOnlyLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 524288
   ignorePlayerLayer:
     serializedVersion: 2
     m_Bits: 4194304
@@ -4989,6 +4990,7 @@ MonoBehaviour:
   inAir: 0
   length: 1.1
   push: {fileID: 0}
+  grabbingStatic: 0
 --- !u!114 &114000011850757750
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -5075,6 +5077,7 @@ MonoBehaviour:
   inAir: 0
   length: 0.95
   push: {fileID: 0}
+  grabbingStatic: 0
 --- !u!114 &114000012924077976
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -5146,6 +5149,7 @@ MonoBehaviour:
   inAir: 0
   length: 1
   push: {fileID: 0}
+  grabbingStatic: 0
 --- !u!114 &114000013005831158
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -6460,7 +6464,7 @@ HingeJoint2D:
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 1
   m_Anchor: {x: 0, y: 1}
-  m_ConnectedAnchor: {x: 0, y: -0.082782984}
+  m_ConnectedAnchor: {x: -0.000000044703484, y: -0.08278301}
   m_UseMotor: 0
   m_Motor:
     m_MotorSpeed: 0
