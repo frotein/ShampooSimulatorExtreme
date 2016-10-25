@@ -180,7 +180,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 81556926}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.89, y: 4.33, z: 0}
+  m_LocalPosition: {x: 6.07, y: 2.32, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
@@ -1311,11 +1311,11 @@ Prefab:
     m_Modifications:
     - target: {fileID: 4000012525894730, guid: c738b18f7d9c4f3478338459851766f0, type: 2}
       propertyPath: m_LocalPosition.x
-      value: -0.35
+      value: 5.88
       objectReference: {fileID: 0}
     - target: {fileID: 4000012525894730, guid: c738b18f7d9c4f3478338459851766f0, type: 2}
       propertyPath: m_LocalPosition.y
-      value: 1.15
+      value: -0.59
       objectReference: {fileID: 0}
     - target: {fileID: 4000012525894730, guid: c738b18f7d9c4f3478338459851766f0, type: 2}
       propertyPath: m_LocalPosition.z
@@ -1344,12 +1344,7 @@ Prefab:
     - target: {fileID: 50000012860566716, guid: c738b18f7d9c4f3478338459851766f0,
         type: 2}
       propertyPath: m_Mass
-      value: 10.890219
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000011718272990, guid: c738b18f7d9c4f3478338459851766f0,
-        type: 2}
-      propertyPath: grabCheckLayer.m_Bits
-      value: 4202496
+      value: 10.89022
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: c738b18f7d9c4f3478338459851766f0, type: 2}

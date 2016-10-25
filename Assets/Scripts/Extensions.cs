@@ -36,5 +36,5 @@ public static class Extensions
         {
             return Mathf.Atan2(p_vector2.x, p_vector2.y) * Mathf.Rad2Deg;
         }
-    }
+    }    
 }

@@ -44,7 +44,7 @@ public class HandGrabber : MonoBehaviour {
     {
         wait += Time.deltaTime;
         // if you are grabbing this frame and you arent holding anything, and it isnt something the other hand is holding
-        if(hand.grabbedThisFrame() && grabbedGO == null)
+        if (hand.grabbedThisFrame() && (grabbedGO == null || grabbedGO.layer == LayerMask.NameToLayer("Ignore Player")))
         {
             float distFromGrab = 999;
             GameObject tempGrabbedGO = null;
@@ -155,6 +155,7 @@ public class HandGrabber : MonoBehaviour {
         grabbed = true;
         grabbedGO = grabbable;
         grabbedStatic = gStatic;
+        Debug.Log("static grabbed");
         if (!grabbedStatic)
         {
             previousParent = grabbedGO.transform.parent;

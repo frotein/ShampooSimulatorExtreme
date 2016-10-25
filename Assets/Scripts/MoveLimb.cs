@@ -44,6 +44,7 @@ public class MoveLimb : MonoBehaviour {
     TargetJoint2D tj;
     HandGrabber grabber;
     HandCloser closer;
+    public SpriteRenderer[] highlights;
   // Use this for initialization
 	void Start () 
 	{
@@ -64,6 +65,7 @@ public class MoveLimb : MonoBehaviour {
         moving = arms;
         grabber = transform.GetComponent<HandGrabber>();
         closer = transform.GetComponentInChildren<HandCloser>();
+        CheckHighlights();
 	}
 	
 	// Update is called once per frame
@@ -74,8 +76,8 @@ public class MoveLimb : MonoBehaviour {
         //bool pushingAgainst = false;
         if (!moving)
             movement = Vector2.zero;
-      
-        
+
+        CheckHighlights();
         // if you are sliding you feet on the ground
         if(!arms || (arms && grabber.grabbedGO == null))
         {
@@ -350,6 +352,12 @@ public class MoveLimb : MonoBehaviour {
         Destroy(tj);
     }
 
-    
+    void CheckHighlights()
+    {
+        foreach(SpriteRenderer sp in highlights)
+        {
+            sp.enabled = moving;
+        }
+    }
 
 }

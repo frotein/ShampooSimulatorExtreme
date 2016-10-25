@@ -18,6 +18,7 @@ TagManager:
   - Swingable
   - Curtain
   - Wall
+  - Highlight
   layers:
   - Default
   - TransparentFX
