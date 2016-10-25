@@ -44,7 +44,9 @@ public class MoveLimb : MonoBehaviour {
     TargetJoint2D tj;
     HandGrabber grabber;
     HandCloser closer;
+    GameObject staticGrabbed;
     public SpriteRenderer[] highlights;
+    Vector3 localStaticPos;
   // Use this for initialization
 	void Start () 
 	{
@@ -117,13 +119,21 @@ public class MoveLimb : MonoBehaviour {
         {
             // move the linbs from the movement vector
             moveLimb();
+           
         }
         else
         {
             if (tj != null)
+            {
                 moveBody();
+                if (staticGrabbed != null)
+                    tj.target = staticGrabbed.transform.TransformPoint(localStaticPos);
+            }
             else
-            { grabbingStatic = false; closer.grabbing = false; }
+            {
+                grabbingStatic = false;
+                closer.grabbing = false;
+            }
         }
         if(inAir && movement.x == 0 && movement.y == 0 && Constants.player.onGround)
         {
@@ -331,13 +341,15 @@ public class MoveLimb : MonoBehaviour {
         return lnth;
     }
 
-    public void GrabbedStatic()
+    public void GrabbedStatic(GameObject staticG)
     {
+        staticGrabbed = staticG;
         grabbingStatic = true;
         if (rb.gameObject.GetComponent<TargetJoint2D>() == null)
         {
             tj = rb.gameObject.AddComponent<TargetJoint2D>();
             tj.autoConfigureTarget = false;
+            localStaticPos = staticGrabbed.transform.InverseTransformPoint(transform.position);
             tj.target = transform.position;
             tj.anchor = rb.transform.InverseTransformPoint(transform.position);
             tj.breakForce = 5000;

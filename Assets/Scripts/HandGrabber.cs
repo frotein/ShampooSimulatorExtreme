@@ -184,7 +184,7 @@ public class HandGrabber : MonoBehaviour {
         }
         else
         {
-            mover.GrabbedStatic();
+            mover.GrabbedStatic(grabbedGO);
         }
 
         if (left)
