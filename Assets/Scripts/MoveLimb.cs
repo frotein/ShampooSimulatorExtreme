@@ -96,7 +96,7 @@ public class MoveLimb : MonoBehaviour {
                 { move.y *= 1.85f;}
 
                 if (move.y > 0) move.y = 0;
-                rb.AddForceAtPosition(-move * 700f, transform.position.XY());
+                rb.AddForceAtPosition(-move * 800f, transform.position.XY());
             }
             else
             {

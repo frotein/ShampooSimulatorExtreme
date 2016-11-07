@@ -161,7 +161,7 @@ public class HandGrabber : MonoBehaviour {
             previousParent = grabbedGO.transform.parent;
             storedLocal = handRB.transform.localPosition;
             storedLayer = grabbable.layer;
-            handRB.transform.position = grabbedGO.transform.position;
+            //handRB.transform.position = grabbedGO.transform.position;
             grabbable.layer = LayerMask.NameToLayer("Ignore Player");
 
             grabbedGO.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0);
