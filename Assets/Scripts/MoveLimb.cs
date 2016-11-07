@@ -44,13 +44,9 @@ public class MoveLimb : MonoBehaviour {
     TargetJoint2D tj;
     HandGrabber grabber;
     HandCloser closer;
-    GameObject grabbed;
+    GameObject staticGrabbed;
     public SpriteRenderer[] highlights;
     Vector3 localStaticPos;
-    RopeManager ropeManager;
-    public RelativeJoint2D rJoint;
-    public float angularSet;
-    Vector2 jointOffset;
   // Use this for initialization
 	void Start () 
 	{
@@ -119,44 +115,26 @@ public class MoveLimb : MonoBehaviour {
 
         movement = LimitMovement(movement);
 
-       // if (!grabbingStatic)
+        if (!grabbingStatic)
         {
             // move the linbs from the movement vector
             moveLimb();
            
         }
-     /*   else
+        else
         {
             if (tj != null)
             {
-                if(ropeManager != null)
-                {
-                    float val = ropeManager.HighestForce();
-                    if (val > 400)
-                    {
-                       // moveBody();
-                        rb.transform.parent = grabbed.transform;
-
-                        //tj.enabled = true;
-                    }
-                    else
-                    {
-                        // tj.enabled = false;
-                        //  moveLimb();
-                        rb.transform.parent = null;
-                    }
-                }
-
                 moveBody();
-                if (grabbed != null)
-                    tj.target = grabbed.transform.TransformPoint(localStaticPos);
+                if (staticGrabbed != null)
+                    tj.target = staticGrabbed.transform.TransformPoint(localStaticPos);
             }
             else
             {
                 grabbingStatic = false;
                 closer.grabbing = false;
             }
-        } */
+        }
         if(inAir && movement.x == 0 && movement.y == 0 && Constants.player.onGround)
         {
             transform.parent = Constants.player.torsoRotator.transform;
@@ -166,17 +144,7 @@ public class MoveLimb : MonoBehaviour {
             transform.parent = originalParent;
         }
         
-        if(rJoint != null)
-        {
-            rJoint.linearOffset = rb.transform.InverseTransformPoint(grabber.handCenter.position - jointOffset.XYZ(0));
-            //
-            if(Input.GetKey("m"))
-                rJoint.angularOffset = angularSet;
-
-        }
-        moved = movement != Vector2.zero;
-
-    
+        moved = movement != Vector2.zero;        
 	}
 
 
@@ -263,8 +231,7 @@ public class MoveLimb : MonoBehaviour {
             Vector2 dir = (transform.position.XY() - thigh.position.XY()).normalized;
             transform.position = (thigh.position.XY() + dir * (length + length)).XYZ(transform.position.z);
             stoppedByMax = true;
-        }
-                
+        }        
     }
 
 
@@ -272,7 +239,7 @@ public class MoveLimb : MonoBehaviour {
     {
       
         moveLimb();
-       // tj.anchor = rb.transform.InverseTransformPoint(transform.position);
+        tj.anchor = rb.transform.InverseTransformPoint(transform.position);
     }
     // if point c is left of line defined by pts a and b
     public bool isLeft(Vector2 a, Vector2 b, Vector2 c)
@@ -374,38 +341,27 @@ public class MoveLimb : MonoBehaviour {
         return lnth;
     }
 
-    public void Grabbed(GameObject grabbedGO, bool stat = false)
+    public void GrabbedStatic(GameObject staticG)
     {
-        grabbed = grabbedGO;
+        staticGrabbed = staticG;
         grabbingStatic = true;
-       
-        if(rJoint == null)
+        if (rb.gameObject.GetComponent<TargetJoint2D>() == null)
         {
+            tj = rb.gameObject.AddComponent<TargetJoint2D>();
+            tj.autoConfigureTarget = false;
+            localStaticPos = staticGrabbed.transform.InverseTransformPoint(transform.position);
+            tj.target = transform.position;
+            tj.anchor = rb.transform.InverseTransformPoint(transform.position);
+            tj.breakForce = 5000;
             
-            rJoint = rb.gameObject.AddComponent<RelativeJoint2D>();
-            rJoint.autoConfigureOffset = false;
-            rJoint.connectedBody = grabbed.GetComponent<Rigidbody2D>();
-            rJoint.correctionScale = 0.75f;
-            rJoint.maxForce = 1000;
-            // rJoint.linearOffset = rb.transform.InverseTransformPoint(transform.position);
-            jointOffset = grabber.handCenter.position - grabbed.transform.position;
-            rJoint.angularOffset = grabbed.transform.eulerAngles.z - rb.transform.eulerAngles.z;
-            /*if(!stat)
-                rJoint.angularOffset = 180f;
-            else
-                rJoint.angularOffset = 0f; */
         }
-
-        ropeManager = grabbed.GetComponentInParent<RopeManager>();
+       // Debug.Break();
     }
 
-    public void Released()
+    public void ReleasedStatic()
     {
         grabbingStatic = false;
-        
-        RelativeJoint2D rj = rJoint;
-        if (rj != null)
-            Destroy(rj);
+        Destroy(tj);
     }
 
     void CheckHighlights()

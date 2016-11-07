@@ -20,14 +20,13 @@ public class HandGrabber : MonoBehaviour {
     Transform previousParent;
     Collider2D triggerCollider;
     MoveLimb mover;
-    public LayerMask storedLayer;
+    LayerMask storedLayer;
     RelativeJoint2D rj;
     Rigidbody2D handRB;
     Vector3 storedLocal;
     List<Rigidbody2D> connectedBodies;
     public float scaler = 1.1f;
     bool setLayerBackToGrabbable;
-
     // Use this for initialization
 	void Start ()
     {
@@ -125,8 +124,9 @@ public class HandGrabber : MonoBehaviour {
             Collider2D col = Physics2D.OverlapCircle(grabbedGO.transform.position.XY(), 0.5f, Constants.player.playerLayer); 
             if (wait >= waitToBringBackCollider && col == null)
             {
-                Debug.Log("reset layer");
-                grabbedGO.layer = 1 << storedLayer;
+                if(!grabbedStatic)
+                    grabbedGO.layer = LayerMask.NameToLayer("Grabbable");
+
                 grabbedGO = null;
             }
         }
@@ -155,31 +155,36 @@ public class HandGrabber : MonoBehaviour {
         grabbed = true;
         grabbedGO = grabbable;
         grabbedStatic = gStatic;
+        Debug.Log("static grabbed");
         if (!grabbedStatic)
         {
-            /* previousParent = grabbedGO.transform.parent;
-             storedLocal = handRB.transform.localPosition;
-             storedLayer = grabbable.layer;
-             handRB.transform.position = grabbedGO.transform.position; */
-
-            /* 
-
-
-
-             Joint2D[] connectedJoints = grabbedGO.GetComponentsInChildren<Joint2D>();
-             foreach (Joint2D joint in connectedJoints)
-             {
-                 connectedBodies.Add(joint.connectedBody);
-                 joint.connectedBody.gameObject.layer = LayerMask.NameToLayer("Ignore Player");
-             }*/
-            storedLayer = 1 << grabbable.layer;
+            previousParent = grabbedGO.transform.parent;
+            storedLocal = handRB.transform.localPosition;
+            storedLayer = grabbable.layer;
+            handRB.transform.position = grabbedGO.transform.position;
             grabbable.layer = LayerMask.NameToLayer("Ignore Player");
+
             grabbedGO.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0);
-            mover.Grabbed(grabbedGO);
+
+            Joint2D[] connectedJoints = grabbedGO.GetComponentsInChildren<Joint2D>();
+            foreach (Joint2D joint in connectedJoints)
+            {
+                connectedBodies.Add(joint.connectedBody);
+                joint.connectedBody.gameObject.layer = LayerMask.NameToLayer("Ignore Player");
+            }
+
+            rj = grabbedGO.AddComponent<RelativeJoint2D>();
+            rj.connectedBody = handRB;
+            rj.autoConfigureOffset = false;
+            //rj.angularOffset = -3.36f;
+            rj.linearOffset = new Vector2(0, 0);
+            rj.breakForce = 6000;
+            rj.correctionScale = 0.7f;
+           
         }
         else
         {
-            mover.Grabbed(grabbedGO, true);
+            mover.GrabbedStatic(grabbedGO);
         }
 
         if (left)
@@ -199,10 +204,15 @@ public class HandGrabber : MonoBehaviour {
 
     public void Release(float scale = 0, bool GrabbedStatic = false)
     {
-
         if (grabbedGO.GetComponent<Rigidbody2D>() != null)
         {
+            grabbedGO.GetComponent<Rigidbody2D>().isKinematic = grabbedStatic;
             grabbedGO.GetComponent<Rigidbody2D>().AddForce(mover.Movement() * scale);
+        }
+        wait = 0;
+        if (triggerCollider != null)
+        {
+            triggerCollider.enabled = true;
         }
 
         if (left)
@@ -210,8 +220,11 @@ public class HandGrabber : MonoBehaviour {
         else
             handLimiter.rightGrabbed = null;
 
-         grabbed = false;
-         mover.Released();
+        grabbed = false;
+        hand.grabbing = false;
+        Destroy(rj);
+        if (GrabbedStatic)
+            mover.ReleasedStatic();
     }
 
     bool OtherHandIsHolding(Transform grabbed)
