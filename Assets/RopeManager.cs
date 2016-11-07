@@ -13,7 +13,7 @@ public class RopeManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
     {
-        Debug.Log(HighestForce());
+     //   Debug.Log(HighestForce());
 	}
 
     public float AverageForce()
