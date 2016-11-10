@@ -85,18 +85,30 @@ public class MoveLimb : MonoBehaviour {
         {
             Collider2D[] cols = Physics2D.OverlapPointAll(leftPt.position.XY() + new Vector2(0, -.1f), Constants.player.obstacleLayer);
             Collider2D[] cols2 = Physics2D.OverlapPointAll(rightPt.position.XY() + new Vector2(0, -.1f), Constants.player.obstacleLayer);
-            
-            if(cols.Length > 0 || cols2.Length > 0)
+            List<Collider2D> allCols = new List<Collider2D>(cols);
+            allCols.AddRange(cols2); 
+            if(allCols.Count > 0)
             {
+                bool onStatic = false;
+                foreach (Collider2D col in allCols)
+                {
+                    if (col.GetComponent<Rigidbody2D>() == null) onStatic = true;
+                    else
+                    {
+                        if (col.GetComponent<Rigidbody2D>().isKinematic) onStatic = true;
+                    }
+
+                } 
                 inAir = false;
-               // Debug.Log("pushing");
                 // apply force to position
                 Vector2 move = movement;
                 if (move.y < -Mathf.Abs(move.x) )
                 { move.y *= 1.85f;}
 
                 if (move.y > 0) move.y = 0;
-                rb.AddForceAtPosition(-move * 800f, transform.position.XY());
+
+                if(onStatic)
+                    rb.AddForceAtPosition(-move * 800f, transform.position.XY());
             }
             else
             {

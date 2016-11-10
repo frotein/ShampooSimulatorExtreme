@@ -532,7 +532,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 4000011563957420}
   - 50: {fileID: 50000013117204530}
-  - 255: {fileID: 255000013675661188}
+  - 255: {fileID: 255000012840506028}
   m_Layer: 8
   m_Name: Hand Rigidbody
   m_TagString: Untagged
@@ -1214,7 +1214,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 4000012827873702}
   - 50: {fileID: 50000010038245186}
-  - 255: {fileID: 255000010355339976}
+  - 255: {fileID: 255000011526980530}
   m_Layer: 8
   m_Name: Hand Rigidbody (1)
   m_TagString: Untagged
@@ -2818,7 +2818,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000011845208754}
   m_LocalRotation: {x: 0, y: 0, z: 0.09341321, w: 0.99562746}
-  m_LocalPosition: {x: 0.46, y: 1.28, z: 0}
+  m_LocalPosition: {x: 1.5738168, y: 0.14127487, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 10.72}
   m_Children:
@@ -3424,7 +3424,7 @@ Rigidbody2D:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000012651830204}
   m_UseAutoMass: 1
-  m_Mass: 10.890221
+  m_Mass: 10.89022
   m_LinearDrag: 0
   m_AngularDrag: 0.2
   m_GravityScale: 1
@@ -6982,7 +6982,7 @@ HingeJoint2D:
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 1
   m_Anchor: {x: 0, y: 1}
-  m_ConnectedAnchor: {x: -0.000000044703484, y: -0.08278301}
+  m_ConnectedAnchor: {x: -0.000000041909516, y: -0.08278307}
   m_UseMotor: 0
   m_Motor:
     m_MotorSpeed: 0
@@ -6991,7 +6991,7 @@ HingeJoint2D:
   m_AngleLimits:
     m_LowerAngle: 0
     m_UpperAngle: 359
---- !u!255 &255000010355339976
+--- !u!255 &255000011526980530
 FixedJoint2D:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -7005,10 +7005,10 @@ FixedJoint2D:
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 1
   m_Anchor: {x: 0, y: 0}
-  m_ConnectedAnchor: {x: 1.1300025, y: 0.17800134}
+  m_ConnectedAnchor: {x: 1.1300025, y: 0.17800125}
   m_DampingRatio: 0
   m_Frequency: 0
---- !u!255 &255000013675661188
+--- !u!255 &255000012840506028
 FixedJoint2D:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -7022,6 +7022,6 @@ FixedJoint2D:
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 1
   m_Anchor: {x: 0, y: 0}
-  m_ConnectedAnchor: {x: -0.96000254, y: -0.0019989312}
+  m_ConnectedAnchor: {x: -0.96000254, y: -0.0019989163}
   m_DampingRatio: 0
   m_Frequency: 0

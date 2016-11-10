@@ -37,6 +37,7 @@ public class HandGrabber : MonoBehaviour {
         waitToBringBackCollider = 0.05f;
         mover = transform.GetComponent<MoveLimb>();
         handRB = transform.GetComponentInChildren<Rigidbody2D>();
+       // handRB.gameObject.SetActive(false);
     }
 	
 	// Update is called once per frame
@@ -155,7 +156,8 @@ public class HandGrabber : MonoBehaviour {
         grabbed = true;
         grabbedGO = grabbable;
         grabbedStatic = gStatic;
-        Debug.Log("static grabbed");
+       
+       // handRB.gameObject.SetActive(true);
         if (!grabbedStatic)
         {
             previousParent = grabbedGO.transform.parent;
@@ -172,13 +174,13 @@ public class HandGrabber : MonoBehaviour {
                 connectedBodies.Add(joint.connectedBody);
                 joint.connectedBody.gameObject.layer = LayerMask.NameToLayer("Ignore Player");
             }
-
+            Debug.Log("grabbed");
             rj = grabbedGO.AddComponent<RelativeJoint2D>();
             rj.connectedBody = handRB;
             rj.autoConfigureOffset = false;
             //rj.angularOffset = -3.36f;
             rj.linearOffset = new Vector2(0, 0);
-            rj.breakForce = 6000;
+           // rj.breakForce = 6000;
             rj.correctionScale = 0.7f;
            
         }
@@ -225,6 +227,8 @@ public class HandGrabber : MonoBehaviour {
         Destroy(rj);
         if (GrabbedStatic)
             mover.ReleasedStatic();
+
+      //  handRB.gameObject.SetActive(false);
     }
 
     bool OtherHandIsHolding(Transform grabbed)
