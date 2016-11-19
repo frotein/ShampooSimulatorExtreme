@@ -122,7 +122,7 @@ HingeJoint2D:
   m_AutoConfigureConnectedAnchor: 1
   m_Anchor: {x: 0, y: 0}
   m_ConnectedAnchor: {x: 1.13, y: 0.110000044}
-  m_UseMotor: 0
+  m_UseMotor: 1
   m_Motor:
     m_MotorSpeed: 0
     m_MaximumMotorForce: 10000
@@ -229,6 +229,126 @@ BoxCollider2D:
   m_Offset: {x: 0, y: -0.019003337}
   serializedVersion: 2
   m_Size: {x: 1, y: 0.96199334}
+--- !u!1 &488449483
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 488449488}
+  - 212: {fileID: 488449487}
+  - 61: {fileID: 488449486}
+  - 60: {fileID: 488449485}
+  - 50: {fileID: 488449484}
+  m_Layer: 13
+  m_Name: plunger
+  m_TagString: Grabbable
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!50 &488449484
+Rigidbody2D:
+  serializedVersion: 2
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 488449483}
+  m_UseAutoMass: 1
+  m_Mass: 0.55481017
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
+--- !u!60 &488449485
+PolygonCollider2D:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 488449483}
+  m_Enabled: 1
+  m_Density: 0.5
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_Offset: {x: 0, y: 0}
+  m_Points:
+    m_Paths:
+    - - {x: 0.132, y: -0.568}
+      - {x: -0.1, y: -0.544}
+      - {x: -0.36400002, y: -0.832}
+      - {x: -0.508, y: -1.072}
+      - {x: -0.508, y: -1.2320001}
+      - {x: -0.492, y: -1.2720001}
+      - {x: 0.48400003, y: -1.2720001}
+      - {x: 0.508, y: -1.248}
+      - {x: 0.508, y: -1.0400001}
+      - {x: 0.42000002, y: -0.85600007}
+--- !u!61 &488449486
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 488449483}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_Offset: {x: 0.002629757, y: 0.33741176}
+  serializedVersion: 2
+  m_Size: {x: 0.1482119, y: 1.8691764}
+--- !u!212 &488449487
+SpriteRenderer:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 488449483}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 0
+  m_ReflectionProbeUsage: 0
+  m_Materials:
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  m_SubsetIndices: 
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_SelectedWireframeHidden: 1
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+  m_Sprite: {fileID: 21300000, guid: 88e83e2d2824c5d43af0671a8584150c, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+--- !u!4 &488449488
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 488449483}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 2.9719365, y: -0.9816946, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 9
 --- !u!1 &519983189 stripped
 GameObject:
   m_PrefabParentObject: {fileID: 1000012651830204, guid: c738b18f7d9c4f3478338459851766f0,
@@ -468,7 +588,7 @@ HingeJoint2D:
   m_AutoConfigureConnectedAnchor: 1
   m_Anchor: {x: 0, y: 0}
   m_ConnectedAnchor: {x: -0.75033665, y: -0.054455742}
-  m_UseMotor: 1
+  m_UseMotor: 0
   m_Motor:
     m_MotorSpeed: 0
     m_MaximumMotorForce: 10000
@@ -903,132 +1023,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
---- !u!1 &1624020174
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 1624020178}
-  - 212: {fileID: 1624020177}
-  - 60: {fileID: 1624020176}
-  - 50: {fileID: 1624020175}
-  m_Layer: 13
-  m_Name: toiletPlunger
-  m_TagString: Grabbable
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!50 &1624020175
-Rigidbody2D:
-  serializedVersion: 2
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1624020174}
-  m_UseAutoMass: 1
-  m_Mass: 0.6916692
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 0
---- !u!60 &1624020176
-PolygonCollider2D:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1624020174}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_Offset: {x: 0, y: 0}
-  m_Points:
-    m_Paths:
-    - - {x: 0.21023846, y: -1.489365}
-      - {x: 0.3342857, y: -1.4471428}
-      - {x: 0.35999998, y: -1.43}
-      - {x: 0.351429, y: -1.3092126}
-      - {x: 0.31421566, y: -1.2128571}
-      - {x: 0.25288677, y: -1.1257936}
-      - {x: 0.16285715, y: -1.0414286}
-      - {x: 0.105714284, y: -1.0128571}
-      - {x: 0.097420216, y: -0.8841747}
-      - {x: 0.07142857, y: -0.84999996}
-      - {x: 0.042857144, y: -0.84999996}
-      - {x: 0.054285713, y: 1.6557143}
-      - {x: -0.06285714, y: 1.6557143}
-      - {x: -0.07142857, y: 1.6385714}
-      - {x: -0.08, y: -0.84999996}
-      - {x: -0.12599182, y: -0.8870319}
-      - {x: -0.12790227, y: -1.0170218}
-      - {x: -0.18285714, y: -1.0528572}
-      - {x: -0.25142857, y: -1.1128571}
-      - {x: -0.28857142, y: -1.1557143}
-      - {x: -0.33714285, y: -1.2528571}
-      - {x: -0.35714287, y: -1.31}
-      - {x: -0.35999998, y: -1.3385714}
-      - {x: -0.36436558, y: -1.4187267}
-      - {x: -0.32857144, y: -1.4728571}
-      - {x: -0.25428572, y: -1.4985714}
-      - {x: -0.20571429, y: -1.51}
-      - {x: -0.18593264, y: -1.6116952}
-      - {x: -0.09070301, y: -1.6516951}
-      - {x: 0.094602585, y: -1.6509603}
-      - {x: 0.21667099, y: -1.600581}
---- !u!212 &1624020177
-SpriteRenderer:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1624020174}
-  m_Enabled: 1
-  m_CastShadows: 0
-  m_ReceiveShadows: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 0
-  m_ReflectionProbeUsage: 0
-  m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
-  m_SubsetIndices: 
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_SelectedWireframeHidden: 1
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 6d1fc1999fc58ae4291114de76b20c82, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_FlipX: 0
-  m_FlipY: 0
---- !u!4 &1624020178
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1624020174}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.8028975, y: -1.1, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 9
 --- !u!1 &1750085424
 GameObject:
   m_ObjectHideFlags: 0

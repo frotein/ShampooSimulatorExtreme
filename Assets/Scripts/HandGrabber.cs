@@ -27,6 +27,8 @@ public class HandGrabber : MonoBehaviour {
     List<Rigidbody2D> connectedBodies;
     public float scaler = 1.1f;
     bool setLayerBackToGrabbable;
+    float angleOffset;
+    bool autoCorrectNextFrame;
     // Use this for initialization
 	void Start ()
     {
@@ -44,6 +46,13 @@ public class HandGrabber : MonoBehaviour {
 	void Update ()
     {
         wait += Time.deltaTime;
+        if(autoCorrectNextFrame && rj != null)
+        {
+            rj.autoConfigureOffset = false;
+            autoCorrectNextFrame = false;
+        }
+        
+        
         // if you are grabbing this frame and you arent holding anything, and it isnt something the other hand is holding
         if (hand.grabbedThisFrame() && (grabbedGO == null || grabbedGO.layer == LayerMask.NameToLayer("Ignore Player")))
         {
@@ -113,7 +122,7 @@ public class HandGrabber : MonoBehaviour {
             {
                 if(Vector2.Distance(handRB.position, grabbedGO.transform.position.XY()) > 0.75f)
                 {
-                    Release();
+                    //Release();
                 }
             }
             
@@ -128,8 +137,15 @@ public class HandGrabber : MonoBehaviour {
                 if(!grabbedStatic)
                     grabbedGO.layer = LayerMask.NameToLayer("Grabbable");
 
+
+                grabbedGO.GetComponent<Rigidbody2D>().freezeRotation = false;
                 grabbedGO = null;
             }
+        }
+
+        if(grabbedGO != null && grabbed && !grabbedStatic)
+        {
+            grabbedGO.transform.eulerAngles = new Vector3(grabbedGO.transform.eulerAngles.x, grabbedGO.transform.eulerAngles.y, -Extensions.Angle(-transform.up) - angleOffset);
         }
 
         if(hand.isClosed())
@@ -177,9 +193,12 @@ public class HandGrabber : MonoBehaviour {
             Debug.Log("grabbed");
             rj = grabbedGO.AddComponent<RelativeJoint2D>();
             rj.connectedBody = handRB;
-            rj.autoConfigureOffset = false;
+            autoCorrectNextFrame = true;
+            angleOffset = -Extensions.Angle(-transform.up) - grabbedGO.transform.eulerAngles.z;
+            grabbedGO.GetComponent<Rigidbody2D>().freezeRotation = true;
+            //rj.autoConfigureOffset = false;
             //rj.angularOffset = -3.36f;
-            rj.linearOffset = new Vector2(0, 0);
+            //rj.linearOffset = new Vector2(0, 0);
            // rj.breakForce = 6000;
             rj.correctionScale = 0.7f;
            
