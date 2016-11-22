@@ -30,6 +30,7 @@ public class HandGrabber : MonoBehaviour {
     float angleOffset;
     bool autoCorrectNextFrame;
     float changeInAngle;
+    float changeInAngleTime;
     float previouseAngle;
     // Use this for initialization
 	void Start ()
@@ -101,8 +102,8 @@ public class HandGrabber : MonoBehaviour {
         if(grabbed && grabbedGO != null)
         {
 
-            changeInAngle = grabbedGO.transform.eulerAngles.z - previouseAngle;
-            Debug.Log(changeInAngle);
+            
+           // Debug.Log(changeInAngle);
             if (hand.openedThisFrame()) // if you open your hand, release the object
             {
 
@@ -161,8 +162,12 @@ public class HandGrabber : MonoBehaviour {
 
     void LateUpdate()
     {
-        if (grabbedGO != null)
+        if (grabbedGO != null && Time.time - changeInAngleTime > 0.1f)
+        {
+            changeInAngle = grabbedGO.transform.eulerAngles.z - previouseAngle;
             previouseAngle = grabbedGO.transform.eulerAngles.z;
+            changeInAngleTime = Time.time;
+        }
     }
     // determines if the grab objects is the closest angle or 180 + is
     bool IsClosestAngle(Transform grabbedObject)
@@ -195,13 +200,14 @@ public class HandGrabber : MonoBehaviour {
                 connectedBodies.Add(joint.connectedBody);
                 joint.connectedBody.gameObject.layer = LayerMask.NameToLayer("Ignore Player");
             }
-            Debug.Log("grabbed");
+            //Debug.Log("grabbed");
             rj = grabbedGO.AddComponent<RelativeJoint2D>();
             rj.connectedBody = handRB;
             autoCorrectNextFrame = true;
             angleOffset = -Extensions.Angle(-transform.up) - grabbedGO.transform.eulerAngles.z;
             grabbedGO.GetComponent<Rigidbody2D>().freezeRotation = true;
-           
+            changeInAngleTime = Time.time;
+            previouseAngle = grabbedGO.transform.eulerAngles.z;
            // rj.breakForce = 6000;
             rj.correctionScale = 0.7f;
            
@@ -253,7 +259,7 @@ public class HandGrabber : MonoBehaviour {
 
         grabbedGO.GetComponent<Rigidbody2D>().freezeRotation = false;
         Debug.Log(changeInAngle);
-        grabbedGO.GetComponent<Rigidbody2D>().angularVelocity = changeInAngle;
+        grabbedGO.GetComponent<Rigidbody2D>().angularVelocity = changeInAngle * 10f;
         //  handRB.gameObject.SetActive(false);
     }
 
