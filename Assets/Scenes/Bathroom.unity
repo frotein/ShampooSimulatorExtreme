@@ -690,7 +690,7 @@ GameObject:
   - 50: {fileID: 1118006255}
   m_Layer: 9
   m_Name: toiletBase
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

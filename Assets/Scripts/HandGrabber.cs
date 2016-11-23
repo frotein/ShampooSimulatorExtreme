@@ -32,6 +32,7 @@ public class HandGrabber : MonoBehaviour {
     float changeInAngle;
     float changeInAngleTime;
     float previouseAngle;
+    bool stillRotates;
     // Use this for initialization
 	void Start ()
     {
@@ -66,7 +67,7 @@ public class HandGrabber : MonoBehaviour {
             GameObject staticGrabbed = null;
             foreach (Collider2D col in cols)
             {
-                if (col.tag == "Grabbable")
+                if (col.tag == "Grabbable" || col.tag == "GrabbableKeepRotation")
                 {
                    // Debug.Log("over grabbable");
                     float dist = Vector2.Distance(col.transform.position.XY(), transform.position.XY());
@@ -148,7 +149,7 @@ public class HandGrabber : MonoBehaviour {
             }
         }
 
-        if(grabbedGO != null && grabbed && !grabbedStatic)
+        if(grabbedGO != null && grabbed && !grabbedStatic && !stillRotates)
         {
             grabbedGO.transform.eulerAngles = new Vector3(grabbedGO.transform.eulerAngles.x, grabbedGO.transform.eulerAngles.y, -Extensions.Angle(-transform.up) - angleOffset);
         }
@@ -190,6 +191,7 @@ public class HandGrabber : MonoBehaviour {
             storedLocal = handRB.transform.localPosition;
             storedLayer = grabbable.layer;
             //handRB.transform.position = grabbedGO.transform.position;
+
             grabbable.layer = LayerMask.NameToLayer("Ignore Player");
 
             grabbedGO.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0);
@@ -198,14 +200,25 @@ public class HandGrabber : MonoBehaviour {
             foreach (Joint2D joint in connectedJoints)
             {
                 connectedBodies.Add(joint.connectedBody);
+                  if (grabbedGO.tag != "GrabbableKeepRotation")
                 joint.connectedBody.gameObject.layer = LayerMask.NameToLayer("Ignore Player");
             }
             //Debug.Log("grabbed");
-            rj = grabbedGO.AddComponent<RelativeJoint2D>();
-            rj.connectedBody = handRB;
-            autoCorrectNextFrame = true;
-            angleOffset = -Extensions.Angle(-transform.up) - grabbedGO.transform.eulerAngles.z;
-            grabbedGO.GetComponent<Rigidbody2D>().freezeRotation = true;
+            if (grabbedGO.tag != "GrabbableKeepRotation")
+            {
+                rj = grabbedGO.AddComponent<RelativeJoint2D>();
+                rj.connectedBody = handRB;
+                autoCorrectNextFrame = true;
+                angleOffset = -Extensions.Angle(-transform.up) - grabbedGO.transform.eulerAngles.z;
+            }
+            else
+            {
+                //TargetJoint2D tj = gr
+            }
+            if (grabbedGO.tag != "GrabbableKeepRotation")
+                grabbedGO.GetComponent<Rigidbody2D>().freezeRotation = true;
+            else
+                stillRotates = true;
             changeInAngleTime = Time.time;
             previouseAngle = grabbedGO.transform.eulerAngles.z;
            // rj.breakForce = 6000;
@@ -260,6 +273,7 @@ public class HandGrabber : MonoBehaviour {
         grabbedGO.GetComponent<Rigidbody2D>().freezeRotation = false;
         Debug.Log(changeInAngle);
         grabbedGO.GetComponent<Rigidbody2D>().angularVelocity = changeInAngle * 10f;
+        stillRotates = false;
         //  handRB.gameObject.SetActive(false);
     }
 
