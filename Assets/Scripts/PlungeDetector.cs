@@ -37,10 +37,14 @@ public class PlungeDetector : Detector {
                 float dist = Vector2.Distance(newPos, prevPositionOnLine);
                 value += dist;
                 if(dist > 0.1f)
-                    transform.GetComponent<ShootOutLiquid>().StartSpraying(0.5f, dist * 100f);
+                    transform.GetComponent<ShootOutLiquid>().StartSpraying(0.3f, dist * 100f);
                 prevPositionOnLine = newPos;
             }
         }
+
+        Rigidbody2D rb = col.GetComponent<Rigidbody2D>();
+        if (rb != null)
+            transform.GetComponent<ShootOutLiquid>().StartSpraying(0.2f, Mathf.Abs(rb.velocity.magnitude) * 1.75f);
     }
 
 

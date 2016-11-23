@@ -33,6 +33,7 @@ public class HandGrabber : MonoBehaviour {
     float changeInAngleTime;
     float previouseAngle;
     bool stillRotates;
+    public DoubleTargetJoint dtj;
     // Use this for initialization
 	void Start ()
     {
@@ -158,6 +159,11 @@ public class HandGrabber : MonoBehaviour {
             hand.GetComponent<Collider2D>().enabled = true;
         else
             hand.GetComponent<Collider2D>().enabled = false;
+
+        if(dtj != null)
+        {
+            dtj.Update();
+        }
     }
 
 
@@ -210,19 +216,23 @@ public class HandGrabber : MonoBehaviour {
                 rj.connectedBody = handRB;
                 autoCorrectNextFrame = true;
                 angleOffset = -Extensions.Angle(-transform.up) - grabbedGO.transform.eulerAngles.z;
+                rj.correctionScale = 0.7f;
+                grabbedGO.GetComponent<Rigidbody2D>().freezeRotation = true;
+
             }
             else
             {
+                TargetJoint2D joint1 = grabbedGO.AddComponent<TargetJoint2D>();
+                TargetJoint2D joint2 = handRB.gameObject.AddComponent<TargetJoint2D>();
+                dtj = new DoubleTargetJoint(joint1, joint2, handRB.transform.position);
+                stillRotates = true;
+
                 //TargetJoint2D tj = gr
             }
-            if (grabbedGO.tag != "GrabbableKeepRotation")
-                grabbedGO.GetComponent<Rigidbody2D>().freezeRotation = true;
-            else
-                stillRotates = true;
             changeInAngleTime = Time.time;
             previouseAngle = grabbedGO.transform.eulerAngles.z;
            // rj.breakForce = 6000;
-            rj.correctionScale = 0.7f;
+            
            
         }
         else
@@ -274,6 +284,9 @@ public class HandGrabber : MonoBehaviour {
         Debug.Log(changeInAngle);
         grabbedGO.GetComponent<Rigidbody2D>().angularVelocity = changeInAngle * 10f;
         stillRotates = false;
+
+        if (dtj != null)
+        { dtj.Destroy(); dtj = null; }
         //  handRB.gameObject.SetActive(false);
     }
 

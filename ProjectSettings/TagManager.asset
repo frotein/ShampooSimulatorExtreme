@@ -19,6 +19,7 @@ TagManager:
   - Curtain
   - Wall
   - Highlight
+  - GrabbableKeepRotation
   layers:
   - Default
   - TransparentFX
