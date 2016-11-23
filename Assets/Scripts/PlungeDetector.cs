@@ -35,10 +35,13 @@ public class PlungeDetector : Detector {
             {
                 Vector2 newPos = (Vector2)Vector3.Project(col.bounds.center, transform.up);
                 float dist = Vector2.Distance(newPos, prevPositionOnLine);
-                value += dist;
-                if(dist > 0.1f)
+
+                if (dist > 0.1f)
+                {
+                    value += dist;
                     transform.GetComponent<ShootOutLiquid>().StartSpraying(0.3f, dist * 100f);
-                prevPositionOnLine = newPos;
+                }
+               prevPositionOnLine = newPos;
             }
         }
 
