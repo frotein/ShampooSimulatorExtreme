@@ -13,7 +13,7 @@ public class ShampooManager : MonoBehaviour {
     void Start()
     {
         startingVelocity = Vector2.zero;
-        shaderController.poolSize = sleepingPool.childCount;
+       // shaderController.poolSize = sleepingPool.childCount;
     }
 
     // Update is called once per frame

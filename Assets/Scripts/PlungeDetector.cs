@@ -11,9 +11,12 @@ public class PlungeDetector : Detector {
     }
 	
 	// Update is called once per frame
-	void Update () {
-	
+	void Update ()
+    {
+	    
 	}
+
+    
     void OnTriggerEnter2D(Collider2D col)
     {
         if (col.sharedMaterial != null)
@@ -31,10 +34,14 @@ public class PlungeDetector : Detector {
             if (col.sharedMaterial.name == "PlungerHead")
             {
                 Vector2 newPos = (Vector2)Vector3.Project(col.bounds.center, transform.up);
-                value += Vector2.Distance(newPos, prevPositionOnLine);
-
+                float dist = Vector2.Distance(newPos, prevPositionOnLine);
+                value += dist;
+                if(dist > 0.1f)
+                    transform.GetComponent<ShootOutLiquid>().StartSpraying(0.5f, dist * 100f);
                 prevPositionOnLine = newPos;
             }
         }
     }
+
+
 }

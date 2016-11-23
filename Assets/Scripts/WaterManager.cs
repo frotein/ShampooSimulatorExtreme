@@ -8,6 +8,7 @@ public class WaterManager : MonoBehaviour {
     public Transform sleepingPool;
     public Vector2 startingVelocity;
     public float despawnTime;
+    public Collider2D[] ignoreColliders;
     // Use this for initialization
 	void Start ()
     {
@@ -31,9 +32,9 @@ public class WaterManager : MonoBehaviour {
             dropT.position = position.XYZ(dropT.position.z);
             dropT.gameObject.layer = LayerMask.NameToLayer("Water");
 
-          /*  foreach (Transform b in shaderController.balls)
-                Physics2D.IgnoreCollision(b.GetComponent<Collider2D>(), dropT.GetComponent<Collider2D>(),true);
-                */
+           foreach (Collider2D col in ignoreColliders)
+                Physics2D.IgnoreCollision(col, dropT.GetComponent<Collider2D>(),true);
+                
 
             shaderController.balls.Add(dropT);
             dropT.GetComponent<WaterDrop>().manager = this;
