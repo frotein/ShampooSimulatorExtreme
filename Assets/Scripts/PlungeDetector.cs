@@ -17,7 +17,7 @@ public class PlungeDetector : Detector {
     {
 	    if(completed && once)
         {
-            thrower.ThrowPoop(Random.Range(75f, 150f));
+            thrower.ThrowPoop(Random.Range(225f, 350f));
             once = false;
         }
 	}
@@ -46,7 +46,7 @@ public class PlungeDetector : Detector {
                 {
                     value += dist;
                   
-                    transform.GetComponent<ShootOutLiquid>().StartSpraying(0.3f, dist * 100f);
+                    transform.GetComponent<ShootOutLiquid>().StartSpraying(0.3f, dist * 50f);
                 }
                prevPositionOnLine = newPos;
             }

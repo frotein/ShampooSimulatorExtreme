@@ -13,8 +13,8 @@ public class PoopThrower : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
     {
-        if (Input.GetKeyDown("s"))
-            ThrowPoop(100);	
+        if (Input.GetKeyDown("y"))
+            ThrowPoop(300);	
 	}
 
     public void ThrowPoop(float power)

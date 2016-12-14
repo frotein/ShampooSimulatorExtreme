@@ -7,18 +7,29 @@ public class WaterManager : MonoBehaviour {
     public Transform activePool;
     public Transform sleepingPool;
     public Vector2 startingVelocity;
+    public GameObject dropPrefab;
     public float despawnTime;
     public Collider2D[] ignoreColliders;
+    public int drops;
     // Use this for initialization
 	void Start ()
     {
         startingVelocity = Vector2.zero;
+        
+        for(int i = 0; i < drops; i++)
+        {
+            GameObject drop = GameObject.Instantiate(dropPrefab);
+            drop.SetActive(false);
+            drop.transform.parent = sleepingPool;
+        }
+
         shaderController.poolSize = sleepingPool.childCount;
     }
 	
 	// Update is called once per frame
-	void Update () {
-	
+	void Update ()
+    {
+	    
 	}
 
     public void SpawnDrop(Vector2 position)
