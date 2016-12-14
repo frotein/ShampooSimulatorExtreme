@@ -4,16 +4,22 @@ using System.Collections;
 public class PlungeDetector : Detector {
 
     Vector2 prevPositionOnLine;
+    public PoopThrower thrower;
+    bool once;
     // Use this for initialization
 	void Start ()
     {
-
+        once = true;
     }
 	
 	// Update is called once per frame
 	void Update ()
     {
-	    
+	    if(completed && once)
+        {
+            thrower.ThrowPoop(Random.Range(75f, 150f));
+            once = false;
+        }
 	}
 
     
@@ -39,15 +45,16 @@ public class PlungeDetector : Detector {
                 if (dist > 0.1f)
                 {
                     value += dist;
+                  
                     transform.GetComponent<ShootOutLiquid>().StartSpraying(0.3f, dist * 100f);
                 }
                prevPositionOnLine = newPos;
             }
         }
-
+        /*
         Rigidbody2D rb = col.GetComponent<Rigidbody2D>();
         if (rb != null)
-            transform.GetComponent<ShootOutLiquid>().StartSpraying(0.2f, Mathf.Abs(rb.velocity.magnitude) * 1.75f);
+            transform.GetComponent<ShootOutLiquid>().StartSpraying(0.2f, Mathf.Abs(rb.velocity.magnitude) * 1.75f); */
     }
 
 

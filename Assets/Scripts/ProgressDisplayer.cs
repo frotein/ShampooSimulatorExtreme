@@ -22,7 +22,7 @@ public class ProgressDisplayer : MonoBehaviour {
         {
             slider.value = tracking.value / completeValue;
             if (slider.value >= 1)
-                completed = true;
+            { completed = true; tracking.completed = true; }
         }
 
     }

@@ -5,6 +5,7 @@ public class Detector : MonoBehaviour {
 
 
     public float value;
+    public bool completed;
 	// Use this for initialization
 	void Start () {
 	

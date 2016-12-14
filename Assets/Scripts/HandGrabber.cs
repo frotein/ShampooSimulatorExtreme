@@ -33,6 +33,7 @@ public class HandGrabber : MonoBehaviour {
     float changeInAngleTime;
     float previouseAngle;
     bool stillRotates;
+    string storedLayerName;
     public DoubleTargetJoint dtj;
     // Use this for initialization
 	void Start ()
@@ -142,7 +143,7 @@ public class HandGrabber : MonoBehaviour {
             if (wait >= waitToBringBackCollider && col == null)
             {
                 if(!grabbedStatic)
-                    grabbedGO.layer = LayerMask.NameToLayer("Grabbable");
+                    grabbedGO.layer = LayerMask.NameToLayer(storedLayerName);
 
 
                 grabbedGO.GetComponent<Rigidbody2D>().freezeRotation = false;
@@ -196,6 +197,8 @@ public class HandGrabber : MonoBehaviour {
             previousParent = grabbedGO.transform.parent;
             storedLocal = handRB.transform.localPosition;
             storedLayer = grabbable.layer;
+            storedLayerName = LayerMask.LayerToName(grabbable.layer);
+          //  Debug.Log(storedLayerName);
             //handRB.transform.position = grabbedGO.transform.position;
 
             grabbable.layer = LayerMask.NameToLayer("Ignore Player");

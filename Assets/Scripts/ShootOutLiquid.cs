@@ -28,7 +28,9 @@ public class ShootOutLiquid : MonoBehaviour {
                 for (int i = 0; i < amountSpawnedAtOnce; i++)
                 {
                     float rt = Random.Range(0.0f, 1f);
+
                     manager.startingVelocity = RandomVelocity(rt) * power;
+                    //Debug.Log(manager.startingVelocity);
                     manager.SpawnDrop(transform.position.XY());
                 }
 
