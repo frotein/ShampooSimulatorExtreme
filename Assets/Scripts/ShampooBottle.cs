@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class ShampooBottle : MonoBehaviour {
+public class ShampooBottle : ActivateableObject {
 
     public ShampooManager manager;
     public Transform spawnPosition;
@@ -29,5 +29,10 @@ public class ShampooBottle : MonoBehaviour {
             manager.SpawnDrop(spawnPosition.position.XY());
             spawnT = spawnDelay / (2 * squeezeAmt);
         }
+    }
+
+    public override void Activate()
+    {
+        SqueezedBottle(0.7f);
     }
 }

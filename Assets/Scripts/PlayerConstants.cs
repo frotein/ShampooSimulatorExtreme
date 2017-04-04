@@ -45,6 +45,7 @@ public class PlayerConstants : MonoBehaviour {
 
     public void LeftVerticalMovement(float axis)
     {
+
         foreach (MoveLimb limb in limbs)
         {
             if (limb.left && limb.moving) limb.SetVerticalMovement(axis);

@@ -190,8 +190,10 @@ public class HandGrabber : MonoBehaviour {
         grabbed = true;
         grabbedGO = grabbable;
         grabbedStatic = gStatic;
-       
-       // handRB.gameObject.SetActive(true);
+        ApplySoap ap = grabbedGO.GetComponent<ApplySoap>();
+        if (ap != null)
+            ap.grabbed = true;
+        // handRB.gameObject.SetActive(true);
         if (!grabbedStatic)
         {
             previousParent = grabbedGO.transform.parent;
@@ -234,6 +236,9 @@ public class HandGrabber : MonoBehaviour {
             }
             changeInAngleTime = Time.time;
             previouseAngle = grabbedGO.transform.eulerAngles.z;
+
+            ActivateableObject ao = grabbedGO.GetComponent<ActivateableObject>();
+
            // rj.breakForce = 6000;
             
            
@@ -261,6 +266,9 @@ public class HandGrabber : MonoBehaviour {
 
     public void Release(float scale = 0, bool GrabbedStatic = false)
     {
+        ApplySoap ap = grabbedGO.GetComponent<ApplySoap>();
+        if (ap != null)
+            ap.grabbed = false;
         if (grabbedGO.GetComponent<Rigidbody2D>() != null)
         {
             grabbedGO.GetComponent<Rigidbody2D>().isKinematic = grabbedStatic;
@@ -326,6 +334,19 @@ public class HandGrabber : MonoBehaviour {
                     }
                 }
             }
+        }
+    }
+
+
+
+    public void ActivateGrabbed()
+    {
+        Debug.Log("activated");
+        if (grabbedGO != null)
+        {
+            ActivateableObject ao = grabbedGO.GetComponent<ActivateableObject>();
+            if (ao != null)
+                ao.Activate();
         }
     }
 }

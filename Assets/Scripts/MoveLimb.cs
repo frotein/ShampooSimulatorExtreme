@@ -79,6 +79,7 @@ public class MoveLimb : MonoBehaviour {
         if (!moving)
             movement = Vector2.zero;
 
+        
         CheckHighlights();
         // if you are sliding you feet on the ground
         if(!arms || (arms && grabber.grabbedGO == null))
@@ -218,6 +219,7 @@ public class MoveLimb : MonoBehaviour {
                 movement = new Vector2(Input.GetAxis("RightStickX") * dTime, Input.GetAxis("RightStickY") * dTime);
         }
 
+      
     }
 
     public void SetHorizontalMovement(float axis)

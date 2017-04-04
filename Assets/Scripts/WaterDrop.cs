@@ -111,7 +111,7 @@ public class WaterDrop : MonoBehaviour {
                 {
                     dripping = true;
                     transform.parent = col.transform;
-                    rb.drag = 5f;
+                    rb.drag = 1.5f;
                     rb.velocity = new Vector2(0, -1f);
                     //  rb.simulated = false;
                 }
