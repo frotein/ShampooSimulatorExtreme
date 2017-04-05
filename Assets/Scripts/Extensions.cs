@@ -36,5 +36,17 @@ public static class Extensions
         {
             return Mathf.Atan2(p_vector2.x, p_vector2.y) * Mathf.Rad2Deg;
         }
-    }    
+    }
+
+
+    public static Vector2 DegreeToVector2(this float degree)
+    {
+        degree -= 90;
+        return RadianToVector2(degree * Mathf.Deg2Rad);
+    }
+
+    public static Vector2 RadianToVector2(this float radian)
+    {
+        return new Vector2(Mathf.Cos(radian), Mathf.Sin(radian));
+    }
 }

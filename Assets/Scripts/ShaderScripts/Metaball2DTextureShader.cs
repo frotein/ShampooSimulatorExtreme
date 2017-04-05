@@ -15,7 +15,7 @@ public class Metaball2DTextureShader : MonoBehaviour {
     Vector2 tileLength;
     Vector2 bottomCorner;
     //public int arrayWidth;
-    ComputeBuffer buffer;
+   // ComputeBuffer buffer;
     Material mat;
     public TileVariables[,] tileVariables;
     // test variables
@@ -28,7 +28,7 @@ public class Metaball2DTextureShader : MonoBehaviour {
         positionsArray = new Vector2[poolSize];
         mat = transform.GetComponent<Renderer>().material;
         mat.SetColor("_WaterColor", waterColor);
-        buffer = new ComputeBuffer(positionsArray.Length, sizeof(float) * 2, ComputeBufferType.Default);
+        //buffer = new ComputeBuffer(positionsArray.Length, sizeof(float) * 2, ComputeBufferType.Default);
         if(balls == null)
         balls = new List<Transform>();
         if(useTiling)
@@ -101,7 +101,7 @@ public class Metaball2DTextureShader : MonoBehaviour {
     // releases all buffers when done
     void OnDestroy()
     {
-        buffer.Release();       
+     //   buffer.Release();       
     }
 
     // tiles shader to be more optimized, passes nieghbors into each tile variable

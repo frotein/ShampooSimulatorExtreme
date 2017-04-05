@@ -7,6 +7,7 @@ public class ShampooBottle : ActivateableObject {
     public Transform spawnPosition;
     public float spawnDelay;
     public float spawnT;
+    float angle = 15f;
     // Use this for initialization
 	void Start ()
     {
@@ -23,7 +24,11 @@ public class ShampooBottle : ActivateableObject {
     {
         if (spawnT <= 0)
         {
-            Vector2 velocity = spawnPosition.right * squeezeAmt * squeezeAmt * 7f;
+            float ang = spawnPosition.right.XY().Angle();
+
+            float fAng = ang + Random.Range(-angle, angle) - 90;
+
+            Vector2 velocity = fAng.DegreeToVector2() * squeezeAmt * squeezeAmt * 7f;
             //Debug.Log(velocity);
             manager.startingVelocity = velocity;
             manager.SpawnDrop(spawnPosition.position.XY());

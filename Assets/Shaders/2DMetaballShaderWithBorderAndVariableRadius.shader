@@ -35,8 +35,7 @@ Shader "Sprite/2DMetaballShaderWithBorderAndVariableRadius"
 			fixed4 _WaterColor;
 			fixed4 _BrimColor;
 			fixed _BrimSize;
-			uniform Buffer<float3> _Buffer;
-
+			
 			// Set Variables
 			int _Width;
 
@@ -66,7 +65,7 @@ Shader "Sprite/2DMetaballShaderWithBorderAndVariableRadius"
 
 				for (int i = 0; i < _Width; i++)
 				{
-					totalIntensity += GetIntensity(pos, _Buffer[i].xy, _Buffer[i].z);
+					totalIntensity += 0; //GetIntensity(pos, _Buffer[i].xy, _Buffer[i].z);
 				}
 
 				return totalIntensity;

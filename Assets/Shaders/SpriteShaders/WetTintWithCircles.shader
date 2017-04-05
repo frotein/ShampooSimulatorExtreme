@@ -47,20 +47,22 @@ Shader "Sprite/WetTintWithCircles"
 	sampler2D _MainTex;
 	float4 _MainTex_ST;
 	int _Width;
-	uniform Buffer<float2> _Positions;
+	uniform float xPos[400];
+	uniform float yPos[400];
 	float _Radius;
 	float4 _TintColor;
-	bool inside(float2 a, float2 b)
+	bool inside(float ax, float ay, float2 b)
 	{
-		float2 diff = a - b;
-		return (diff.x * diff.x) + (diff.y * diff.y) < _Radius * _Radius;
+		float diffx = ax - b.x;
+		float diffy = ay - b.y;
+		return (diffx * diffx) + (diffy * diffy) < _Radius * _Radius;
 	}
 
 	bool IsInCircles(float2 wPoint)
 	{
 		for (int i = 0; i < _Width; i++)
 		{
-			if (inside(_Positions[i], wPoint)) return true;
+			if (inside(xPos[i], yPos[i], wPoint)) return true;
 		}
 
 		return false;

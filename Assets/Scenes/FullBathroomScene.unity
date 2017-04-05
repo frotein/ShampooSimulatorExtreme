@@ -3765,7 +3765,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f276af4bad7df45458fae895f252db6c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shaderController: {fileID: 1017095538}
+  shaderController: {fileID: 0}
   activePool: {fileID: 202484782}
   sleepingPool: {fileID: 991186543}
   startingVelocity: {x: 0, y: 0}
@@ -13777,6 +13777,16 @@ Prefab:
         type: 2}
       propertyPath: yTiles
       value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000011771701484, guid: e307091af208dbd47a90ee7786556791,
+        type: 2}
+      propertyPath: useTiling
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 212000011668076246, guid: e307091af208dbd47a90ee7786556791,
+        type: 2}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: e307091af208dbd47a90ee7786556791, type: 2}
@@ -33952,7 +33962,7 @@ GameObject:
   - component: {fileID: 1017095537}
   - component: {fileID: 1017095541}
   - component: {fileID: 1017095539}
-  - component: {fileID: 1017095538}
+  - component: {fileID: 1017095540}
   m_Layer: 20
   m_Name: Shampoo Metaballs
   m_TagString: Untagged
@@ -33973,28 +33983,6 @@ Transform:
   m_Father: {fileID: 377819072}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1017095538
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1017095536}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b2d1dc954f706f345ac051f686d7f262, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  startingRadius: 0.003
-  sleepingPool: {fileID: 991186543}
-  waterColor: {r: 0.7410512, g: 0.21004544, b: 0.77205884, a: 0}
-  positionsAndRadiusArray: []
-  balls: []
-  poolSize: 500
-  useTiling: 0
-  xTiles: 5
-  yTiles: 5
-  test1: {fileID: 0}
-  test2: {fileID: 0}
 --- !u!23 &1017095539
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -34026,6 +34014,29 @@ MeshRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingOrder: 0
+--- !u!114 &1017095540
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1017095536}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94d32223ff41a2f4ca4ae28267ab8ba0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  radius: 0.006
+  waterColor: {r: 0.8235294, g: 0, b: 0.8008115, a: 0}
+  positionsArray: []
+  balls: []
+  poolSize: 0
+  useTiling: 1
+  xTiles: 5
+  yTiles: 5
+  tilePrefab: {fileID: 137652, guid: 9cf6cb9459b131d4a88f5062d72a365e, type: 2}
+  test1: {fileID: 573549433}
+  test2: {fileID: 0}
+  overlap: {x: 0.05, y: 0.1}
 --- !u!33 &1017095541
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -52940,8 +52951,10 @@ MonoBehaviour:
   activePool: {fileID: 747025236}
   sleepingPool: {fileID: 1751103174}
   startingVelocity: {x: 0, y: 0}
+  dropPrefab: {fileID: 0}
   despawnTime: 200
   ignoreColliders: []
+  drops: 0
 --- !u!4 &1561135948 stripped
 Transform:
   m_PrefabParentObject: {fileID: 478158, guid: 1c7cceaee10050b4b917ddba0765fde1, type: 2}
@@ -61961,6 +61974,25 @@ Prefab:
         type: 2}
       propertyPath: inputConfigurations.Array.data[1].axes.Array.data[11].positive
       value: 358
+      objectReference: {fileID: 0}
+    - target: {fileID: 50000012860566716, guid: c738b18f7d9c4f3478338459851766f0,
+        type: 2}
+      propertyPath: m_Mass
+      value: 10.890221
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000010783359944, guid: c738b18f7d9c4f3478338459851766f0,
+        type: 2}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000010783359944, guid: c738b18f7d9c4f3478338459851766f0,
+        type: 2}
+      propertyPath: setBlock
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4000010219174634, guid: c738b18f7d9c4f3478338459851766f0, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: c738b18f7d9c4f3478338459851766f0, type: 2}

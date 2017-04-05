@@ -3,7 +3,7 @@ using System.Collections;
 
 public class ShampooManager : MonoBehaviour {
 
-    public Metaball2DTextureShaderVariableRadius shaderController;
+    public Metaball2DTextureShader shaderController;
     public Transform activePool;
     public Transform sleepingPool;
     public Vector2 startingVelocity;

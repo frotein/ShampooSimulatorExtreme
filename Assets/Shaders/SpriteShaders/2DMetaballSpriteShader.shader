@@ -37,8 +37,10 @@ Shader "Sprite/2DMetaballSpriteShader"
 	fixed4 _BrimColor;
 	fixed _Radius;
 	fixed _BrimSize;
-	uniform Buffer<float2> _Buffer;
-	float2 lastPos;
+	//uniform Buffer<float2> _Buffer;
+	uniform float xPos[300];
+	uniform float yPos[300];
+	//float2 lastPos;
 	// Set Variables
 	int _Width;
 
@@ -54,10 +56,10 @@ Shader "Sprite/2DMetaballSpriteShader"
 	};
 
 	// Main equation to get the intensity of a position from a specific ball
-	float GetIntensity(float2 start, float2 end, fixed radius)
+	float GetIntensity(float2 start, float pX, float pY, fixed radius)
 	{
-		float x = (start.x - end.x);
-		float y = (start.y - end.y);
+		float x = (start.x - pX);
+		float y = (start.y - pY);
 		return (radius / ((x * x) + (y * y)));
 	}
 
@@ -68,7 +70,7 @@ Shader "Sprite/2DMetaballSpriteShader"
 
 		for (int i = 0; i < _Width; i++)
 		{
-			totalIntensity += GetIntensity(pos, _Buffer[i], _Radius);
+			totalIntensity += GetIntensity(pos, xPos[i], yPos[i], _Radius);
 		}
 
 		return totalIntensity;

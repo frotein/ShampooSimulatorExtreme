@@ -9,13 +9,13 @@ public class TileVariables : MonoBehaviour {
     public List<Transform> allBalls;
     public Bounds bounds;
     public TileVariables[] neighbors;
-    ComputeBuffer buffer;
+
+    public float[] xPos, yPos;
     Material mat;
     
     // Use this for initialization
     void Start()
     {
-        buffer = new ComputeBuffer(1000, sizeof(float) * 2, ComputeBufferType.Default);
         balls = new List<Transform>();
         mat = transform.GetComponent<SpriteRenderer>().material;
         bounds = transform.GetComponent<SpriteRenderer>().bounds;
@@ -24,14 +24,15 @@ public class TileVariables : MonoBehaviour {
     void FixedUpdate()
     {
 
-       
+        var materialProperty = new MaterialPropertyBlock();
 
-        Vector2[] pts = SetArrayData(balls);
-        buffer.SetData(pts);
-        mat.SetBuffer("_Buffer", buffer);
-        mat.SetInt("_Width", balls.Count);
 
-       // if (x == 5 && y == 5) Debug.Log(transform.position + " offset " +  transform.lossyScale);           
+        SetArrayData(balls);
+        materialProperty.SetFloat("_Width", (float)balls.Count);
+        materialProperty.SetFloatArray("xPos", xPos);
+        materialProperty.SetFloatArray("yPos", yPos); 
+        gameObject.GetComponent<Renderer>().SetPropertyBlock(materialProperty);
+        // if (x == 5 && y == 5) Debug.Log(transform.position + " offset " +  transform.lossyScale);           
     }
 
     public void SetRadius(float radius)
@@ -45,18 +46,26 @@ public class TileVariables : MonoBehaviour {
     }
 
     // puts the positions in an array to be sent
-    Vector2[] SetArrayData(List<Transform> list)
+    void SetArrayData(List<Transform> list)
     {
-        Vector2[] temp = new Vector2[list.Count];
-        for (int i = 0; i < list.Count; i++)
+        xPos = new float[300];
+        yPos = new float[300];
+        for (int i = 0; i < 300; i++)
         {
-            temp[i] = list[i].position.XY();
+            if (list.Count > i)
+            {
+                xPos[i] = list[i].position.x;
+                yPos[i] = list[i].position.y;
+            }
+            else
+            {
+                xPos[i] = 0;
+                yPos[i] = 0;
+            }    
         }
-        return temp;
     }
 
     void OnDestroy()
     {
-        buffer.Release();
     }
 }
